@@ -21,6 +21,9 @@ public class PopularReleasesView
 
 	public PopularReleasesView(ViewManager viewManager) {
 		super(viewManager, title);
+		
+		appendGrid();
+		loadDataset();
 	}
 
 	protected void loadDataset() {

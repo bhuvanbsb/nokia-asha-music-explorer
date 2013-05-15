@@ -28,14 +28,13 @@ import org.tantalum.Task;
 import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.QueryPager;
-import com.nokia.example.musicexplorer.data.ApiCache;
-import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 
 /**
- * Form based view for displaying album cover thumbnails.
+ * A form based abstract view for displaying album cover thumbnails in
+ * different contexts by extending this class.
  */
-public class AlbumGridView
+public abstract class AlbumGridView
     extends Form
     implements 
     	CommandListener, 
@@ -46,21 +45,15 @@ public class AlbumGridView
 	
     protected QueryPager queryPager;
     protected Vector viewModel;
+    protected final ViewManager viewManager;
 
     private static final int SCREEN_WIDTH_IN_PORTRAIT = 230;
-    private final ViewManager viewManager;
     private final Command backCommand;
     private GridLayout grid;
     private StringItem loadMoreItem;
 	private int loadMoreItemIndex;
 	private Command loadMoreCommand;
     
-    /**
-     * Constructor which sets the view title, adds a back command to it and adds
-     * the dummy text content to it.
-     * @param viewTitle Title shown in the title bar of this view
-     * @param viewManager View manager which will handle view switching
-     */
     public AlbumGridView(ViewManager viewManager, String title) {
     	super(title);
     	
@@ -76,48 +69,39 @@ public class AlbumGridView
     	// Initialize the query pager.
     	this.queryPager = new QueryPager();
     	this.queryPager.setItemsPerPage(ITEMS_PER_PAGE);
-    	
-        this.grid = new GridLayout(SCREEN_WIDTH_IN_PORTRAIT, this.viewManager);
-        
-        append(this.grid);
-        
-        loadDataset();
-        
+
+    	// Initialize the grid layout.
+    	this.grid = new GridLayout(SCREEN_WIDTH_IN_PORTRAIT, this.viewManager);
+       
         addCommand(backCommand);
         setCommandListener(this);
         setItemStateListener(this);
     }
         
-    /**
-     * @see javax.microedition.ItemStateListener#itemStateChanged(Item)
-     */
     public void itemStateChanged(Item item) {
     }
    
-    /**
-     * Adjusts the grid size according to the display size.
-     *
-     * @see javax.microedition.lcdui.Displayable#sizeChanged(int, int)
-     */
     public void sizeChanged(int w, int h) {
     }
     
-    /**
-     * Implementation of a required commandAction method from CommandListener
-     * interface. Handles eg. hardware back button press event.
-     * @param command The command which was fired
-     * @param displayable The view from where the command originated (in this
-     *        case it is this view itself)
-     * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command,
-     *      javax.microedition.lcdui.Displayable)
-     */
+	public void commandAction(Command c, Item item) {
+		if(c == this.loadMoreCommand) {
+			// Load more triggered
+			loadNextDataset();
+		}
+	}
+    
     public void commandAction(Command command, Displayable displayable) {
     	if (backCommand.equals(command)) {
             // Hardware back button was pressed
             viewManager.goBack();
         }
     }
-        
+       
+    protected void appendGrid() {
+    	append(grid);
+    }
+    
     /**
      * Converts JSON items to AlbumModels and places them to Vector viewModel.
      * @param items
@@ -145,30 +129,17 @@ public class AlbumGridView
         	if(queryPager.hasMorePages()) {
         		loadMoreItemIndex = this.append(this.loadMoreItem);
         	} else {
+        		// Remove the Load more button.
         		delete(this.loadMoreItemIndex);
         	}        	
-        	
     	} catch(JSONException e) {
     		L.e("Error while parsing items to JSON.", "", e);
     	}
     }
-    
+
     /**
-     * Appends items to the grid.
-
-    protected void appendToList(Vector newItems) {
-    	int loopMax = newItems.size();
-    	
-    	if(grid != null) {
-        	for(int i = loopMax - 1; i >= 0; i--) {
-        		grid.addItem((GenericProductModel) newItems.elementAt(i));
-        	}
-
-
-    	}
-    }
-          */   
-    
+     * Callback task for parsing the JSON response for the view.
+     */
     protected class PlaceResultsTask extends Task {
     	public PlaceResultsTask() {
     		super(Task.NORMAL_PRIORITY);
@@ -181,19 +152,19 @@ public class AlbumGridView
     		return response;
     	}
     }
-
+    
+    /**
+     * Load the first set of data.
+     */
     protected void loadDataset() {
     	L.i("Load dataset not implemented", "");
     }
     
+    /**
+     * Load the next set of data.
+     */
     protected void loadNextDataset() {
     	L.i("Load next data set not implemented", "");
     }
-    
-	public void commandAction(Command c, Item item) {
-		if(c == this.loadMoreCommand) {
-			// Load more triggered
-			loadNextDataset();
-		}
-	}
+
 }

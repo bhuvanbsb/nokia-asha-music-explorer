@@ -98,9 +98,13 @@ public class ApiCache {
      * @param callback The Task to call when an HTTP response is received.
      * @return
      */
-    public static Task getAlbumsForArtist(int artistId, Task callback) {
+    public static Task getAlbumsForArtist(
+    		int artistId, 
+    		Task callback, 
+    		String pagingQueryString) {
+    	
 		return apiCache.getAsync(
-	    		ApiEndpoint.getReleasesForArtist(artistId),
+	    		ApiEndpoint.getReleasesForArtist(artistId, pagingQueryString),
 				Task.NORMAL_PRIORITY,
 				StaticWebCache.GET_WEB, 						
 				callback

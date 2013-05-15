@@ -7,6 +7,9 @@
 * See LICENSE.TXT for license information.
 */
 
+/**
+ * Represents a category. A category can be album, single, track or artist.
+ */
 package com.nokia.example.musicexplorer.data.model;
 
 public class CategoryModel {

@@ -20,11 +20,10 @@ import org.json.me.JSONObject;
 import org.tantalum.util.L;
 
 /**
- * Defines the common properties and methods for Album, Single, Track.
+ * Defines the common properties and methods for all products.
  */
 public class GenericProductModel {
 	
-	// Public members
 	public String name;
 	public String sortname;
 	public String label;
@@ -103,10 +102,10 @@ public class GenericProductModel {
 	 * @param size
 	 * @return
 	 */
-	public String getThumbnailUrl(String size) throws Exception {
+	public String getThumbnailUrl(String size) {
 		if(!thumbnailUrls.containsKey(size)) {
 			L.i("Given thumbnail size was not found. Size ", size);
-			throw new Exception("Given thumbnail size was not found. Size was " + size);
+			return null;
 		}
 		return (String) thumbnailUrls.get(size);
 	}
@@ -119,12 +118,13 @@ public class GenericProductModel {
 	 * @throws JSONException
 	 */
 	public void setGenres(JSONArray genresAsJSONArray) throws JSONException {
-		// Loop through JSON genres
 		int loopMax = genresAsJSONArray.length();
 		JSONObject tmpGenre;
+
 		if(genres == null) {
 			genres = new Vector();
 		}
+		
 		for(int i = 0; i < loopMax; i++) {
 			tmpGenre = genresAsJSONArray.getJSONObject(i);
 			genres.addElement(
@@ -158,15 +158,18 @@ public class GenericProductModel {
 
 	public String getGenres() {
 		String genres = "";
-		int loopMax = this.genres.size();
-		
-		for(int i = 0; i < loopMax; i++) {
-			genres += ((GenreModel) this.genres.elementAt(i)).name;
-			if(i < loopMax - 1) {
-				genres += ", ";
-			}
+		if(this.genres != null) {
+			int loopMax = this.genres.size();
+			
+			for(int i = 0; i < loopMax; i++) {
+				genres += ((GenreModel) this.genres.elementAt(i)).name;
+				if(i < loopMax - 1) {
+					genres += ", ";
+				}
+			}			
+		} else {
+			L.i("Genres not initialized.", this.toString());
 		}
-
 		return genres;
 	}
 

@@ -32,10 +32,6 @@ public final class Main
 
     private Stack viewStack; 
     
-    /**
-     * What to do when MIDlet is started
-     * @see javax.microedition.midlet.MIDlet#startApp()
-     */
     public void startApp() {
     	PlatformUtils.getInstance().setProgram(this, 4);
         
@@ -49,25 +45,14 @@ public final class Main
         }
     }
 
-    /**
-     * What to do when MIDlet is paused. This can happen e.g. when MIDlet is on
-     * the foreground and an incoming phone call is received.
-     * @see javax.microedition.midlet.MIDlet#pauseApp()
-     */
     public void pauseApp() {
     }
 
-    /**
-     * @see ViewManager#showView(javax.microedition.lcdui.Displayable)
-     */
     public void showView(Displayable view) {
         viewStack.push(view);
         Display.getDisplay(this).setCurrent(view);
     }
 
-    /**
-     * @see ViewManager#goBack()
-     */
     public void goBack() {
         // Remove the current view from the view stack
         viewStack.pop();

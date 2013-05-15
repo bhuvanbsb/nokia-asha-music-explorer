@@ -3,9 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Nokia Asha SDK 1.0/Nokia_Asha_SDK_1_0"/>
-	<classpathentry kind="lib" path="lib/TantalumJME-debug.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/TantalumJME-debug.jar"/>
 	<classpathentry kind="lib" path="lib/TantalumJME-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/TantalumJME-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/TantalumJME.jar"/>
+	<classpathentry kind="lib" path="lib/TantalumJME.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -9,13 +9,16 @@
 
 package com.nokia.example.musicexplorer.data.model;
 
+/**
+ * Represents a genre.
+ */
 public class GenreModel {
 	public String id;
 	public String name;
 
-	public GenreModel(String _id, String _name) {
-		id = _id;
-		name = _name;
+	public GenreModel(String id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 	
 	/**

@@ -25,12 +25,10 @@ import com.nokia.example.musicexplorer.data.model.AlbumModel;
 public class GridLayout
     extends CustomItem
 {
-    // Constants
     public static final int CUSTOM_ITEM_MARGIN_SIZE = 2;
     public static final int DEFAULT_COLUMN_COUNT = 3;
     public static final int JITTER_THRESHOLD = 10;
 
-    // Members
     protected Vector gridItems;
     protected GridItem selectedItem;
     protected int width = 0;
@@ -42,9 +40,6 @@ public class GridLayout
     protected int verticalScrollPosition = 0;
     protected ViewManager viewManager;
 
-    /**
-     * Constructor.
-     */
     public GridLayout(final int width, ViewManager viewManager) {
         super(null);
         this.viewManager = viewManager;
@@ -55,7 +50,7 @@ public class GridLayout
 
     /**
      * Adds an item to the grid.
-     * @param gridItem The item to add.
+     * @param productModel
      */
     public void addItem(GenericProductModel productModel) {         		
     	GridItem gridItem = new GridItem(viewManager, productModel, this);
@@ -63,14 +58,11 @@ public class GridLayout
     	gridItem.setSize(columnWidth, columnWidth);
     	gridItems.addElement(gridItem);	 
     	
-		int amountOfRows = (int) Math.ceil((double) gridItems.size() / (double) this.columnCount);
-		
-		L.i("Amount of rows", Integer.toString(amountOfRows));
-		
+		int amountOfRows = (int) Math.ceil((double) gridItems.size() / 
+										   (double) this.columnCount);
 		int newHeight = amountOfRows * this.rowHeight;
+
 		this.setPreferredSize(this.width, newHeight);
-		
-    	L.i("Size of grid", Integer.toString(gridItems.size()));
     }
 
     /**

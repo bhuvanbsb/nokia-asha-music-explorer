@@ -21,12 +21,10 @@ import org.tantalum.Task;
 import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
-import com.nokia.example.musicexplorer.data.model.AlbumModel;
+
 
 /**
- * A list of items which can be selected to access a sub view. Implements a
- * CommandListener interface for handling list selection events as well as
- * hardware back button presses.
+ * Displays a list of genres.
  */
 public class GenresListView
     extends List
@@ -56,7 +54,6 @@ public class GenresListView
         ApiCache.getGenres(new PlaceResultsTask(this));
     }
     
-    // TODO: Generalize this kind of tasks??
     public class PlaceResultsTask extends Task {
 		private List parentView;
     	public PlaceResultsTask(List view) {
@@ -72,7 +69,6 @@ public class GenresListView
 				for(int i = 0; i < loopMax; i++) {
 					this.parentView.append(((JSONObject) arr.get(i)).getString("name"), null);
 				}
-				
 			}
 			catch(JSONException exception) {    				
 				L.e("Unable to parse Track in PlaceResultsTask", "", exception);
@@ -82,21 +78,10 @@ public class GenresListView
     	}
     }
 
-    /**
-     * Implementation of a required commandAction method from CommandListener
-     * interface. Handles all command actions, such as list item selections,
-     * which happen within this view.
-     * @param command The command which was fired
-     * @param displayable The view from where the command originated (in this
-     *        case it is this view itself)
-     * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command,
-     *      javax.microedition.lcdui.Displayable)
-     */
     public void commandAction(Command command, Displayable displayable) {
         if (command == List.SELECT_COMMAND) {
             // One of the list items was selected
-            final int itemNumber = getSelectedIndex() + 1;
-
+            L.i("Item action not implemented.", "");
         }
         else if (backCommand.equals(command)) {
             // Hardware back button was pressed

@@ -23,6 +23,9 @@ public class NewReleasesView
 
 	public NewReleasesView(ViewManager viewManager) {
 		super(viewManager, title);
+		
+		appendGrid();
+		loadDataset();
 	}
 	
 	protected void loadDataset() {

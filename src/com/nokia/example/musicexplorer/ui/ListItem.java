@@ -9,38 +9,37 @@
 
 package com.nokia.example.musicexplorer.ui;
 
-import java.io.IOException;
 import javax.microedition.lcdui.CustomItem;
 import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import org.json.me.JSONObject;
 import org.tantalum.Task;
 import org.tantalum.util.L;
+
 import com.nokia.example.musicexplorer.data.ApiCache;
-import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
+import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
 
 
 /**
  * Displays ArtistModel info: thumbnail, artist name, genre, etc...
- *
  */
-public class ListItem extends CustomItem {
-   
-	
+public class ListItem 
+	extends CustomItem {
+ 
+	public String thumbnailSize;
+
+	protected ViewManager viewManager;
+
 	private static final int POINTER_JITTER = 10;
-	private static final String THUMBNAIL_SIZE = "50x50"; // TODO: Should these be somewhere stored??
+	private static final String THUMBNAIL_SIZE = ThumbnailSizes.SIZE_50X50;
 	private static final int LIST_ITEM_SIDE = 50;
+	private static final int LIST_ITEM_WIDTH = 230;
 	private static final int LIST_ITEM_HEIGHT = LIST_ITEM_SIDE;
-	
 	private static final int TEXT_OFFSET_X = LIST_ITEM_SIDE + 5;
 	private static final int TEXT_OFFSET_Y = 20;
-	
-	private String imageUri;
 	private String text;
 	private int width;
 	private int height;
@@ -49,37 +48,15 @@ public class ListItem extends CustomItem {
 	private int lastY;
 	private boolean pointerActive;
 	private boolean pointerEnabled = true;
-	
 	private GenericProductModel model;
-	protected ViewManager viewManager;
-	
-	public String thumbnailSize;
-	
-    /**
-     * Constructor.
-     * @param imageUrl A URI of the grid item image.
-     * @param text A descriptive text of the item.
-     */
-	/*
-    public ListItem(ViewManager viewManager, String imageUri, String text,
-                    final int width, final int height)
-    {
-        this();
-        this.viewManager = viewManager;
-        this.imageUri = imageUri;
-        this.text = text;
-        this.width = width;
-        this.height = height;
-    }*/
     
     public ListItem(ViewManager viewManager, 
     		GenericProductModel model) {
     	this();
     	this.viewManager = viewManager;
     	this.model = model;
-    	
-    	this.height = this.LIST_ITEM_HEIGHT;
-    	this.width = 240; // TODO: These have to be set in a better way.
+    	this.height = ListItem.LIST_ITEM_HEIGHT;
+    	this.width = ListItem.LIST_ITEM_WIDTH;
     }
     
     public void sizeChanged(int w, int h) {
@@ -95,11 +72,13 @@ public class ListItem extends CustomItem {
     }
     
     /**
-     * Detect if pointer gets dragged outside of item's bounds.
+     * Detect if pointer gets dragged outside of the item's bounds.
      */
     public void pointerDragged(int x, int y) {
-    	if(pointerEnabled && !(Math.abs(x - lastX) < this.POINTER_JITTER 
-    			&& Math.abs(y - lastY) < this.POINTER_JITTER)) {
+    	if(pointerEnabled && 
+    		!(Math.abs(x - lastX) < ListItem.POINTER_JITTER && 
+    		Math.abs(y - lastY) < ListItem.POINTER_JITTER)) {
+    		
     		this.pointerActive = false;
     	}
     }
@@ -109,18 +88,9 @@ public class ListItem extends CustomItem {
      */
     public void pointerReleased(int x, int y) {
     	if(pointerEnabled && pointerActive) {
-    		L.i("Selected item", this.model.toString());
     		pointerReleaseAction();
     	}
     }
-    
-    
-    private void pointerReleaseAction() {
-		// TODO: Launch appropriate view here.
-		if(this.model instanceof ArtistModel) {
-    		viewManager.showView(new ArtistView(viewManager, (ArtistModel) this.model));    			
-		}
-	}
     
     /**
      * Private default constructor.
@@ -128,7 +98,13 @@ public class ListItem extends CustomItem {
     private ListItem() {
         super(null);
     }
-
+    
+    private void pointerReleaseAction() {
+		if(this.model instanceof ArtistModel) {
+    		viewManager.showView(new ArtistView(viewManager, (ArtistModel) this.model));    			
+		}
+	}
+    
     /**
      * @see javax.microedition.lcdui.CustomItem#paint(Graphics, int, int)
      */
@@ -168,10 +144,9 @@ public class ListItem extends CustomItem {
     private void getThumbnail() {
     	if(this.thumbnail == null) {
         	try {
-				ApiCache.getImage(this.model.getThumbnailUrl(THUMBNAIL_SIZE), new PlaceImageTask(this));
+				ApiCache.getImage(this.model.getThumbnailUrl(ListItem.THUMBNAIL_SIZE), new PlaceImageTask(this));
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				L.i("No thumbnail available or not loaded yet for item", this.toString());
+				L.e("No thumbnail available or not loaded yet for item", this.toString(), e);
 			}    		
     	}
     }
@@ -180,21 +155,20 @@ public class ListItem extends CustomItem {
      * For convenience.
      */
     protected void paint(Graphics graphics, int x, int y, int width, int height) {
-
+    	// Paint the name.
         graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
         graphics.drawString(this.model.name, x + ListItem.TEXT_OFFSET_X, y, Graphics.TOP | Graphics.LEFT);
 
+        // Paint the genre(s).
         graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL));
         graphics.drawString(this.model.getGenres(), x + ListItem.TEXT_OFFSET_X, y + ListItem.TEXT_OFFSET_Y, Graphics.TOP | Graphics.LEFT);  		
 		    	
         if (thumbnail != null) {
             graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
-        	// TODO: display a loader gfx here...?
-        	graphics.drawRoundRect(x, y, this.LIST_ITEM_SIDE, this.LIST_ITEM_SIDE, 3, 3);
+        	graphics.drawRoundRect(x, y, ListItem.LIST_ITEM_SIDE, ListItem.LIST_ITEM_SIDE, 3, 3);
         	getThumbnail();
         }           
-
     }
 
     protected int getMinContentHeight() {

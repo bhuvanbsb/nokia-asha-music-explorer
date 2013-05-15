@@ -10,13 +10,15 @@
 package com.nokia.example.musicexplorer.data.model;
 
 import org.json.me.JSONObject;
-import org.json.me.JSONArray;
-import org.json.me.JSONException;
 
-public class ArtistModel extends GenericProductModel {
+/**
+ * Represents an Artist Product.
+ */
+public class ArtistModel 
+	extends GenericProductModel {
 	
-	public ArtistModel(JSONObject track) {
-		super(track);
+	public ArtistModel(JSONObject artist) {
+		super(artist);
 	}
 	
 	/**

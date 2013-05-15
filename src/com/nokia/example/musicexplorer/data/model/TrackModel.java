@@ -10,10 +10,15 @@
 package com.nokia.example.musicexplorer.data.model;
 
 import org.json.me.JSONObject;
-import org.json.me.JSONArray;
 import org.json.me.JSONException;
 
-public class TrackModel extends GenericProductModel {
+import org.tantalum.util.L;
+
+/**
+ * Represents a Track product.
+ */
+public class TrackModel 
+	extends GenericProductModel {
 	
 	public String duration; // In seconds
 	public int sequence;
@@ -25,12 +30,8 @@ public class TrackModel extends GenericProductModel {
 			this.duration = track.getString("duration");
 			this.sequence = track.getInt("sequence");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			L.e("Could not parse Track from JSON", "", e);
 		}
-		
-		// TODO: Enable playing audio samples? WMA and MP3 are available.
-		
 	}
 	
 	/**

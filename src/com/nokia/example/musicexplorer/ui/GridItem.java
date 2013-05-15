@@ -9,21 +9,14 @@
 
 package com.nokia.example.musicexplorer.ui;
 
-import java.io.IOException;
 import javax.microedition.lcdui.CustomItem;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import org.json.me.JSONObject;
-
 import org.tantalum.Task;
-import org.tantalum.util.L;
 import org.tantalum.jme.JMEImageUtils;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
-import com.nokia.example.musicexplorer.data.model.AlbumModel;
-import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
 
@@ -73,7 +66,10 @@ public class GridItem extends CustomItem {
     	this.model = model;
     }
     
-    public GridItem(ViewManager viewManager, GenericProductModel model, GridLayout parentGrid) {
+    public GridItem(
+    		ViewManager viewManager, 
+    		GenericProductModel model, 
+    		GridLayout parentGrid) {
     	this();
 
     	this.viewManager = viewManager;
@@ -84,11 +80,6 @@ public class GridItem extends CustomItem {
     public void sizeChanged(int w, int h) {
     }
 
-    /**
-     * Constructor.
-     * @param GridItem The data item associated with this grid item.
-     */
-    
     public GridItem(GridItem GridItem, final int width, final int height) {
         this();
         
@@ -103,7 +94,6 @@ public class GridItem extends CustomItem {
         this.height = height;
     }
     
-    // Setters and getters
     public GridItem getGridItem() {
         return gridItem;
     }
@@ -114,12 +104,7 @@ public class GridItem extends CustomItem {
      */
     public String getImageUrl() {
     	if(imageUrl == null) {
-        	try {
-    			imageUrl = this.model.getThumbnailUrl(ThumbnailSizes.SIZE_100X100);
-    		} catch (Exception e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
+			imageUrl = this.model.getThumbnailUrl(ThumbnailSizes.SIZE_100X100);
     	}
 
         return imageUrl;
@@ -152,15 +137,6 @@ public class GridItem extends CustomItem {
     public void paint(Graphics graphics, int width, int height) {
         paint(graphics, 0, 0, width, height);
     }
-
-    public void setImage(Image image) {
-    	// When placing image, save the scaled version.
-    	// TODO: Should this be done inside the task so that the scaled image is stored in the ApiCache?
-    	thumbnail = JMEImageUtils.scaleImage(image, width, width, true, JMEImageUtils.WEIGHTED_AVERAGE_OPAQUE);
-
-    	// Cannot use super's notifyStateChanged() as GridLayout is not a Form.
-    	this.parentGrid.gridItemStateChanged();
-    }
         
     /**
      * For convenience. Paints this item in the given position.
@@ -173,37 +149,49 @@ public class GridItem extends CustomItem {
     }
 
     public class PlaceImageTask extends Task {
-    	private GridItem gridItem;
-    	public PlaceImageTask(GridItem gridItem) {
+    	public PlaceImageTask() {
     		super(Task.NORMAL_PRIORITY);
-    		this.gridItem = gridItem;
     	}
+    	
     	public Object exec(Object image) {
     		if(image instanceof Image) {
-    			this.gridItem.setImage((Image) image);
+    			// Place
+    			image = JMEImageUtils.scaleImage(
+    					(Image) image, 
+    					width, 
+    					width, 
+    					true, 
+    					JMEImageUtils.WEIGHTED_AVERAGE_OPAQUE);
+    			
+    			// Place the image to the GridItem.
+    			thumbnail = (Image) image;
+    			
+    			// Notify the grid layout to paint the thumbnail.
+    			parentGrid.gridItemStateChanged();
     		}   		
     		return image;
     	}
     }
     
     protected void getImage() {
-    	ApiCache.getImage(this.getImageUrl(), new PlaceImageTask(this));    		
+    	ApiCache.getImage(this.getImageUrl(), new PlaceImageTask());    		
     }
     
     /**
      * For convenience.
      */
-    protected void paint(Graphics graphics, int x, int y, int width, int height) {
-        
-    	try {
-            if (thumbnail != null) {
-                graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
-            } else {
-        		getImage();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+    protected void paint(
+    		Graphics graphics, 
+    		int x, 
+    		int y, 
+    		int width, 
+    		int height) {
+    	
+		// Check if thumbnail is already fetched. If not, get it from the web.
+        if (thumbnail != null) {
+            graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
+        } else {
+    		getImage();
         }
     }
 

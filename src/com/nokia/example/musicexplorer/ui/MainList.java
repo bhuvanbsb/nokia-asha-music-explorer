@@ -14,8 +14,6 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.tantalum.util.L;
-
 /**
  * A list of items which can be selected to access a sub view. Implements a
  * CommandListener interface for handling list selection events as well as
@@ -45,9 +43,6 @@ public class MainList
         setCommandListener(this);
         
         populateList();
-        
-        L.i("MainList width is", Integer.toString(getWidth()));
-        
     }
     
     /**

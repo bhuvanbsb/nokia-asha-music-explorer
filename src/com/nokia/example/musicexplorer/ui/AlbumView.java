@@ -14,28 +14,20 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
-import java.util.Vector;
 
-import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.TrackModel;
 
-import org.tantalum.Task;
-import org.tantalum.util.L;
-
 /**
- * An example Form-based view, which just shows a single text line in the form
- * content area. Implements CommandLister interface to be able to detect back
- * button presses, so it can ask ViewManager to show the previous view.
+ * Displays album's details.
  */
 public class AlbumView
     extends List
     implements CommandListener {
 
-    // Class members
-
     private final ViewManager viewManager;
     private final Command backCommand;
+
     private AlbumModel albumModel;
     
     /**
@@ -46,17 +38,20 @@ public class AlbumView
      */
     public AlbumView(ViewManager viewManager, AlbumModel album) {
         super(album.name, Choice.IMPLICIT);
-    	
+        
         this.viewManager = viewManager;
         this.albumModel = album;
-
-    	album.getTracks(this); // Updates albumview when done.
-        
+        this.albumModel.getTracks(this); // Updates albumview when done.
         this.backCommand = new Command("Back", Command.BACK, 1);
+
         addCommand(backCommand);
         setCommandListener(this);
     }
 
+    /**
+     * Appends track names to view.
+     * @param album
+     */
     public void appendTracks(AlbumModel album) {    	
     	int loopMax = album.tracks.size();
     	

@@ -9,22 +9,21 @@
 
 package com.nokia.example.musicexplorer.data.model;
 
+import java.util.Vector;
+
 import org.json.me.JSONObject;
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
-import org.tantalum.CancellationException;
-import org.tantalum.Task;
-import org.tantalum.TimeoutException;
-import org.tantalum.util.L;
-import java.util.Vector;
 
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Form;
+import org.tantalum.Task;
+import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.ui.AlbumView;
-import com.nokia.example.musicexplorer.ui.NewReleasesView;
 
+/**
+ * Represents an Album Product.
+ */
 public class AlbumModel extends GenericProductModel {
 	
 	public Vector tracks;
@@ -37,24 +36,20 @@ public class AlbumModel extends GenericProductModel {
 	public AlbumModel(JSONObject album) throws JSONException {
 		super(album);
 		this.tracks = new Vector();
-		//getTracks();
-		//setTracks(album.getJSONArray("tracks"));
 	}
 	
 	public class GetTracksTask extends Task {
-		private AlbumModel album;
 		private AlbumView albumView;
 
-		public GetTracksTask(AlbumModel albumModel, AlbumView albumView) {
+		public GetTracksTask(AlbumView albumView) {
 			super(Task.NORMAL_PRIORITY);
-			this.album = albumModel;
 			this.albumView = albumView;
 		}
 		public Object exec(Object response) {  		    		
 			try {
 				JSONObject obj = (JSONObject) response;
-    			this.album.setTracks(obj.getJSONArray("tracks"));
-    			this.albumView.appendTracks(this.album);
+    			setTracks(obj.getJSONArray("tracks"));
+    			appendTracksToView(albumView);
 			}
 			catch(JSONException exception) {    				
 				L.e("Unable to parse Track in GetTracksTask", "", exception);
@@ -69,11 +64,11 @@ public class AlbumModel extends GenericProductModel {
 	 * Fetches tracks asynchronously from the REST API.
 	 */
 	public void getTracks(AlbumView view) {
-		//if(this.tracks == null || this.tracks.isEmpty()) {
-			ApiCache.getAlbumDetails(this.id, new GetTracksTask(this, view));			
-		//} else {
-		//	view.appendTracks(this);
-		//}
+		ApiCache.getAlbumDetails(this.id, new GetTracksTask(view));			
+	}
+	
+	public void appendTracksToView(AlbumView view) {
+		view.appendTracks(this);
 	}
 	
 	/**

@@ -12,19 +12,19 @@ package com.nokia.example.musicexplorer.settings;
 import java.io.IOException;
 import org.tantalum.util.L;
 import org.tantalum.util.StringUtils;
-import com.nokia.example.musicexplorer.data.QueryPager;
 
+/**
+ * Holds the Nokia Music REST API endpoints, credentials, and such needed for
+ * forming API calls.
+ */
 public class ApiEndpoint {
 	
-	// API connection details.
 	private static final String ENDPOINT_URL = "http://api.ent.nokia.com/";
 	private static final String VERSION = "1.x";
 	private static final String COUNTRYCODE = "us";
 	private static final String APP_ID = "demo_qCG24t50dHOwrLQ";
 	private static final String APP_CODE = "NYKC67ShPhQwqaydGIW4yg";
 	
-	private static final String NEW_RELEASES_RESOURCE = "products/new/album/?domain=music";
-
 	/**
 	 * Appended to the end of each API query.
 	 * @return HTTP query string
@@ -33,24 +33,29 @@ public class ApiEndpoint {
 		return "&app_id=" + APP_ID + "&app_code=" + APP_CODE;
 	}
 	
-	public static String getBaseUrl() {
+	/**
+	 * Forms the base URL for calls.
+	 * @return
+	 */
+	private static String getBaseUrl() {
 		return ENDPOINT_URL + VERSION + '/';
 	}
 	
-	public static String getCountrycode() {
+	private static String getCountrycode() {
 		return COUNTRYCODE + '/';
 	}
 	
-
 	/**
-	 * Form an API query.
-	 * @param query
-	 * @param pagingQueryString
+	 * Forms an API call.
+	 * @param query The query.
+	 * @param pagingQueryString Paging parameters from a QueryPager instance.
 	 * @return
 	 */
 	private static String formUrl(String query, String pagingQueryString) {
-		String url = getBaseUrl() + getCountrycode() + query + getApiCredentials();
+		String url = 
+				getBaseUrl() + getCountrycode() + query + getApiCredentials();
 
+		// Checks if paging parameters exist.
 		if(pagingQueryString != null) {
 			url += pagingQueryString;
 		}
@@ -58,56 +63,95 @@ public class ApiEndpoint {
 		return url;
 	}
 	
+	/**
+	 * Helper method for forming URLs.
+	 * @param query
+	 * @return
+	 */
 	private static String formUrl(String query) {
 		return formUrl(query, null);
 	}
 	
+	/**
+	 * Forms a URL for the Genres Resource.
+	 * @return
+	 */
 	public static String getGenresResourceUrl() {
 		return formUrl("genres/?domain=music");
 	}
 
+	/**
+	 * Forms a URL for the New Releases Resource.
+	 * @param pagingQueryString Paging parameters from a QueryPager instance.
+	 * @return
+	 */
 	public static String getNewReleasesResourceUrl(String pagingQueryString) {
-		return formUrl(NEW_RELEASES_RESOURCE, pagingQueryString);
+		return formUrl("products/new/album/?domain=music", pagingQueryString);
 	}
 	
+	/**
+	 * Forms a URL for the Product Details Resource. Products are albums, tracks,
+	 * artists and singles.
+	 * @param id Product's identifier.
+	 * @return
+	 */
 	public static String getProductDetailsResourceUrl(int id) {
 		return formUrl("products/" + id + "/?domain=music");
 	}
 
+	/**
+	 * Forms a URL for the Charts Resource.
+	 * @param pagingQueryString Paging parameters from a QueryPager instance.
+	 * @return
+	 */
 	public static String getChartsResourceUrl(String pagingQueryString) {
 		String category = "album/";
 		String query = "products/charts/" + category + "/?domain=music";
 		
-		if(pagingQueryString != null) {
-			query += pagingQueryString;
-		}
-		
-		return formUrl(query);
+		return formUrl(query, pagingQueryString);
 	}
 
+	/**
+	 * Forms a URL for the Search Resource.
+	 * @param searchQuery A string containing the search parameters.
+	 * @return
+	 */
 	public static String getSearchUrl(String searchQuery) {
-		L.i("Search query amount: ", Integer.toString(searchQuery.length()));
 		try {
-			// TODO: Search is now limited to return Artist and/or Album products only. Should it be implemented as a search option?
-			return formUrl("?domain=music" + "&q=" + StringUtils.urlEncode(searchQuery.toLowerCase()) + "&category=artist&category=album");
+			// Currently limits search to artists only.
+			return formUrl(
+					"?domain=music" + 
+					"&q=" + 
+					StringUtils.urlEncode(searchQuery.toLowerCase()) + 
+					"&category=artist");
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			L.e(
+				"Couldn't URL encode the given search query.", 
+				searchQuery != null ? searchQuery : "", 
+				e
+			);
 		}
+		
 		return null;
 	}
 	
 	/**
-	 * Uses the Artists Releases resource.
+	 * Uses the Artists Releases Resource.
 	 * @param artistId
 	 * @return
 	 */
-	public static String getReleasesForArtist(int artistId) {
-		return formUrl("creators/" + Integer.toString(artistId) + "/products/?domain=music&category=album");
+	public static String getReleasesForArtist(
+			int artistId, 
+			String pagingQueryString) {
+		
+		// Gets only albums by an artist of artistId.
+		return formUrl(
+			"creators/" + 
+			Integer.toString(artistId) + 
+			"/products/?domain=music&category=album&category=single", 
+			pagingQueryString
+		);
 	}
-	
-	/*
-	 * TODO: Implement methods for forming the required API calls.
-	 */
+
 }
