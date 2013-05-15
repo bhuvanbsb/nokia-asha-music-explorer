@@ -1,0 +1,20 @@
+# IDE stuff #
+nbproject/private/
+nbproject/build-impl.xml
+nbproject/genfiles.properties
+build/
+dist/nbrun*/
+
+# Eclipse stuff!
+bin/
+.metadata/
+.mtj.tmp/
+
+# generic files to ignore #
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.bak
+*.timestamp
