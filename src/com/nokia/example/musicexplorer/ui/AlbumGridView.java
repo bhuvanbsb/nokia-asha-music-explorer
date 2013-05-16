@@ -50,21 +50,15 @@ public abstract class AlbumGridView
     private static final int SCREEN_WIDTH_IN_PORTRAIT = 230;
     private final Command backCommand;
     private GridLayout grid;
-    private StringItem loadMoreItem;
 	private int loadMoreItemIndex;
-	private Command loadMoreCommand;
+	private LoadMoreButton loadMoreButton;
     
     public AlbumGridView(ViewManager viewManager, String title) {
     	super(title);
     	
     	this.viewManager = viewManager;
     	this.backCommand = new Command("Back", Command.BACK, 1);
-        
-    	// Initialize the load more button.
-    	this.loadMoreItem = new StringItem(null, "Load more...", Item.BUTTON);
-    	this.loadMoreCommand = new Command("Load more", Command.ITEM, 1);
-    	this.loadMoreItem.setDefaultCommand(loadMoreCommand);
-    	this.loadMoreItem.setItemCommandListener(this);        
+        this.loadMoreButton = new LoadMoreButton(this);
         
     	// Initialize the query pager.
     	this.queryPager = new QueryPager();
@@ -85,7 +79,7 @@ public abstract class AlbumGridView
     }
     
 	public void commandAction(Command c, Item item) {
-		if(c == this.loadMoreCommand) {
+		if(c == loadMoreButton.getCommand()) {
 			// Load more triggered
 			loadNextDataset();
 		}
@@ -127,7 +121,7 @@ public abstract class AlbumGridView
         	this.queryPager.setPaging(model.getJSONObject("paging"));
         	
         	if(queryPager.hasMorePages()) {
-        		loadMoreItemIndex = this.append(this.loadMoreItem);
+        		loadMoreItemIndex = this.append(loadMoreButton.getButton());
         	} else {
         		// Remove the Load more button.
         		delete(this.loadMoreItemIndex);

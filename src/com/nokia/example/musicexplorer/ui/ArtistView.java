@@ -40,7 +40,7 @@ public class ArtistView
 		ApiCache.getAlbumsForArtist(
 				this.artistModel.id,
 				new PlaceResultsTask(), 
-				super.queryPager.getQueryParameters()
+				super.queryPager.getCurrentQueryString()
 		);
 	}
 	

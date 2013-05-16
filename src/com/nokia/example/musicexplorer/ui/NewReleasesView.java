@@ -9,8 +9,6 @@
 
 package com.nokia.example.musicexplorer.ui;
 
-import org.tantalum.util.L;
-
 import com.nokia.example.musicexplorer.data.ApiCache;
 
 /**
@@ -31,7 +29,7 @@ public class NewReleasesView
 	protected void loadDataset() {
 		ApiCache.getNewReleases(
 				new AlbumGridView.PlaceResultsTask(), 
-				super.queryPager.getQueryParameters()
+				super.queryPager.getCurrentQueryString()
 		);
 	}
 	

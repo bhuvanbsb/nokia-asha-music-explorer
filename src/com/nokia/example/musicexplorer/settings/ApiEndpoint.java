@@ -116,14 +116,15 @@ public class ApiEndpoint {
 	 * @param searchQuery A string containing the search parameters.
 	 * @return
 	 */
-	public static String getSearchUrl(String searchQuery) {
+	public static String getSearchUrl(String searchQuery, String pagingQueryString) {
 		try {
-			// Currently limits search to artists only.
+			// Currently limits search results to artists only.
 			return formUrl(
 					"?domain=music" + 
 					"&q=" + 
 					StringUtils.urlEncode(searchQuery.toLowerCase()) + 
-					"&category=artist");
+					"&category=artist", 
+					pagingQueryString);
 			
 		} catch (IOException e) {
 			L.e(

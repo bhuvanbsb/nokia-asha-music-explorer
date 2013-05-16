@@ -50,13 +50,13 @@ public class QueryPager {
 		this.itemsPerPage = itemsPerPage;
 	}
 	
-	public String getQueryParameters() {
+	public String getCurrentQueryString() {
 		return "&itemsperpage=" + itemsPerPage + "&startindex=" + currentIndex;
 	}
 	
 	public String getQueryStringForNextPage() {
 		currentIndex += itemsPerPage;
-		return getQueryParameters();
+		return getCurrentQueryString();
 	}
 	
 	/**

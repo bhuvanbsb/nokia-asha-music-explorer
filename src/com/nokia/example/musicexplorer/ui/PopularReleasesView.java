@@ -27,7 +27,7 @@ public class PopularReleasesView
 	}
 
 	protected void loadDataset() {
-		ApiCache.getPopularReleases(new AlbumGridView.PlaceResultsTask(), super.queryPager.getQueryParameters());
+		ApiCache.getPopularReleases(new AlbumGridView.PlaceResultsTask(), super.queryPager.getCurrentQueryString());
 	}
 	
 	protected void loadNextDataset() {

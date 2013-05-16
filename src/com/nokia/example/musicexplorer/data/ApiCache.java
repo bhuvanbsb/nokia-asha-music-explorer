@@ -134,6 +134,11 @@ public class ApiCache {
 	 * @return
 	 */
 	public static Task getImage(String imageUri, Task callback) {
+		if(imageUri == null || imageUri.length() == 0) {
+			L.i("Invalid image URI.", "");
+			return null;
+		}
+		
 		return imageCache.getAsync(
     		imageUri,
 			Task.NORMAL_PRIORITY,
@@ -163,9 +168,14 @@ public class ApiCache {
      * @param callback The Task to call when an HTTP response is received.
 	 * @return
 	 */
-	public static Task search(String searchQuery, Task callback) {
+	public static Task search(String searchQuery, Task callback, String pagingQueryString) {
+		if(searchQuery == null || searchQuery.length() == 0) {
+			L.i("Search query cannot be null or empty.", "");
+			return null;
+		}
+		
 		return apiCache.getAsync(
-				ApiEndpoint.getSearchUrl(searchQuery),
+				ApiEndpoint.getSearchUrl(searchQuery, pagingQueryString),
 				Task.NORMAL_PRIORITY,
 				StaticWebCache.GET_WEB,
 				callback
