@@ -16,7 +16,6 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.ItemStateListener;
-import javax.microedition.lcdui.StringItem;
 
 import java.util.Vector;
 

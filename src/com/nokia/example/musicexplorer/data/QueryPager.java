@@ -50,6 +50,12 @@ public class QueryPager {
 		this.itemsPerPage = itemsPerPage;
 	}
 	
+	public void reset() {
+		currentIndex = 0;
+		total = 0;
+		itemsPerPage = 10;
+	}
+	
 	public String getCurrentQueryString() {
 		return "&itemsperpage=" + itemsPerPage + "&startindex=" + currentIndex;
 	}

@@ -12,7 +12,6 @@ package com.nokia.example.musicexplorer.ui;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.util.Date;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -54,11 +53,10 @@ public class SearchProductsView
     private final ViewManager viewManager;
     private final Command backCommand;
     private static final int MAX_QUERY_LENGTH_CHARS = 100;
-    private static final long QUERY_THROTTLE_MILLISECONDS = 500;
-    private static final int MIN_SEARCH_QUERY_LENGTH = 2;
-
+    private static final int QUERY_THROTTLE_MILLISECONDS = 500;
+    private static final int MIN_SEARCH_QUERY_LENGTH = 1;
 	private static final int ITEMS_PER_PAGE = 20;
-    
+	
     private Vector viewModel;
     private QueryPager queryPager;
     private TextField searchField;
@@ -66,9 +64,7 @@ public class SearchProductsView
 	private Timer throttle;
 	private LoadMoreButton loadMoreButton;
 	private int loadMoreButtonIndex = -1;
-    
 
-	
     /**
      * Constructor which sets the view title, adds a back command to it and adds
      * the dummy text content to it.
@@ -92,7 +88,21 @@ public class SearchProductsView
         setCommandListener(this);
         setItemStateListener(this);
     }
-        
+
+    public void commandAction(Command command, Displayable displayable) {
+        if (backCommand.equals(command)) {
+            // Hardware back button was pressed
+            viewManager.goBack();
+        }
+    }
+
+	public void commandAction(Command c, Item item) {
+		if(c == loadMoreButton.getCommand()) {
+			// Load more triggered
+			performSearch(false, true); // Don't clear results. Load a new page.
+		}
+	}
+	
     /**
      * Whenever the search query is changed, the state change of the textfield
      * is registered here.
@@ -103,10 +113,6 @@ public class SearchProductsView
     		handleSearchField((TextField) item);
     	}
     }
-    
-	public void setViewModel(Vector vec) {
-		this.viewModel = vec;
-	}
 	
 	/**
      * Handles the search TextField actions.
@@ -125,6 +131,7 @@ public class SearchProductsView
      */
     private void throttleSearch() {
         if (throttle != null) {
+        	// Cancel previous timer task.
             throttle.cancel();
         }
 
@@ -146,18 +153,25 @@ public class SearchProductsView
      * @param nextPage
      */
 	private void performSearch(boolean clearResults, boolean nextPage) {
-		String paging;
+		String pagingQueryString;
 		
 		if(nextPage) {
-			paging = queryPager.getQueryStringForNextPage();
+			pagingQueryString = queryPager.getQueryStringForNextPage();
 		} else {
-			paging = queryPager.getCurrentQueryString();
+			queryPager.reset();
+			pagingQueryString = queryPager.getCurrentQueryString();
 		}
 		
+		if(clearResults) {
+			clearSearchResults();
+		}
+
+		L.i("performSearch", pagingQueryString);
+
 		ApiCache.search(
 				this.searchQuery, 
-				new SearchResultHandlerTask(clearResults), 
-				paging);
+				new SearchResultHandlerTask(), 
+				pagingQueryString);
     }    
 
 	private int getCategoryEnum(String category) {
@@ -236,11 +250,9 @@ public class SearchProductsView
 	}	
 	
     private class SearchResultHandlerTask extends Task {
-    	private boolean clearResults;
     	
-    	public SearchResultHandlerTask(boolean clearResults) {
+    	public SearchResultHandlerTask() {
     		super(Task.NORMAL_PRIORITY);
-    		this.clearResults = clearResults;
     	}
     	
 		public Object exec(Object response) {
@@ -252,14 +264,16 @@ public class SearchProductsView
 					resultsArray = ((JSONObject) response).getJSONArray("items");
 					paging = ((JSONObject) response).getJSONObject("paging");
 					
-					if(clearResults) {
-						clearSearchResults();
-					}
-					
 					// Set query pager and pass results to parser.
+					
+					L.i("PAGING", queryPager.getCurrentQueryString());
+					
 					queryPager.setPaging(paging);
 					parseResultsToViewModel(resultsArray);
 					appendToView();
+					
+					L.i("PAGING", queryPager.getCurrentQueryString());
+					
 				}
 				catch(JSONException ex) {
 					L.e("Could not parse JSON", "", ex);
@@ -273,20 +287,26 @@ public class SearchProductsView
      * Clears the view.
      */
     private void clearSearchResults() {
-		this.deleteAll();
-		this.append(this.searchField);    	
+    	deleteLoadMoreButton();
+    	deleteAll();
+		append(this.searchField);    	
     }
+    
+    private void deleteLoadMoreButton() {
+		if(loadMoreButtonIndex >= 0) {
+			delete(loadMoreButtonIndex);
+			loadMoreButtonIndex = -1;
+		}
+	}
     
     private void appendToView() {
     	if(viewModel != null) {
+    		// Avoid leaving the button between the paged results.
+    		deleteLoadMoreButton();
+    		
     		int loopMax = viewModel.size();
     		for(int i = 0; i < loopMax; i++) {
     			append((ListItem) viewModel.elementAt(i));
-    		}
-    		
-    		// Avoid leaving the button in between the results.
-    		if(this.loadMoreButtonIndex >= 0) {
-    			delete(loadMoreButtonIndex);
     		}
     		
     		// Append load more button if there is paging available.
@@ -294,19 +314,5 @@ public class SearchProductsView
     			loadMoreButtonIndex = append(loadMoreButton.getButton());
     		}
     	}
-	}
-    
-    public void commandAction(Command command, Displayable displayable) {
-        if (backCommand.equals(command)) {
-            // Hardware back button was pressed
-            viewManager.goBack();
-        }
-    }
-
-	public void commandAction(Command c, Item item) {
-		if(c == loadMoreButton.getCommand()) {
-			// Load more triggered
-			performSearch(false, true); // Don't clear results. Load a new page.
-		}
 	}
 }
