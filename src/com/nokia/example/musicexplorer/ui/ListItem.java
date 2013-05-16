@@ -99,6 +99,9 @@ public class ListItem
         super(null);
     }
     
+    /**
+     * Currently opens only an artist view.
+     */
     private void pointerReleaseAction() {
 		if(this.model instanceof ArtistModel) {
     		viewManager.showView(new ArtistView(viewManager, (ArtistModel) this.model));    			

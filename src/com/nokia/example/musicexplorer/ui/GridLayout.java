@@ -228,6 +228,7 @@ public class GridLayout
     protected void onWidthOrColumnCountChanged() {
         columnWidth = (width - CUSTOM_ITEM_MARGIN_SIZE * 2) / columnCount;
         rowHeight = columnWidth; // Only square items
+        
         Enumeration e = gridItems.elements();
         
         while (e.hasMoreElements()) {
@@ -236,6 +237,7 @@ public class GridLayout
         
         final int rowCount = (int) Math.ceil((double) gridItems.size() / columnCount);
         setPreferredSize(width, rowCount * rowHeight);
+        
         repaint();
     }
     

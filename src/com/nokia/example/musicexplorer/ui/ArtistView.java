@@ -25,6 +25,7 @@ public class ArtistView
     
     public ArtistView(ViewManager viewManager, ArtistModel artistModel) {
         super(viewManager, null);
+        
         this.artistModel = artistModel;
         this.headerItem = new ListItem(super.viewManager, artistModel);
 		this.headerItem.disablePointer();

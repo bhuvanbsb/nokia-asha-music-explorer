@@ -49,7 +49,7 @@ public abstract class AlbumGridView
     private static final int SCREEN_WIDTH_IN_PORTRAIT = 230;
     private final Command backCommand;
     private GridLayout grid;
-	private int loadMoreItemIndex;
+	private int loadMoreButtonIndex = -1;
 	private LoadMoreButton loadMoreButton;
     
     public AlbumGridView(ViewManager viewManager, String title) {
@@ -109,6 +109,15 @@ public abstract class AlbumGridView
     		this.grid.addItem(new AlbumModel(tmp));
     	}
     }
+    /**
+     * Deletes the current load more button.
+     */
+    private void deleteLoadMoreButton() {
+		if(loadMoreButtonIndex >= 0) {
+			delete(loadMoreButtonIndex);
+			loadMoreButtonIndex = -1;
+		}
+	}
     
     /**
      * Parses a JSONObject for use in grid view.
@@ -118,13 +127,12 @@ public abstract class AlbumGridView
     	try {
     		addItemsToGrid(model.getJSONArray("items"));
         	this.queryPager.setPaging(model.getJSONObject("paging"));
+
+        	deleteLoadMoreButton();
         	
         	if(queryPager.hasMorePages()) {
-        		loadMoreItemIndex = this.append(loadMoreButton.getButton());
-        	} else {
-        		// Remove the Load more button.
-        		delete(this.loadMoreItemIndex);
-        	}        	
+        		loadMoreButtonIndex = this.append(loadMoreButton.getButton());
+        	}
     	} catch(JSONException e) {
     		L.e("Error while parsing items to JSON.", "", e);
     	}

@@ -166,8 +166,6 @@ public class SearchProductsView
 			clearSearchResults();
 		}
 
-		L.i("performSearch", pagingQueryString);
-
 		ApiCache.search(
 				this.searchQuery, 
 				new SearchResultHandlerTask(), 
@@ -190,6 +188,10 @@ public class SearchProductsView
     	return 0;
     }    
     
+	/**
+	 * Parses JSON response to ListItem objects that can be appended to view.
+	 * @param results
+	 */
     private void parseResultsToViewModel(JSONArray results) {
     	if(viewModel != null) {
     		viewModel.removeAllElements();
@@ -265,15 +267,9 @@ public class SearchProductsView
 					paging = ((JSONObject) response).getJSONObject("paging");
 					
 					// Set query pager and pass results to parser.
-					
-					L.i("PAGING", queryPager.getCurrentQueryString());
-					
 					queryPager.setPaging(paging);
 					parseResultsToViewModel(resultsArray);
 					appendToView();
-					
-					L.i("PAGING", queryPager.getCurrentQueryString());
-					
 				}
 				catch(JSONException ex) {
 					L.e("Could not parse JSON", "", ex);
@@ -292,6 +288,9 @@ public class SearchProductsView
 		append(this.searchField);    	
     }
     
+    /**
+     * Deletes the current load more button.
+     */
     private void deleteLoadMoreButton() {
 		if(loadMoreButtonIndex >= 0) {
 			delete(loadMoreButtonIndex);
@@ -299,6 +298,10 @@ public class SearchProductsView
 		}
 	}
     
+    /**
+     * Appends search results to the view. If the results are paged, appends
+     * a load more button as well.
+     */
     private void appendToView() {
     	if(viewModel != null) {
     		// Avoid leaving the button between the paged results.
