@@ -13,6 +13,7 @@ import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.List;
 
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
@@ -22,13 +23,14 @@ import com.nokia.example.musicexplorer.data.model.TrackModel;
  * Displays album's details.
  */
 public class AlbumView
-    extends List
+    extends Form
     implements CommandListener {
 
     private final ViewManager viewManager;
     private final Command backCommand;
 
     private AlbumModel albumModel;
+	private ListItem headerItem;
     
     /**
      * Constructor which sets the view title, adds a back command to it and adds
@@ -37,13 +39,17 @@ public class AlbumView
      * @param album View manager which will handle view switching
      */
     public AlbumView(ViewManager viewManager, AlbumModel album) {
-        super(album.name, Choice.IMPLICIT);
+        super(null); // No title
         
         this.viewManager = viewManager;
         this.albumModel = album;
         this.albumModel.getTracks(this); // Updates albumview when done.
         this.backCommand = new Command("Back", Command.BACK, 1);
 
+        this.headerItem = new ListItem(viewManager, album);
+		this.headerItem.disablePointer();
+		append(headerItem);
+        
         addCommand(backCommand);
         setCommandListener(this);
     }
@@ -56,7 +62,8 @@ public class AlbumView
     	int loopMax = album.tracks.size();
     	
     	for(int i = 0; i < loopMax; i++) {
-        	append(((TrackModel) album.tracks.elementAt(i)).name, null);
+    		TrackModel track = (TrackModel) album.tracks.elementAt(i);
+        	append(Integer.toString(i+1) + ". " + track.name + " " + track.getFormattedDuration());
         }
     }
     

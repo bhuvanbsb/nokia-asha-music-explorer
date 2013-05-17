@@ -29,8 +29,6 @@ public class ArtistView
         this.artistModel = artistModel;
         this.headerItem = new ListItem(super.viewManager, artistModel);
 		this.headerItem.disablePointer();
-        
-		L.i("Getting in artist view", artistModel.toString());
 		
 		append(headerItem);
 		appendGrid();

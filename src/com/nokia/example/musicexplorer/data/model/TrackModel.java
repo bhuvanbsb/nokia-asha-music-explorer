@@ -20,18 +20,35 @@ import org.tantalum.util.L;
 public class TrackModel 
 	extends GenericProductModel {
 	
-	public String duration; // In seconds
-	public int sequence;
+	public int duration = 0; // In seconds
+	public int sequence = 0;
 	
 	public TrackModel(JSONObject track) {
 		super(track);
 		
 		try {
-			this.duration = track.getString("duration");
+			this.duration = track.getInt("duration");
 			this.sequence = track.getInt("sequence");
 		} catch (JSONException e) {
 			L.e("Could not parse Track from JSON", "", e);
 		}
+	}
+	
+	public String getFormattedDuration() {
+		if(duration <= 0) {
+			return "";
+		}
+		
+		int seconds = duration;
+		int minutes = seconds / 60;
+    	seconds = seconds - (minutes * 60);
+    	
+    	return 
+    		"(" + 
+    		Integer.toString(minutes) + 
+    		":" + 
+    		Integer.toString(seconds) + 
+    		")";
 	}
 	
 	/**
