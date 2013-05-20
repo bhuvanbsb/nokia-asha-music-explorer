@@ -1,12 +1,10 @@
 /**
-* Copyright (c) 2013 Nokia Corporation. All rights reserved.
-* Nokia and Nokia Connecting People are registered trademarks of Nokia Corporation. 
-* Oracle and Java are trademarks or registered trademarks of Oracle and/or its
-* affiliates. Other product and company names mentioned herein may be trademarks
-* or trade names of their respective owners. 
-* See LICENSE.TXT for license information.
-*/
-
+ * Copyright (c) 2013 Nokia Corporation. All rights reserved. Nokia and Nokia
+ * Connecting People are registered trademarks of Nokia Corporation. Oracle and
+ * Java are trademarks or registered trademarks of Oracle and/or its affiliates.
+ * Other product and company names mentioned herein may be trademarks or trade
+ * names of their respective owners. See LICENSE.TXT for license information.
+ */
 package com.nokia.example.musicexplorer.ui;
 
 import javax.microedition.lcdui.CustomItem;
@@ -20,14 +18,12 @@ import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
 
-
 /**
  * A grid item displaying an image.
  */
 public class GridItem extends CustomItem {
-	
+
     public GridItem gridItem;
-    
     protected String imageUrl;
     protected String text;
     protected int width = 0;
@@ -37,20 +33,19 @@ public class GridItem extends CustomItem {
     protected ViewManager viewManager;
     protected GenericProductModel model;
     protected GridLayout parentGrid;
-    
+
     public GridItem() {
-    	super(null);
+        super(null);
     }
-    
+
     /**
      * Constructor.
+     *
      * @param imageUri A URI of the grid item image.
      * @param text A descriptive text of the item.
      */
-
     public GridItem(String imageUri, String text,
-                    final int width, final int height)
-    {
+            final int width, final int height) {
         this();
 
         this.imageUrl = imageUri;
@@ -58,54 +53,55 @@ public class GridItem extends CustomItem {
         this.width = width;
         this.height = height;
     }
-    
+
     public GridItem(ViewManager viewManager, GenericProductModel model) {
-    	this();
+        this();
 
-    	this.viewManager = viewManager;
-    	this.model = model;
+        this.viewManager = viewManager;
+        this.model = model;
     }
-    
+
     public GridItem(
-    		ViewManager viewManager, 
-    		GenericProductModel model, 
-    		GridLayout parentGrid) {
-    	this();
+            ViewManager viewManager,
+            GenericProductModel model,
+            GridLayout parentGrid) {
+        this();
 
-    	this.viewManager = viewManager;
-    	this.model = model;
-    	this.parentGrid = parentGrid;
+        this.viewManager = viewManager;
+        this.model = model;
+        this.parentGrid = parentGrid;
     }
-    
+
     public void sizeChanged(int w, int h) {
     }
 
     public GridItem(GridItem GridItem, final int width, final int height) {
         this();
-        
+
         this.gridItem = GridItem;
-        
+
         if (this.gridItem != null) {
             imageUrl = getImageUrl();
             text = getLabel();
         }
-        
+
         this.width = width;
         this.height = height;
     }
-    
+
     public GridItem getGridItem() {
         return gridItem;
     }
-    
+
     /**
      * If the thumbnail URL is not set, get it from the model's hashtable.
+     *
      * @return
      */
     public String getImageUrl() {
-    	if(imageUrl == null) {
-			imageUrl = this.model.getThumbnailUrl(ThumbnailSizes.SIZE_100X100);
-    	}
+        if (imageUrl == null) {
+            imageUrl = this.model.getThumbnailUrl(ThumbnailSizes.SIZE_100X100);
+        }
 
         return imageUrl;
     }
@@ -130,68 +126,70 @@ public class GridItem extends CustomItem {
         this.width = width;
         this.height = height;
     }
-    
+
     /**
      * @see javax.microedition.lcdui.CustomItem#paint(Graphics, int, int)
      */
     public void paint(Graphics graphics, int width, int height) {
         paint(graphics, 0, 0, width, height);
     }
-        
+
     /**
      * For convenience. Paints this item in the given position.
+     *
      * @param graphics The Graphics instance.
      * @param x The X coordinate of the item.
      * @param y The Y coordinate of the item.
      */
     public void paintXY(Graphics graphics, int x, int y) {
-    	paint(graphics, x, y, width, height);
+        paint(graphics, x, y, width, height);
     }
 
     public class PlaceImageTask extends Task {
-    	public PlaceImageTask() {
-    		super(Task.NORMAL_PRIORITY);
-    	}
-    	
-    	public Object exec(Object image) {
-    		if(image instanceof Image) {
-    			// Place
-    			image = JMEImageUtils.scaleImage(
-    					(Image) image, 
-    					width, 
-    					width, 
-    					true, 
-    					JMEImageUtils.WEIGHTED_AVERAGE_OPAQUE);
-    			
-    			// Place the image to the GridItem.
-    			thumbnail = (Image) image;
-    			
-    			// Notify the grid layout to paint the thumbnail.
-    			parentGrid.gridItemStateChanged();
-    		}   		
-    		return image;
-    	}
+
+        public PlaceImageTask() {
+            super(Task.NORMAL_PRIORITY);
+        }
+
+        public Object exec(Object image) {
+            if (image instanceof Image) {
+                // Place
+                image = JMEImageUtils.scaleImage(
+                        (Image) image,
+                        width,
+                        width,
+                        true,
+                        JMEImageUtils.WEIGHTED_AVERAGE_OPAQUE);
+
+                // Place the image to the GridItem.
+                thumbnail = (Image) image;
+
+                // Notify the grid layout to paint the thumbnail.
+                parentGrid.gridItemStateChanged();
+            }
+            return image;
+        }
     }
-    
+
     protected void getImage() {
-    	ApiCache.getImage(this.getImageUrl(), new PlaceImageTask());    		
+        ApiCache.getImage(this.getImageUrl(), new PlaceImageTask());
     }
-    
+
     /**
      * For convenience.
      */
     protected void paint(
-    		Graphics graphics, 
-    		int x, 
-    		int y, 
-    		int width, 
-    		int height) {
-    	
-		// Check if thumbnail is already fetched. If not, get it from the web.
+            Graphics graphics,
+            int x,
+            int y,
+            int width,
+            int height) {
+
+        // Check if thumbnail is already fetched. If not, get it from the web.
         if (thumbnail != null) {
             graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
-    		getImage();
+            getImage();
         }
     }
 
@@ -210,8 +208,8 @@ public class GridItem extends CustomItem {
     protected int getPrefContentWidth(int arg0) {
         return width;
     }
-    
+
     public String toString() {
-    	return "GridItem: " + this.text;
+        return "GridItem: " + this.text;
     }
 }
