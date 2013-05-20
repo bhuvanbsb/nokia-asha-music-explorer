@@ -46,7 +46,7 @@ public abstract class AlbumGridView
     protected Vector viewModel;
     protected final ViewManager viewManager;
 
-    private static final int SCREEN_WIDTH_IN_PORTRAIT = 230;
+    private static final int SCREEN_WIDTH_IN_PORTRAIT = 240;
     private final Command backCommand;
     private GridLayout grid;
 	private int loadMoreButtonIndex = -1;
