@@ -22,7 +22,7 @@ import com.nokia.example.musicexplorer.data.model.AlbumModel;
 public class GridLayout
         extends CustomItem {
 
-    public static final int CUSTOM_ITEM_MARGIN_SIZE = 2;
+    public static final int CUSTOM_ITEM_MARGIN_SIZE = 5;
     public static final int DEFAULT_COLUMN_COUNT = 3;
     public static final int JITTER_THRESHOLD = 10;
     protected Vector gridItems;
@@ -56,8 +56,8 @@ public class GridLayout
         gridItems.addElement(gridItem);
 
         int amountOfRows = (int) Math.ceil((double) gridItems.size()
-                / (double) this.columnCount);
-        int newHeight = amountOfRows * this.rowHeight;
+                / this.columnCount);
+        int newHeight = amountOfRows * this.rowHeight + CUSTOM_ITEM_MARGIN_SIZE * 2;
 
         this.setPreferredSize(this.width, newHeight);
     }
@@ -236,7 +236,7 @@ public class GridLayout
         }
 
         final int rowCount = (int) Math.ceil((double) gridItems.size() / columnCount);
-        setPreferredSize(width, rowCount * rowHeight);
+        setPreferredSize(width, rowCount * rowHeight + CUSTOM_ITEM_MARGIN_SIZE * 2);
 
         repaint();
     }
