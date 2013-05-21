@@ -24,13 +24,31 @@ public class ArtistView
 
         this.artistModel = artistModel;
         this.headerItem = new ListItem(super.viewManager, artistModel);
-		this.headerItem.disablePointer();
-		
-		append(headerItem);
-		appendGrid();
-		loadDataset();
+        this.headerItem.disablePointer();
+
+        append(headerItem);
+        appendGrid();
+        loadDataset();
     }
 
+    public ArtistView(ViewManager viewManager, int performerId) {
+        super(viewManager, null);
+
+        /* TODO:
+         * 1. Display something
+         * 2. Fetch the artist model
+         * 3. Initialize grid
+         * 4. Others as usual
+         */
+        
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    protected void notifyTotalUpdated() {
+        String text = Integer.toString(super.queryPager.getTotal()) + " albums";
+        this.headerItem.setAlbumOrTrackAmountText(text);
+    }
+    
     protected void loadDataset() {
         ApiCache.getAlbumsForArtist(
                 this.artistModel.id,

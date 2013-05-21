@@ -18,12 +18,7 @@ public class ArtistModel
     public ArtistModel(JSONObject artist) {
         super(artist);
     }
-
-    /**
-     * For debugging purposes.
-     *
-     * @return String A description of the object.
-     */
+    
     public String toString() {
         return "ArtistModel: name=" + name + ", id=" + id;
     }

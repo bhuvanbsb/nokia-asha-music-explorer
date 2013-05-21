@@ -16,6 +16,7 @@ import org.tantalum.Task;
 import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
+import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
@@ -34,7 +35,7 @@ public class ListItem
     private static final int LIST_ITEM_WIDTH = 230;
     private static final int LIST_ITEM_HEIGHT = LIST_ITEM_SIDE;
     private static final int TEXT_OFFSET_X = LIST_ITEM_SIDE + 5;
-    private static final int TEXT_OFFSET_Y = 20;
+    private static final int TEXT_OFFSET_Y = 16;
     private String text;
     private int width;
     private int height;
@@ -44,6 +45,7 @@ public class ListItem
     private boolean pointerActive;
     private boolean pointerEnabled = true;
     private GenericProductModel model;
+    private String albumOrTrackAmountText = ""; // TODO: test only, clear to ""
 
     public ListItem(ViewManager viewManager,
             GenericProductModel model) {
@@ -59,7 +61,6 @@ public class ListItem
 
     public void pointerPressed(int x, int y) {
         if (pointerEnabled) {
-            L.i("Pointer pressed, (" + x + "," + y + ")", this.text);
             this.lastX = x;
             this.lastY = y;
             this.pointerActive = true;
@@ -84,22 +85,6 @@ public class ListItem
     public void pointerReleased(int x, int y) {
         if (pointerEnabled && pointerActive) {
             pointerReleaseAction();
-        }
-    }
-
-    /**
-     * Private default constructor.
-     */
-    private ListItem() {
-        super(null);
-    }
-
-    /**
-     * Currently opens only an artist view.
-     */
-    private void pointerReleaseAction() {
-        if (this.model instanceof ArtistModel) {
-            viewManager.showView(new ArtistView(viewManager, (ArtistModel) this.model));
         }
     }
 
@@ -143,36 +128,116 @@ public class ListItem
         }
     }
 
-    private void getThumbnail() {
-        if (this.thumbnail == null) {
-            try {
-                ApiCache.getImage(this.model.getThumbnailUrl(ListItem.THUMBNAIL_SIZE), new PlaceImageTask(this));
-            } catch (Exception e) {
-                L.e("No thumbnail available or not loaded yet for item", this.toString(), e);
-            }
-        }
-    }
-
     /**
      * For convenience.
      */
-    protected void paint(Graphics graphics, int x, int y, int width, int height) {
-        // Paint the name.
-        graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
-        graphics.drawString(this.model.name, x + ListItem.TEXT_OFFSET_X, y, Graphics.TOP | Graphics.LEFT);
-
-        // Paint the genre(s).
-        graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL));
-        graphics.drawString(this.model.getGenres(), x + ListItem.TEXT_OFFSET_X, y + ListItem.TEXT_OFFSET_Y, Graphics.TOP | Graphics.LEFT);
-
+    protected void paint(
+            Graphics graphics, int x, int y, int width, int height) {
+        
+        // Paints the first two rows of text.
+        if(this.model instanceof ArtistModel) {
+            paintArtistDetails(graphics, x, y);
+        } else if(this.model instanceof AlbumModel) {
+            paintAlbumDetails(graphics, x, y);
+        }
+        
+        // Paints the third row of text if it is set.
+        paintAlbumOrTrackAmountText(graphics, x, y);
+        
         if (thumbnail != null) {
             graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
-            graphics.drawRoundRect(x, y, ListItem.LIST_ITEM_SIDE, ListItem.LIST_ITEM_SIDE, 3, 3);
+            graphics.setColor(235, 235, 235);
+            graphics.fillRoundRect(
+                    x, 
+                    y, 
+                    ListItem.LIST_ITEM_SIDE, 
+                    ListItem.LIST_ITEM_SIDE, 
+                    5, 
+                    5);
             getThumbnail();
         }
     }
 
+       
+    /**
+     * Paints the third row of text if the text is set.
+     * @param graphics
+     * @param x
+     * @param y 
+     */
+    protected void paintAlbumOrTrackAmountText(
+            Graphics graphics, int x, int y) {
+        
+        if(this.albumOrTrackAmountText.length() > 0) {
+            graphics.setFont(
+                    Font.getFont(
+                    Font.FACE_SYSTEM, 
+                    Font.STYLE_ITALIC, 
+                    Font.SIZE_SMALL));
+            graphics.drawString(
+                    this.albumOrTrackAmountText, 
+                    x + ListItem.TEXT_OFFSET_X, 
+                    y + ListItem.TEXT_OFFSET_Y * 2, 
+                    Graphics.TOP | Graphics.LEFT);   
+        }
+    }
+    
+    protected void paintArtistDetails(Graphics graphics, int x, int y) {
+        // Paint artist's name.
+        graphics.setFont(
+                Font.getFont(
+                Font.FACE_SYSTEM, 
+                Font.STYLE_BOLD, 
+                Font.SIZE_SMALL));
+        graphics.drawString(
+                this.model.name, 
+                x + ListItem.TEXT_OFFSET_X, 
+                y, 
+                Graphics.TOP | Graphics.LEFT);
+       
+        // Paint the genre(s).
+        graphics.setFont(
+                Font.getFont(
+                Font.FACE_SYSTEM, 
+                Font.STYLE_PLAIN, 
+                Font.SIZE_SMALL));
+        graphics.drawString(
+                this.model.getGenres(), 
+                x + ListItem.TEXT_OFFSET_X, 
+                y + ListItem.TEXT_OFFSET_Y, 
+                Graphics.TOP | Graphics.LEFT);
+    }
+    
+    
+    protected void paintAlbumDetails(Graphics graphics, int x, int y) {
+        // Paint album's name.
+        graphics.setFont(
+                Font.getFont(
+                Font.FACE_SYSTEM, 
+                Font.STYLE_BOLD, 
+                Font.SIZE_SMALL));
+        
+        graphics.drawString(
+                this.model.name, 
+                x + ListItem.TEXT_OFFSET_X, 
+                y, 
+                Graphics.TOP | Graphics.LEFT);
+       
+        // Paint performers.
+        graphics.setFont(
+                Font.getFont(
+                Font.FACE_SYSTEM, 
+                Font.STYLE_PLAIN, 
+                Font.SIZE_SMALL));
+        
+        graphics.drawString(
+                ((AlbumModel) this.model).getPerformerNames(), 
+                x + ListItem.TEXT_OFFSET_X, 
+                y + ListItem.TEXT_OFFSET_Y, 
+                Graphics.TOP | Graphics.LEFT);
+    }
+    
     protected int getMinContentHeight() {
         return height;
     }
@@ -196,4 +261,36 @@ public class ListItem
     public void disablePointer() {
         this.pointerEnabled = false;
     }
+    
+    public void setAlbumOrTrackAmountText(String text) {
+        this.albumOrTrackAmountText = text;
+        repaint();
+    }
+    
+    /**
+     * Private default constructor.
+     */
+    private ListItem() {
+        super(null);
+    }
+
+    /**
+     * Currently opens only an artist view.
+     */
+    private void pointerReleaseAction() {
+        if (this.model instanceof ArtistModel) {
+            viewManager.showView(new ArtistView(viewManager, (ArtistModel) this.model));
+        }
+    }
+    
+    private void getThumbnail() {
+        if (this.thumbnail == null) {
+            try {
+                ApiCache.getImage(this.model.getThumbnailUrl(ListItem.THUMBNAIL_SIZE), new PlaceImageTask(this));
+            } catch (Exception e) {
+                L.e("No thumbnail available or not loaded yet for item", this.toString(), e);
+            }
+        }
+    }
+    
 }

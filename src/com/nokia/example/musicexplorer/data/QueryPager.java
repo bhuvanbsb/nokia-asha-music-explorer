@@ -83,4 +83,8 @@ public class QueryPager {
             L.e("Could not initialize a QueryPager", "", e);
         }
     }
+
+    public int getTotal() {
+        return this.total;
+    }
 }

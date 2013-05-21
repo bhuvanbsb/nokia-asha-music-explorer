@@ -47,7 +47,7 @@ public abstract class AlbumGridView
     private GridLayout grid;
     private int loadMoreButtonIndex = -1;
     private LoadMoreButton loadMoreButton;
-
+        
     public AlbumGridView(ViewManager viewManager, String title) {
         super(title);
 
@@ -126,7 +126,8 @@ public abstract class AlbumGridView
         try {
             addItemsToGrid(model.getJSONArray("items"));
             this.queryPager.setPaging(model.getJSONObject("paging"));
-
+            notifyTotalUpdated();
+            
             deleteLoadMoreButton();
 
             if (queryPager.hasMorePages()) {
@@ -137,6 +138,10 @@ public abstract class AlbumGridView
         }
     }
 
+    protected void notifyTotalUpdated() {
+        // Overridden in ArtistView
+    }
+    
     /**
      * Callback task for parsing the JSON response for the view.
      */

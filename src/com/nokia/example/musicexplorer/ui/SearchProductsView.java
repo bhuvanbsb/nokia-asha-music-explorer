@@ -50,7 +50,7 @@ public class SearchProductsView
     private final ViewManager viewManager;
     private final Command backCommand;
     private static final int MAX_QUERY_LENGTH_CHARS = 100;
-    private static final int QUERY_THROTTLE_MILLISECONDS = 500;
+    private static final int QUERY_THROTTLE_MILLISECONDS = 1500;
     private static final int MIN_SEARCH_QUERY_LENGTH = 1;
     private static final int ITEMS_PER_PAGE = 20;
     private Vector viewModel;

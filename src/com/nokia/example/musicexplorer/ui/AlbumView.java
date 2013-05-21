@@ -14,18 +14,24 @@ import javax.microedition.lcdui.Form;
 
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.TrackModel;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
+import javax.microedition.lcdui.StringItem;
+import org.tantalum.util.L;
 
 /**
  * Displays album's details.
  */
 public class AlbumView
         extends Form
-        implements CommandListener {
+        implements CommandListener, ItemCommandListener {
 
     private final ViewManager viewManager;
     private final Command backCommand;
     private AlbumModel albumModel;
-	private ListItem headerItem;
+    private ListItem headerItem;
+    private final StringItem moreByArtist;
+    private final Command moreByArtistCommand;
 
     /**
      * Constructor which sets the view title, adds a back command to it and adds
@@ -38,18 +44,30 @@ public class AlbumView
         super(null); // No title
         
         this.viewManager = viewManager;
+        
+        this.moreByArtist = new StringItem(null, "More by artist...", Item.BUTTON);
+        this.moreByArtistCommand = new Command("More by artist", Command.ITEM, 1);
+        this.moreByArtist.setDefaultCommand(this.moreByArtistCommand);
+        
         this.albumModel = album;
         this.albumModel.getTracks(this); // Updates albumview when done.
-        this.backCommand = new Command("Back", Command.BACK, 1);
-
-        this.headerItem = new ListItem(viewManager, album);
-		this.headerItem.disablePointer();
-		append(headerItem);
         
+        this.backCommand = new Command("Back", Command.BACK, 1);
+        
+        this.headerItem = new ListItem(viewManager, album);
+        this.headerItem.disablePointer();
+        
+        append(headerItem);
         addCommand(backCommand);
         setCommandListener(this);
     }
 
+    public void setAlbumOrTrackAmountText(String text) {
+        if(this.headerItem != null) {
+            this.headerItem.setAlbumOrTrackAmountText(text);
+        }
+    }
+    
     /**
      * Appends track names to view.
      *
@@ -62,6 +80,9 @@ public class AlbumView
     		TrackModel track = (TrackModel) album.tracks.elementAt(i);
         	append(Integer.toString(i+1) + ". " + track.name + " " + track.getFormattedDuration());
         }
+        
+        // Append "More by artist..." button
+        append(this.moreByArtist);
     }
 
     /**
@@ -79,6 +100,18 @@ public class AlbumView
         if (backCommand.equals(command)) {
             // Hardware back button was pressed
             viewManager.goBack();
+        }
+        
+
+    }
+
+    public void commandAction(Command c, Item item) {
+        if(moreByArtistCommand.equals(c)) {
+            
+            // Create constructor for ArtistView that the view can be initialized
+            // based on an artist's id value.
+            
+            this.viewManager.showView(new ArtistView(viewManager, this.albumModel.getPerformerId()));
         }
     }
 }
