@@ -274,7 +274,7 @@ public class SearchProductsView
                     L.e("Could not parse JSON", "", ex);
                 }
             }
-            return null;
+            return response;
         }
     }
 

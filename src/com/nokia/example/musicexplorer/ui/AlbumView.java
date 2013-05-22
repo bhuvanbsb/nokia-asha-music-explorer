@@ -48,6 +48,7 @@ public class AlbumView
         this.moreByArtist = new StringItem(null, "More by artist...", Item.BUTTON);
         this.moreByArtistCommand = new Command("More by artist", Command.ITEM, 1);
         this.moreByArtist.setDefaultCommand(this.moreByArtistCommand);
+        this.moreByArtist.setItemCommandListener(this);
         
         this.albumModel = album;
         this.albumModel.getTracks(this); // Updates albumview when done.
@@ -107,11 +108,10 @@ public class AlbumView
 
     public void commandAction(Command c, Item item) {
         if(moreByArtistCommand.equals(c)) {
-            
-            // Create constructor for ArtistView that the view can be initialized
-            // based on an artist's id value.
-            
-            this.viewManager.showView(new ArtistView(viewManager, this.albumModel.getPerformerId()));
+            viewManager.showView(
+                            new ArtistView(
+                                viewManager, 
+                                albumModel.getPerformerId()));
         }
     }
 }

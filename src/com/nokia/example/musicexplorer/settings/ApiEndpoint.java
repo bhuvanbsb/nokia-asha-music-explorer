@@ -160,4 +160,11 @@ public class ApiEndpoint {
                 + "/products/?domain=music&category=album&category=single",
                 pagingQueryString);
     }
+
+    public static String getProductDetailsById(int productId) {
+        // Gets product details by product id.
+        return formUrl(
+                "?domain=music&id=" + 
+                Integer.toString(productId));
+    }
 }

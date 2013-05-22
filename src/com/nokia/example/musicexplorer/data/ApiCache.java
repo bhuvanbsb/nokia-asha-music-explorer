@@ -17,6 +17,7 @@ import org.tantalum.storage.ImageCacheView;
 import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.settings.ApiEndpoint;
+import com.nokia.example.musicexplorer.ui.ArtistView;
 
 /**
  * Responsible for creating caches. The caches are used for accessing the REST
@@ -176,6 +177,14 @@ public class ApiCache {
 
         return apiCache.getAsync(
                 ApiEndpoint.getSearchUrl(searchQuery, pagingQueryString),
+                Task.NORMAL_PRIORITY,
+                StaticWebCache.GET_WEB,
+                callback);
+    }
+
+    public static Task getArtistDetailsById(int productId, Task callback) {
+        return apiCache.getAsync(
+                ApiEndpoint.getProductDetailsById(productId),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);

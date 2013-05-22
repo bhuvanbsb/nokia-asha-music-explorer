@@ -32,10 +32,10 @@ public class GenericProductModel {
     public CategoryModel category;
     public Vector genres;
     public Vector creators;
+    
     /**
      * Holds the URLs that are used in retrieving image files. The images aren't
-     * directly accessed but via an image cache. TODO: Image cache
-     * implementation?
+     * directly accessed but via an image cache.
      */
     private Hashtable thumbnailUrls;
 

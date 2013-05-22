@@ -9,6 +9,13 @@ package com.nokia.example.musicexplorer.ui;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
+import org.json.me.JSONArray;
+import org.json.me.JSONException;
+import org.json.me.JSONObject;
+import org.tantalum.CancellationException;
+import org.tantalum.Task;
+import org.tantalum.TimeoutException;
+import org.tantalum.util.L;
 
 /**
  * Implements the artist view.
@@ -23,12 +30,10 @@ public class ArtistView
         super(viewManager, null);
 
         this.artistModel = artistModel;
-        this.headerItem = new ListItem(super.viewManager, artistModel);
-        this.headerItem.disablePointer();
-
-        append(headerItem);
-        appendGrid();
+        
+        initializeHeaderItem();
         loadDataset();
+        appendItems();
     }
 
     public ArtistView(ViewManager viewManager, int performerId) {
@@ -40,26 +45,101 @@ public class ArtistView
          * 3. Initialize grid
          * 4. Others as usual
          */
-        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getArtistByPerformerId(performerId);
     }
 
+    private void initializeHeaderItem() {
+        if(artistModel != null && super.viewManager != null) {
+            this.headerItem = new ListItem(super.viewManager, artistModel);
+            this.headerItem.disablePointer();            
+        }
+    }
+    
+    private void appendItems() {
+        if(headerItem != null) {
+            append(headerItem);
+            appendGrid();       
+        }
+    }
+    
     protected void notifyTotalUpdated() {
         String text = Integer.toString(super.queryPager.getTotal()) + " albums";
         this.headerItem.setAlbumOrTrackAmountText(text);
     }
     
-    protected void loadDataset() {
-        ApiCache.getAlbumsForArtist(
-                this.artistModel.id,
-                new PlaceResultsTask(),
-                super.queryPager.getCurrentQueryString());
+    protected void getArtistByPerformerId(int performerId) {
+        /*
+         * Artist model is initialized in PlaceArtistTask.
+         * After the model is initialized the rest of the view is constructed.
+         */
+        ApiCache.getArtistDetailsById(
+                performerId,
+                new PlaceArtistTask());
+    }
+    
+    protected class PlaceArtistTask
+            extends Task {
+
+        /**
+         * Gets in a JSON response that needs to parsed to an artist model.
+         * @param response
+         * @return 
+         */
+        protected Object exec(Object response) {
+            L.i("Got response", "");
+
+            if(response != null && response instanceof JSONObject) {
+                try {
+                    // Response is first of items array {items:[{..}]}
+                    JSONArray items = ((JSONObject) response).getJSONArray("items");
+                    
+                    if(items.length() > 0) {
+                        JSONObject artist = (JSONObject) items.get(0); // Get the first one. API should return only one result.
+                        artistModel = new ArtistModel(artist);
+                        
+                        /* 
+                         * After the artist model is initialized, we can 
+                         * continue to initialize the rest of the view.
+                         */ 
+                        initializeHeaderItem();
+                        loadDataset();
+                        appendItems();
+                    }
+                    
+                } catch (JSONException e) {
+                    L.e("Could not parse artist model from JSON.", "", e);
+                }
+                
+            } else {
+                L.i("Response null or not JSONObject", response != null ? response.toString() : "is null");
+            }
+
+            return response;
+        }
+    
     }
 
+            /**
+     * Used by the grid layout to fill itself with albums by the artist.
+     */
+    protected void loadDataset() {
+        if(this.artistModel != null) {
+            ApiCache.getAlbumsForArtist(
+                    this.artistModel.id,
+                    new PlaceResultsTask(),
+                    super.queryPager.getCurrentQueryString());
+        }
+    }
+    
+    /**
+     * Used by the grid layout to load more albums by the artist.
+     */
     protected void loadNextDataset() {
-        ApiCache.getAlbumsForArtist(
-                this.artistModel.id,
-                new PlaceResultsTask(),
-                super.queryPager.getQueryStringForNextPage());
+        if(this.artistModel != null) {
+            ApiCache.getAlbumsForArtist(
+                    this.artistModel.id,
+                    new PlaceResultsTask(),
+                    super.queryPager.getQueryStringForNextPage());            
+        }
     }
 }
