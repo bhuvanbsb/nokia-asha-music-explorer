@@ -32,6 +32,7 @@ public class AlbumView
     private ListItem headerItem;
     private StringItem moreByArtist;
     private Command moreByArtistCommand;
+    private boolean showMoreByArtistButton;
 
     /**
      * Constructor which sets the view title, adds a back command to it and adds
@@ -47,22 +48,26 @@ public class AlbumView
         super(null); // No title
         
         this.viewManager = viewManager;
+
+
         
-        // Set to false if launched from Artist view.
-        if(showMoreByArtistButton) {
+        this.albumModel = album;
+        this.albumModel.getTracks(this); // Updates albumview when done.
+
+        this.backCommand = new Command("Back", Command.BACK, 1);
+
+        this.headerItem = new ListItem(viewManager, album);
+        this.headerItem.disablePointer();
+        
+        this.showMoreByArtistButton = showMoreByArtistButton && !this.albumModel.byVariousArtists;
+
+        // Set to false if launched from Artist view or artist is "Various artists".
+        if(this.showMoreByArtistButton) {
             this.moreByArtist = new StringItem(null, "More by artist...", Item.BUTTON);
             this.moreByArtistCommand = new Command("More by artist", Command.ITEM, 1);
             this.moreByArtist.setDefaultCommand(this.moreByArtistCommand);
             this.moreByArtist.setItemCommandListener(this);
         }
-        
-        this.albumModel = album;
-        this.albumModel.getTracks(this); // Updates albumview when done.
-        
-        this.backCommand = new Command("Back", Command.BACK, 1);
-        
-        this.headerItem = new ListItem(viewManager, album);
-        this.headerItem.disablePointer();
         
         append(headerItem);
         addCommand(backCommand);
@@ -88,8 +93,9 @@ public class AlbumView
         	append(Integer.toString(i+1) + ". " + track.name + " " + track.getFormattedDuration());
         }
         
-        // Append "More by artist..." button
-        append(this.moreByArtist);
+        if(showMoreByArtistButton) {
+            append(this.moreByArtist);
+        }
     }
 
     /**
@@ -114,6 +120,8 @@ public class AlbumView
 
     public void commandAction(Command c, Item item) {
         if(moreByArtistCommand.equals(c)) {
+            L.i("Performer details", Integer.toString(albumModel.getPerformerId()));
+            
             viewManager.showView(
                             new ArtistView(
                                 viewManager, 

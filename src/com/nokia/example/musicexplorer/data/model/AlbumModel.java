@@ -25,7 +25,9 @@ import com.nokia.example.musicexplorer.ui.AlbumView;
 public class AlbumModel extends GenericProductModel {
 
     public Vector tracks;
+    public boolean byVariousArtists = false;
     private Vector performers = new Vector();
+    
 
     /**
      * Initializes an AlbumModel based on a JSONObject.
@@ -35,6 +37,13 @@ public class AlbumModel extends GenericProductModel {
      */
     public AlbumModel(JSONObject album) throws JSONException {
         super(album);
+        
+        try {
+            byVariousArtists = album.getBoolean("variousartists");
+        } catch(JSONException e) {
+            L.e("Could not determine if album is from various artists.", "", e);
+        }
+        
         this.tracks = new Vector();
     }
     /**
@@ -111,10 +120,7 @@ public class AlbumModel extends GenericProductModel {
             for(int i = 0; i < loopMax; i++) {
                 try {            
                     PerformerModel performer = new PerformerModel((JSONObject) performers.get(i));
-                    
-                    // Take the name strings and ignore the id.
                     this.performers.addElement(performer);
-                    
                 } catch(JSONException e) {
                     L.e("Could not parse performers", "", e);
                 }
