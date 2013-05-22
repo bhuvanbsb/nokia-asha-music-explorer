@@ -18,7 +18,7 @@ public class NewReleasesView
     public static final String title = "See what's new";
 
     public NewReleasesView(ViewManager viewManager) {
-        super(viewManager, title);
+        super(viewManager, title, true);
 
         appendGrid();
         loadDataset();

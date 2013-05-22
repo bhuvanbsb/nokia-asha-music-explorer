@@ -27,7 +27,7 @@ public class ArtistView
     private ListItem headerItem;
 
     public ArtistView(ViewManager viewManager, ArtistModel artistModel) {
-        super(viewManager, null);
+        super(viewManager, null, false);
 
         this.artistModel = artistModel;
         
@@ -37,14 +37,8 @@ public class ArtistView
     }
 
     public ArtistView(ViewManager viewManager, int performerId) {
-        super(viewManager, null);
+        super(viewManager, null, false);
 
-        /* TODO:
-         * 1. Display something
-         * 2. Fetch the artist model
-         * 3. Initialize grid
-         * 4. Others as usual
-         */
         getArtistByPerformerId(performerId);
     }
 

@@ -30,8 +30,8 @@ public class AlbumView
     private final Command backCommand;
     private AlbumModel albumModel;
     private ListItem headerItem;
-    private final StringItem moreByArtist;
-    private final Command moreByArtistCommand;
+    private StringItem moreByArtist;
+    private Command moreByArtistCommand;
 
     /**
      * Constructor which sets the view title, adds a back command to it and adds
@@ -40,15 +40,21 @@ public class AlbumView
      * @param viewManager Title shown in the title bar of this view
      * @param album View manager which will handle view switching
      */
-    public AlbumView(ViewManager viewManager, AlbumModel album) {
+    public AlbumView(
+            ViewManager viewManager, 
+            AlbumModel album,
+            boolean showMoreByArtistButton) {
         super(null); // No title
         
         this.viewManager = viewManager;
         
-        this.moreByArtist = new StringItem(null, "More by artist...", Item.BUTTON);
-        this.moreByArtistCommand = new Command("More by artist", Command.ITEM, 1);
-        this.moreByArtist.setDefaultCommand(this.moreByArtistCommand);
-        this.moreByArtist.setItemCommandListener(this);
+        // Set to false if launched from Artist view.
+        if(showMoreByArtistButton) {
+            this.moreByArtist = new StringItem(null, "More by artist...", Item.BUTTON);
+            this.moreByArtistCommand = new Command("More by artist", Command.ITEM, 1);
+            this.moreByArtist.setDefaultCommand(this.moreByArtistCommand);
+            this.moreByArtist.setItemCommandListener(this);
+        }
         
         this.albumModel = album;
         this.albumModel.getTracks(this); // Updates albumview when done.

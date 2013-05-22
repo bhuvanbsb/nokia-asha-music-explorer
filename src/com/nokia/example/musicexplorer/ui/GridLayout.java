@@ -35,6 +35,7 @@ public class GridLayout
     protected int lastY = 0;
     protected int verticalScrollPosition = 0;
     protected ViewManager viewManager;
+    protected boolean showMoreByArtistButton = true;
 
     public GridLayout(final int width, ViewManager viewManager) {
         super(null);
@@ -125,10 +126,17 @@ public class GridLayout
                 && Math.abs(x - lastX) < JITTER_THRESHOLD
                 && Math.abs(y - lastY) < JITTER_THRESHOLD) {
             viewManager.showView(
-                    new AlbumView(viewManager, (AlbumModel) selectedItem.model));
+                    new AlbumView(
+                        viewManager, 
+                        (AlbumModel) selectedItem.model, 
+                        showMoreByArtistButton));
         }
     }
 
+    public void disableShowMoreByArtistButtonInAlbumViews() {
+        this.showMoreByArtistButton = false;
+    }
+    
     /**
      * Clears the {@link #selectedItem} when pointer is dragged outside the grid
      * item.

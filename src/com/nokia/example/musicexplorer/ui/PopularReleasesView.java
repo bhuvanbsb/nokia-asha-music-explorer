@@ -18,7 +18,7 @@ public class PopularReleasesView
     public static final String title = "Find popular";
 
     public PopularReleasesView(ViewManager viewManager) {
-        super(viewManager, title);
+        super(viewManager, title, true);
 
         appendGrid();
         loadDataset();

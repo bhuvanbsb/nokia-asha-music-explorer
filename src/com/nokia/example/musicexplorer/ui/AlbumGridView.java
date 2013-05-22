@@ -42,13 +42,14 @@ public abstract class AlbumGridView
     protected QueryPager queryPager;
     protected Vector viewModel;
     protected final ViewManager viewManager;
+    protected GridLayout grid;
+
     private static final int SCREEN_WIDTH_IN_PORTRAIT = 240;
     private final Command backCommand;
-    private GridLayout grid;
     private int loadMoreButtonIndex = -1;
     private LoadMoreButton loadMoreButton;
         
-    public AlbumGridView(ViewManager viewManager, String title) {
+    public AlbumGridView(ViewManager viewManager, String title, boolean showMoreByArtistButton) {
         super(title);
 
         this.viewManager = viewManager;
@@ -62,6 +63,10 @@ public abstract class AlbumGridView
         // Initialize the grid layout.
         this.grid = new GridLayout(SCREEN_WIDTH_IN_PORTRAIT, this.viewManager);
 
+        if(!showMoreByArtistButton) {
+            this.grid.disableShowMoreByArtistButtonInAlbumViews();
+        }
+        
         addCommand(backCommand);
         setCommandListener(this);
         setItemStateListener(this);
