@@ -279,7 +279,8 @@ public class ListItem
      */
     private void pointerReleaseAction() {
         if (this.model instanceof ArtistModel) {
-            viewManager.showView(new ArtistView(viewManager, (ArtistModel) this.model));
+            ArtistView artistView = new ArtistView(viewManager, (ArtistModel) this.model);
+            //viewManager.showView(artistView);
         }
     }
     

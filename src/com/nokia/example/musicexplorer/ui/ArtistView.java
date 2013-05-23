@@ -1,139 +1,178 @@
-/**
- * Copyright (c) 2013 Nokia Corporation. All rights reserved. Nokia and Nokia
- * Connecting People are registered trademarks of Nokia Corporation. Oracle and
- * Java are trademarks or registered trademarks of Oracle and/or its affiliates.
- * Other product and company names mentioned herein may be trademarks or trade
- * names of their respective owners. See LICENSE.TXT for license information.
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.nokia.example.musicexplorer.ui;
 
-import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
-import org.json.me.JSONArray;
-import org.json.me.JSONException;
-import org.json.me.JSONObject;
-import org.tantalum.CancellationException;
-import org.tantalum.Task;
-import org.tantalum.TimeoutException;
+import com.nokia.example.musicexplorer.utils.CategoryBarUtils;
+import com.nokia.mid.ui.CategoryBar;
+import com.nokia.mid.ui.ElementListener;
+import com.nokia.mid.ui.IconCommand;
+import java.io.IOException;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.Image;
 import org.tantalum.util.L;
 
 /**
- * Implements the artist view.
+ * Responsible for displaying a category bar and switching views between
+ * Artist Info and Similar Artists.
  */
 public class ArtistView
-        extends AlbumGridView {
-
+        implements CategoryBarUtils.ElementListener {
+    
+    private static final int AMOUNT_OF_CATEGORY_BAR_ITEMS = 2;
+    private static final int ARTIST_INFO_VIEW_INDEX = 0;
+    private static final int SIMILAR_ARTISTS_VIEW_INDEX = 1;
+    
+    private CategoryBar categoryBar;
+    private ViewManager viewManager;
     private ArtistModel artistModel;
-    private ListItem headerItem;
-
-    public ArtistView(ViewManager viewManager, ArtistModel artistModel) {
-        super(viewManager, null, false);
-
-        this.artistModel = artistModel;
-        
-        initializeHeaderItem();
-        loadDataset();
-        appendItems();
-    }
-
-    public ArtistView(ViewManager viewManager, int performerId) {
-        super(viewManager, null, false);
-
-        getArtistByPerformerId(performerId);
-    }
-
-    private void initializeHeaderItem() {
-        if(artistModel != null && super.viewManager != null) {
-            this.headerItem = new ListItem(super.viewManager, artistModel);
-            this.headerItem.disablePointer();            
-        }
-    }
+    private ArtistInfoView artistInfoView;
+    private SimilarArtistsView similarArtistsView;
     
-    private void appendItems() {
-        if(headerItem != null) {
-            append(headerItem);
-            appendGrid();       
-        }
-    }
-    
-    protected void notifyTotalUpdated() {
-        String text = Integer.toString(super.queryPager.getTotal()) + " albums";
-        this.headerItem.setAlbumOrTrackAmountText(text);
-    }
-    
-    protected void getArtistByPerformerId(int performerId) {
-        /*
-         * Artist model is initialized in PlaceArtistTask.
-         * After the model is initialized the rest of the view is constructed.
-         */
-        ApiCache.getArtistDetailsById(
-                performerId,
-                new PlaceArtistTask());
-    }
-    
-    protected class PlaceArtistTask
-            extends Task {
-
-        /**
-         * Gets in a JSON response that needs to parsed to an artist model.
-         * @param response
-         * @return 
-         */
-        protected Object exec(Object response) {
-            L.i("Got response", "");
-
-            if(response != null && response instanceof JSONObject) {
-                try {
-                    // Response is first of items array {items:[{..}]}
-                    JSONArray items = ((JSONObject) response).getJSONArray("items");
-                    
-                    if(items.length() > 0) {
-                        JSONObject artist = (JSONObject) items.get(0); // Get the first one. API should return only one result.
-                        artistModel = new ArtistModel(artist);
-                        
-                        /* 
-                         * After the artist model is initialized, we can 
-                         * continue to initialize the rest of the view.
-                         */ 
-                        initializeHeaderItem();
-                        loadDataset();
-                        appendItems();
-                    }
-                    
-                } catch (JSONException e) {
-                    L.e("Could not parse artist model from JSON.", "", e);
-                }
-                
-            } else {
-                L.i("Response null or not JSONObject", response != null ? response.toString() : "is null");
-            }
-
-            return response;
-        }
-    
-    }
-
-            /**
-     * Used by the grid layout to fill itself with albums by the artist.
+    /**
+     * Constructs the view based on an artist model.
+     * @param viewManager
+     * @param artistModel 
      */
-    protected void loadDataset() {
-        if(this.artistModel != null) {
-            ApiCache.getAlbumsForArtist(
-                    this.artistModel.id,
-                    new PlaceResultsTask(),
-                    super.queryPager.getCurrentQueryString());
-        }
+    public ArtistView(ViewManager viewManager, ArtistModel artistModel) {
+        this(viewManager);
+        this.artistModel = artistModel;
+        this.artistInfoView = new ArtistInfoView(viewManager, artistModel);
+        
+        showArtistInfoView();
     }
     
     /**
-     * Used by the grid layout to load more albums by the artist.
+     * Constructs the view based on an artist id.
+     * @param viewManager
+     * @param artistId 
      */
-    protected void loadNextDataset() {
-        if(this.artistModel != null) {
-            ApiCache.getAlbumsForArtist(
-                    this.artistModel.id,
-                    new PlaceResultsTask(),
-                    super.queryPager.getQueryStringForNextPage());            
+    public ArtistView(ViewManager viewManager, int artistId) {
+        this(viewManager);
+        this.artistInfoView = new ArtistInfoView(viewManager, artistId);
+    }
+    
+    /**
+     * Sets view manager.
+     * @param viewManager 
+     */
+    private ArtistView(ViewManager viewManager) {
+        this.viewManager = viewManager;
+        
+        displayCategoryBar();
+        
+    }
+    
+    /**
+     * Initializes a category bar for switching between 
+     * Artist Info and Similar Artists views.
+     */
+    private boolean displayCategoryBar() {
+        if(this.categoryBar == null) {
+            // Load images
+            Image imageInfo = loadImage("/info_icon.png");        
+            Image imageSimilar = loadImage("/similar_icon.png");     
+
+            if(imageInfo == null || imageSimilar == null) {
+                L.i("Could not load category bar images.", "");
+                return false;
+            }
+
+            IconCommand artistInfo = new IconCommand(
+                                            "Info", 
+                                            imageInfo, 
+                                            null,
+                                            Command.SCREEN, 1);
+
+            IconCommand similarArtists = new IconCommand(
+                                            "Similar", 
+                                            imageSimilar, 
+                                            null,
+                                            Command.SCREEN, 1);    
+
+            IconCommand[] iconCommands = 
+                    new IconCommand[AMOUNT_OF_CATEGORY_BAR_ITEMS];
+
+            // Indices are used later to detect which of the icons was pressed.
+            iconCommands[ARTIST_INFO_VIEW_INDEX] = artistInfo;
+            iconCommands[SIMILAR_ARTISTS_VIEW_INDEX] = similarArtists;
+
+            this.categoryBar = new CategoryBar(
+                    iconCommands, 
+                    true, 
+                    CategoryBar.ELEMENT_MODE_STAY_SELECTED);        
+        }
+        
+        CategoryBarUtils.setListener(categoryBar, this);
+        categoryBar.setVisibility(true);
+
+        return true;
+    }
+    
+    private Image loadImage(String pathToResource) {
+        Image image = null;
+        
+        try {
+            image = Image.createImage(pathToResource);
+        } catch(IOException e) {
+            L.e(
+                "Could not load image.", 
+                pathToResource != null ? 
+                pathToResource : "Path to resource is null", 
+                e);
+        }
+        
+        return image;
+    }
+    
+    /**
+     * Called to hide the category bar.
+     */
+    protected void finalizeView() {
+        this.categoryBar.setVisibility(false);
+    }
+    
+    
+        /**
+     * Handles CategoryBar events, tells the currently visible CategoryBarView
+     * to switch view to whatever item is tapped
+     * @param categoryBar
+     * @param selectedIndex 
+     */
+    public void notifyElementSelected(CategoryBar categoryBar, int selectedIndex) {
+        switch (selectedIndex) {
+            case ElementListener.BACK:
+                categoryBar.setVisibility(false);
+                break;
+            case ARTIST_INFO_VIEW_INDEX:
+                showArtistInfoView();
+                break;
+            case SIMILAR_ARTISTS_VIEW_INDEX:
+                showSimilarArtistsView();
+                break;
+            default:
+                break;
         }
     }
+
+    /**
+     * Relies on that artist info view is always instantiated in constructor.
+     */
+    private void showArtistInfoView() {
+        viewManager.showView(artistInfoView, false);
+    }
+    
+    /**
+     * Creates the view and displays it.
+     */
+    private void showSimilarArtistsView() {
+        if(similarArtistsView == null) {
+            similarArtistsView = new SimilarArtistsView(viewManager, 0);
+        }
+        viewManager.showView(similarArtistsView, false);
+    }
+    
 }

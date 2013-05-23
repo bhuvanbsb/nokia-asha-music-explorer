@@ -17,7 +17,6 @@ import org.tantalum.storage.ImageCacheView;
 import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.settings.ApiEndpoint;
-import com.nokia.example.musicexplorer.ui.ArtistView;
 
 /**
  * Responsible for creating caches. The caches are used for accessing the REST

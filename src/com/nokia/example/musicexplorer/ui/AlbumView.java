@@ -121,11 +121,14 @@ public class AlbumView
     public void commandAction(Command c, Item item) {
         if(moreByArtistCommand.equals(c)) {
             L.i("Performer details", Integer.toString(albumModel.getPerformerId()));
+            ArtistView artistView = new ArtistView(viewManager, albumModel.getPerformerId());
             
+            /*
             viewManager.showView(
                             new ArtistView(
                                 viewManager, 
                                 albumModel.getPerformerId()));
+            */
         }
     }
 }

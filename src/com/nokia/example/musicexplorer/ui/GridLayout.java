@@ -62,7 +62,18 @@ public class GridLayout
 
         this.setPreferredSize(this.width, newHeight);
     }
-
+    
+    /**
+     * Adds a vector of ProductModels to the grid at once.
+     * @param productModels 
+     */
+    public void addItems(Vector productModels) {
+        int loopMax = productModels.size();
+        for(int i = 0; i < loopMax; i++) {
+            addItem((GenericProductModel) productModels.elementAt(i));
+        }
+    }
+    
     /**
      * For convenience. Calculates the size and repaints the layout only once.
      *
@@ -220,10 +231,11 @@ public class GridLayout
 
         GridItem item = null;
 
-        try {
+        int size = gridItems.size();
+        
+        // Check if index is in range.
+        if(index < size) {
             item = (GridItem) gridItems.elementAt(index);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            L.e("Given index is not in range.", "", e);
         }
 
         return item;
