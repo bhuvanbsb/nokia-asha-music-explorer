@@ -32,14 +32,6 @@ public interface ViewManager {
     public void showView(Displayable view);
 
     /**
-     * Show the view passed as an argument but do not add to view stack if
-     * addToStack is false.
-     * @param view
-     * @param addToStack 
-     */
-    public void showView(Displayable view, boolean addToStack);
-    
-    /**
      * Show the view which was shown before the currently shown view. Discard
      * the current view.
      */

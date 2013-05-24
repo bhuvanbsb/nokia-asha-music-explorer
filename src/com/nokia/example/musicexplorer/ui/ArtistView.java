@@ -162,7 +162,7 @@ public class ArtistView
      * Relies on that artist info view is always instantiated in constructor.
      */
     private void showArtistInfoView() {
-        viewManager.showView(artistInfoView, false);
+        viewManager.showView(artistInfoView);
     }
     
     /**
@@ -172,7 +172,7 @@ public class ArtistView
         if(similarArtistsView == null) {
             similarArtistsView = new SimilarArtistsView(viewManager, 0);
         }
-        viewManager.showView(similarArtistsView, false);
+        viewManager.showView(similarArtistsView);
     }
     
 }

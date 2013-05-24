@@ -26,12 +26,7 @@ public final class Main
         implements ViewManager {
 
     private Stack viewStack;
-    
-    /**
-     * To detect views that have been added using showView() that skips stack.
-     */
-    private boolean currentViewIsInStack = true;
-    
+
     public void startApp() {
         PlatformUtils.getInstance().setProgram(this, 4);
 
@@ -51,37 +46,19 @@ public final class Main
     public void showView(Displayable view) {
         viewStack.push(view);
         Display.getDisplay(this).setCurrent(view);
-        currentViewIsInStack = true;
-    }
-    
-    public void showView(Displayable view, boolean addToStack) {
-        if(addToStack) {
-            showView(view);
-        } else {
-            currentViewIsInStack = false;
-            Display.getDisplay(this).setCurrent(view);
-        }
     }
 
     public void goBack() {
-        
-        // Check if the view is added to the stack.
-        if(currentViewIsInStack) {
-            // Remove the current view from the view stack
-            viewStack.pop();            
-        } else {
-            L.i("Current view is not in stack", "");
-        }
+        // Remove the current view from the view stack
+        viewStack.pop();
 
         if (viewStack.empty()) {
             // There are no more views in the stack, so destroy the MIDlet
-            L.i("No more views in stack", "");
             notifyDestroyed();
         } else {
             // There is still another view below the popped on, so display it
             Displayable previousView = (Displayable) (viewStack.peek());
             Display.getDisplay(this).setCurrent(previousView);
-            L.i("Displaying previous view", previousView.toString());
         }
     }
 
