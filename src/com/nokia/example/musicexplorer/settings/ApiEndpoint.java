@@ -167,4 +167,13 @@ public class ApiEndpoint {
                 "?domain=music&id=" + 
                 Integer.toString(productId));
     }
+
+    public static String getSimilarArtistsById(int artistId, String pagingQueryString) {
+        return formUrl(
+                "creators/" + 
+                Integer.toString(artistId) +
+                "/similar/" +
+                "?domain=music",
+                pagingQueryString);
+    }
 }

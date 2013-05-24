@@ -23,7 +23,7 @@ import org.tantalum.util.L;
 public class ArtistView
         extends Form
         implements CategoryBarUtils.ElementListener,
-        CategoryBarUtils.CategoryBarHolder{
+        CategoryBarUtils.CategoryBarHolder {
     
     private static final int AMOUNT_OF_CATEGORY_BAR_ITEMS = 2;
     private static final int ARTIST_INFO_VIEW_INDEX = 0;
@@ -167,7 +167,7 @@ public class ArtistView
      */
     private void showSimilarArtistsView() {
         if(similarArtistsView == null) {
-            similarArtistsView = new SimilarArtistsView(viewManager, 0);
+            similarArtistsView = new SimilarArtistsView(viewManager, this.artistModel.id);
         }
         lastViewedTab = similarArtistsView;
         viewManager.showSubview(similarArtistsView);
