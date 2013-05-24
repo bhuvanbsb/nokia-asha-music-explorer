@@ -30,7 +30,19 @@ public interface ViewManager {
      * @param view The new view to be shown
      */
     public void showView(Displayable view);
-
+    
+    /**
+     * For displaying subviews e.g. in a view that has category bar.
+     * @param view 
+     */
+    public void showSubview(Displayable view);
+    
+    /**
+     * Add to stack but don't display. For views that implement a category bar.
+     * @param view 
+     */
+    public void addToStack(Displayable view);
+    
     /**
      * Show the view which was shown before the currently shown view. Discard
      * the current view.

@@ -11,6 +11,7 @@ import com.nokia.mid.ui.ElementListener;
 import com.nokia.mid.ui.IconCommand;
 import java.io.IOException;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 import org.tantalum.util.L;
@@ -20,7 +21,9 @@ import org.tantalum.util.L;
  * Artist Info and Similar Artists.
  */
 public class ArtistView
-        implements CategoryBarUtils.ElementListener {
+        extends Form
+        implements CategoryBarUtils.ElementListener,
+        CategoryBarUtils.CategoryBarHolder{
     
     private static final int AMOUNT_OF_CATEGORY_BAR_ITEMS = 2;
     private static final int ARTIST_INFO_VIEW_INDEX = 0;
@@ -31,6 +34,7 @@ public class ArtistView
     private ArtistModel artistModel;
     private ArtistInfoView artistInfoView;
     private SimilarArtistsView similarArtistsView;
+    private Displayable lastViewedTab;
     
     /**
      * Constructs the view based on an artist model.
@@ -60,10 +64,9 @@ public class ArtistView
      * @param viewManager 
      */
     private ArtistView(ViewManager viewManager) {
+        super(null);
         this.viewManager = viewManager;
-        
         displayCategoryBar();
-        
     }
     
     /**
@@ -129,14 +132,6 @@ public class ArtistView
     }
     
     /**
-     * Called to hide the category bar.
-     */
-    protected void finalizeView() {
-        this.categoryBar.setVisibility(false);
-    }
-    
-    
-        /**
      * Handles CategoryBar events, tells the currently visible CategoryBarView
      * to switch view to whatever item is tapped
      * @param categoryBar
@@ -146,6 +141,7 @@ public class ArtistView
         switch (selectedIndex) {
             case ElementListener.BACK:
                 categoryBar.setVisibility(false);
+                viewManager.goBack();
                 break;
             case ARTIST_INFO_VIEW_INDEX:
                 showArtistInfoView();
@@ -162,7 +158,8 @@ public class ArtistView
      * Relies on that artist info view is always instantiated in constructor.
      */
     private void showArtistInfoView() {
-        viewManager.showView(artistInfoView);
+        lastViewedTab = artistInfoView;
+        viewManager.showSubview(artistInfoView);
     }
     
     /**
@@ -172,7 +169,20 @@ public class ArtistView
         if(similarArtistsView == null) {
             similarArtistsView = new SimilarArtistsView(viewManager, 0);
         }
-        viewManager.showView(similarArtistsView);
+        lastViewedTab = similarArtistsView;
+        viewManager.showSubview(similarArtistsView);
+    }
+
+    public void hideCategoryBar() {
+        this.categoryBar.setVisibility(false);
+    }
+
+    public void showCategoryBar() {
+        this.categoryBar.setVisibility(true);
+    }
+
+    public void showLastViewedTab() {
+        viewManager.showSubview(lastViewedTab);
     }
     
 }

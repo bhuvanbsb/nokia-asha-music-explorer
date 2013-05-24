@@ -280,6 +280,8 @@ public class ListItem
     private void pointerReleaseAction() {
         if (this.model instanceof ArtistModel) {
             ArtistView artistView = new ArtistView(viewManager, (ArtistModel) this.model);
+            viewManager.addToStack(artistView);
+
             //viewManager.showView(artistView);
         }
     }

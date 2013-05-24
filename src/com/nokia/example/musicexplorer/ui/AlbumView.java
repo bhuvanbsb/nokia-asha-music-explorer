@@ -122,6 +122,7 @@ public class AlbumView
         if(moreByArtistCommand.equals(c)) {
             L.i("Performer details", Integer.toString(albumModel.getPerformerId()));
             ArtistView artistView = new ArtistView(viewManager, albumModel.getPerformerId());
+            viewManager.addToStack(artistView);
             
             /*
             viewManager.showView(

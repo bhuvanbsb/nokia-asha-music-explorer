@@ -30,8 +30,23 @@ public class CategoryBarUtils {
      * ElementListener interface for devices which don't support com.nokia.mid.ui.ElementListener.
      */
     public interface ElementListener {
-
         public void notifyElementSelected(CategoryBar categoryBar,
             int selectedIndex);
+    }
+    
+    /**
+     * For those views that implement category bar. This allows view manager to 
+     * show and hide the category bar when e.g. going back from a view with
+     * a category bar or coming back to a view that has a category bar.
+     */
+    public interface CategoryBarHolder {
+        public void hideCategoryBar();
+        public void showCategoryBar();
+        
+        /**
+         * When coming back to a view that implements a category bar, this 
+         * method is responsible for displaying the last viewed tab.
+         */
+        public void showLastViewedTab();
     }
 }
