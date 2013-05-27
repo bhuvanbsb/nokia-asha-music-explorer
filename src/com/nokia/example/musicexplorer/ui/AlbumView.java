@@ -121,15 +121,19 @@ public class AlbumView
     public void commandAction(Command c, Item item) {
         if(moreByArtistCommand.equals(c)) {
             L.i("Performer details", Integer.toString(albumModel.getPerformerId()));
-            ArtistView artistView = new ArtistView(viewManager, albumModel.getPerformerId());
-            viewManager.addToStack(artistView);
             
-            /*
-            viewManager.showView(
-                            new ArtistView(
-                                viewManager, 
-                                albumModel.getPerformerId()));
-            */
+            /**
+             * Initialize an ArtistView by performer ID. The view is basically
+             * just a blank Form that displays a SimilarArtistsView and 
+             * a ArtistInfoView based on the current category bar selection.
+             */
+            ArtistView artistView = new ArtistView(viewManager, albumModel.getPerformerId());
+            
+            /**
+             * Add the view to stack but do not display it. An ArtistView takes 
+             * care of displaying the category bar items / sub-views.
+             */
+            viewManager.addToStack(artistView);
         }
     }
 }

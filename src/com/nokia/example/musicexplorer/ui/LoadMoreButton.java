@@ -14,13 +14,14 @@ import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.StringItem;
 
 /**
- * Initializes a Load more button that can be used in a view with paging needs.
+ * Initializes a Load more button that can be used in a view with paging.
  */
 public class LoadMoreButton {
 
     private StringItem loadMoreButton;
     private Command loadMoreCommand;
     private Form formView;
+    private int loadMoreButtonIndex = -1;
 
     public LoadMoreButton(Form formView) {
         // Initialize a load more button.
@@ -31,16 +32,35 @@ public class LoadMoreButton {
     }
 
     public StringItem getButton() {
-        if (loadMoreButton == null) {
-            initializeButton();
-        }
         return loadMoreButton;
     }
 
     public Command getCommand() {
         return loadMoreCommand;
     }
+    
+    /**
+     * Appends the button to the form view.
+     */
+    public void append() {
+        loadMoreButtonIndex = formView.append(loadMoreButton);
+    }
 
+    /**
+     * Removes the current load more button from the form view.
+     */
+    public void remove() {
+        if (loadMoreButtonIndex >= 0) {
+            formView.delete(loadMoreButtonIndex);
+            loadMoreButtonIndex = -1;
+        }
+    }
+    
+    /**
+     * Initializes a StringItem with button settings. Sets the form as
+     * the items command listener. It is up to the form to decide what to 
+     * do with the command.
+     */
     private void initializeButton() {
         this.loadMoreButton = new StringItem(null, "Load more...", Item.BUTTON);
         this.loadMoreButton.setDefaultCommand(loadMoreCommand);
