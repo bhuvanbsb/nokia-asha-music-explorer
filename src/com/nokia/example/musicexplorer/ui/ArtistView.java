@@ -79,12 +79,12 @@ public class ArtistView
      * Artist Info and Similar Artists views.
      */
     private boolean displayCategoryBar() {
-        if(this.categoryBar == null) {
+        if (this.categoryBar == null) {
             // Load images
             Image imageInfo = loadImage("/info_icon.png");        
             Image imageSimilar = loadImage("/similar_icon.png");     
 
-            if(imageInfo == null || imageSimilar == null) {
+            if (imageInfo == null || imageSimilar == null) {
                 L.i("Could not load category bar images.", "");
                 return false;
             }
@@ -171,7 +171,7 @@ public class ArtistView
      * Creates the view and displays it.
      */
     private void showSimilarArtistsView() {
-        if(similarArtistsView == null) {
+        if (similarArtistsView == null) {
             similarArtistsView = new SimilarArtistsView(viewManager, this.artistModel.id);
         }
         lastViewedTab = similarArtistsView;

@@ -15,30 +15,38 @@ import org.json.me.JSONObject;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
+import com.nokia.example.musicexplorer.data.model.GenreModel;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * Displays similar artists as ListItems for a given artist.
  */
-public class SimilarArtistsView 
+public class ArtistsListView 
         extends ListItemView
-        implements ItemCommandListener {
+        implements CommandListener {
 
-    private int artistId = 0;
+    private String genreId = "";
+    private final Command backCommand;
     
-    public SimilarArtistsView(ViewManager viewManager, int artistId) {
-        super(viewManager, "Artists you might like...");
+    public ArtistsListView(ViewManager viewManager, GenreModel genreModel) {
+        super(viewManager, "Artists in " + genreModel.name);
         
-        this.artistId = artistId;
+        this.genreId = genreModel.id;
+        this.backCommand = new Command("Back", Command.BACK, 1);
+        addCommand(backCommand);
+        setCommandListener(this);
         
         loadDataset();
     }
     
     protected void loadDataset() {
-        ApiCache.getSimilarArtistsById(artistId, new PlaceResultsTask(), queryPager.getCurrentQueryString());
+        ApiCache.getArtistsInGenre(genreId, new PlaceResultsTask(), queryPager.getCurrentQueryString());
     }
 
     protected void loadNextDataset() {
-        ApiCache.getSimilarArtistsById(artistId, new PlaceResultsTask(), queryPager.getQueryStringForNextPage());
+        ApiCache.getArtistsInGenre(genreId, new PlaceResultsTask(), queryPager.getQueryStringForNextPage());
     }
     
     protected void parseAndAppendToView(JSONObject response) throws JSONException {
@@ -53,5 +61,12 @@ public class SimilarArtistsView
 
             append(listItem);
         }        
+    }
+
+    public void commandAction(Command c, Displayable d) {
+        if (backCommand.equals(c)) {
+            // Hardware back button was pressed
+            viewManager.goBack();
+        }
     }
 }

@@ -135,9 +135,9 @@ public class ListItem
             Graphics graphics, int x, int y, int width, int height) {
         
         // Paints the first two rows of text.
-        if(this.model instanceof ArtistModel) {
+        if (this.model instanceof ArtistModel) {
             paintArtistDetails(graphics, x, y);
-        } else if(this.model instanceof AlbumModel) {
+        } else if (this.model instanceof AlbumModel) {
             paintAlbumDetails(graphics, x, y);
         }
         
@@ -169,7 +169,7 @@ public class ListItem
     protected void paintAlbumOrTrackAmountText(
             Graphics graphics, int x, int y) {
         
-        if(this.albumOrTrackAmountText.length() > 0) {
+        if (this.albumOrTrackAmountText.length() > 0) {
             graphics.setFont(
                     Font.getFont(
                     Font.FACE_SYSTEM, 

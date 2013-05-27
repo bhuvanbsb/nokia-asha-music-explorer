@@ -19,6 +19,8 @@ import org.tantalum.Task;
 import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
+import com.nokia.example.musicexplorer.data.model.GenreModel;
+import java.util.Vector;
 
 /**
  * Displays a list of genres.
@@ -27,11 +29,12 @@ public class GenresListView
         extends List
         implements CommandListener {
 
-    public static final String title = "Browse music";
-    // Class members
+    public static final String title = "Browse genres";
+
     private final ViewManager viewManager;
     private final Command backCommand;
-
+    private Vector viewModel = new Vector();
+    
     /**
      * Constructor, where the list is marked as an implicit list (ie. only
      * single item can be selected at a time), populated, and a back command is
@@ -48,29 +51,31 @@ public class GenresListView
         addCommand(backCommand);
         setCommandListener(this);
 
-        ApiCache.getGenres(new PlaceResultsTask(this));
+        ApiCache.getGenres(new PlaceResultsTask());
     }
 
+    public void append(GenreModel genreModel) {
+        viewModel.addElement(genreModel);
+        append(genreModel.name, null);
+    }
+    
     public class PlaceResultsTask extends Task {
 
-        private List parentView;
-
-        public PlaceResultsTask(List view) {
+        public PlaceResultsTask() {
             super(Task.NORMAL_PRIORITY);
-            this.parentView = view;
         }
 
         public Object exec(Object response) {
             try {
-                JSONObject obj = (JSONObject) response;
-                JSONArray arr = obj.getJSONArray("items");
-                int loopMax = arr.length();
-
+                JSONArray array = ((JSONObject) response).getJSONArray("items");
+                int loopMax = array.length();
                 for (int i = 0; i < loopMax; i++) {
-                    this.parentView.append(((JSONObject) arr.get(i)).getString("name"), null);
+                    GenreModel genreModel = 
+                            new GenreModel((JSONObject) array.get(i));
+                    append(genreModel);
                 }
-            } catch (JSONException exception) {
-                L.e("Unable to parse Track in PlaceResultsTask", "", exception);
+            } catch (JSONException e) {
+                L.e("Unable to parse JSON to genre models", "", e);
                 return null;
             }
             return response;
@@ -79,8 +84,9 @@ public class GenresListView
 
     public void commandAction(Command command, Displayable displayable) {
         if (command == List.SELECT_COMMAND) {
-            // One of the list items was selected
-            L.i("Item action not implemented.", "");
+            int selectedIndex = getSelectedIndex();
+            GenreModel genreModel = (GenreModel) viewModel.elementAt(selectedIndex);
+            viewManager.showView(new ArtistsListView(viewManager, genreModel));
         } else if (backCommand.equals(command)) {
             // Hardware back button was pressed
             viewManager.goBack();

@@ -65,16 +65,16 @@ public final class Main
      * @param pop Determines whether to pop the view from the stack.
      */
     private void hideCategoryBarIfExists(boolean pop) {
-        if(!viewStack.isEmpty()) {
+        if (!viewStack.isEmpty()) {
             Displayable topOfStack = (Displayable) viewStack.peek();
 
-            if(topOfStack instanceof CategoryBarHolder) { 
+            if (topOfStack instanceof CategoryBarHolder) { 
                 ((CategoryBarHolder) topOfStack).hideCategoryBar();
 
                 /**
                  * Pop the view out as it itself doesn't display anything
                  */
-                if(pop) {
+                if (pop) {
                     viewStack.pop();
                 }
             }               
@@ -92,7 +92,7 @@ public final class Main
     }
     
     public void goBack() {
-        if(subview == null) {
+        if (subview == null) {
             // Remove the current view from the view stack.
             viewStack.pop();
         } else {
@@ -120,7 +120,7 @@ public final class Main
             Displayable previousView = (Displayable) (viewStack.peek());
             
             // Check if the view implements a category bar and show it.
-            if(previousView instanceof CategoryBarHolder) {
+            if (previousView instanceof CategoryBarHolder) {
                 ((CategoryBarHolder) previousView).showCategoryBar();                
                 ((CategoryBarHolder) previousView).showLastViewedTab();
             } else {

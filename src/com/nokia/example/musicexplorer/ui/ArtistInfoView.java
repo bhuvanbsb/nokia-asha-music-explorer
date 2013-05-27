@@ -46,14 +46,14 @@ public class ArtistInfoView
     }
 
     private void initializeHeaderItem() {
-        if(artistModel != null && super.viewManager != null) {
+        if (artistModel != null && super.viewManager != null) {
             this.headerItem = new ListItem(super.viewManager, artistModel);
             this.headerItem.disablePointer();            
         }
     }
     
     private void appendItems() {
-        if(headerItem != null) {
+        if (headerItem != null) {
             append(headerItem);
             appendGrid();       
         }
@@ -83,7 +83,7 @@ public class ArtistInfoView
          * @return 
          */
         protected Object exec(Object response) {
-            if(artistView != null && 
+            if (artistView != null && 
                     response != null && 
                     response instanceof JSONObject) {
                 
@@ -91,7 +91,7 @@ public class ArtistInfoView
                     // Response is first of items array {items:[{..}]}
                     JSONArray items = ((JSONObject) response).getJSONArray("items");
                     
-                    if(items.length() > 0) {
+                    if (items.length() > 0) {
                         JSONObject artist = (JSONObject) items.get(0); // Get the first one. API should return only one result.
                         artistModel = new ArtistModel(artist);
                         
@@ -127,7 +127,7 @@ public class ArtistInfoView
      * Used by the grid layout to fill itself with albums by the artist.
      */
     protected void loadDataset() {
-        if(this.artistModel != null) {
+        if (this.artistModel != null) {
             ApiCache.getAlbumsForArtist(
                     this.artistModel.id,
                     new PlaceResultsTask(),
@@ -139,7 +139,7 @@ public class ArtistInfoView
      * Used by the grid layout to load more albums by the artist.
      */
     protected void loadNextDataset() {
-        if(this.artistModel != null) {
+        if (this.artistModel != null) {
             ApiCache.getAlbumsForArtist(
                     this.artistModel.id,
                     new PlaceResultsTask(),

@@ -176,4 +176,12 @@ public class ApiEndpoint {
                 "?domain=music",
                 pagingQueryString);
     }
+
+    public static String getArtistsInGenre(String genreId, String pagingQueryString) {
+        return formUrl(
+                "?domain=music" +
+                "&genre=" + genreId +
+                "&category=artist",
+                pagingQueryString);
+    }
 }

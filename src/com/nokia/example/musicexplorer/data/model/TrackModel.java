@@ -33,7 +33,7 @@ public class TrackModel
     }
 
     public String getFormattedDuration() {
-        if(duration <= 0) {
+        if (duration <= 0) {
                 return "";
         }
 
@@ -44,7 +44,7 @@ public class TrackModel
 
         String leadingZero = "";
         // Add leading zero
-        if(seconds < 10) {
+        if (seconds < 10) {
             leadingZero = "0";
         }
 

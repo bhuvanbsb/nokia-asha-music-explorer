@@ -55,7 +55,7 @@ public class AlbumModel extends GenericProductModel {
         // Performer can be "Various artists"
         int performerId = 0;
         
-        if(performers.size() > 0) {
+        if (performers.size() > 0) {
             performerId = ((PerformerModel) performers.elementAt(0)).id;
         }
         
@@ -66,9 +66,9 @@ public class AlbumModel extends GenericProductModel {
         String names = "";
         int loopMax = this.performers.size();
         
-        for(int i = 0; i < loopMax; i++) {
+        for (int i = 0; i < loopMax; i++) {
             names += ((PerformerModel) performers.elementAt(i)).name;
-            if(i < loopMax - 1) {
+            if (i < loopMax - 1) {
                 names += ", "; // Add a separator if more than one performer
             }
         }
@@ -115,9 +115,9 @@ public class AlbumModel extends GenericProductModel {
     
     public void setPerformers(JSONArray performers) {
         // Prevent from adding multiple times
-        if(this.performers.size() == 0) {
+        if (this.performers.size() == 0) {
             int loopMax = performers.length();
-            for(int i = 0; i < loopMax; i++) {
+            for (int i = 0; i < loopMax; i++) {
                 try {            
                     PerformerModel performer = new PerformerModel((JSONObject) performers.get(i));
                     this.performers.addElement(performer);

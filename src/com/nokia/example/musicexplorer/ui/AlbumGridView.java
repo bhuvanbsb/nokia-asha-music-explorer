@@ -63,7 +63,7 @@ public abstract class AlbumGridView
         // Initialize the grid layout.
         this.grid = new GridLayout(SCREEN_WIDTH_IN_PORTRAIT, this.viewManager);
 
-        if(!showMoreByArtistButton) {
+        if (!showMoreByArtistButton) {
             this.grid.disableShowMoreByArtistButtonInAlbumViews();
         }
         

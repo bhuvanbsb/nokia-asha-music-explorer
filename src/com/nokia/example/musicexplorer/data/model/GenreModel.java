@@ -7,6 +7,10 @@
  */
 package com.nokia.example.musicexplorer.data.model;
 
+import org.json.me.JSONException;
+import org.json.me.JSONObject;
+import org.tantalum.util.L;
+
 /**
  * Represents a genre.
  */
@@ -15,6 +19,15 @@ public class GenreModel {
     public String id;
     public String name;
 
+    public GenreModel(JSONObject genreModel) {
+        try {
+            this.id = genreModel.getString("id");
+            this.name = genreModel.getString("name");
+        } catch (JSONException e) {
+            L.e("Could not parse genre JSON", "", e);
+        }
+    }
+    
     public GenreModel(String id, String name) {
         this.id = id;
         this.name = name;

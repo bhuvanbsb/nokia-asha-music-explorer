@@ -62,7 +62,7 @@ public class AlbumView
         this.showMoreByArtistButton = showMoreByArtistButton && !this.albumModel.byVariousArtists;
 
         // Set to false if launched from Artist view or artist is "Various artists".
-        if(this.showMoreByArtistButton) {
+        if (this.showMoreByArtistButton) {
             this.moreByArtist = new StringItem(null, "More by artist...", Item.BUTTON);
             this.moreByArtistCommand = new Command("More by artist", Command.ITEM, 1);
             this.moreByArtist.setDefaultCommand(this.moreByArtistCommand);
@@ -75,7 +75,7 @@ public class AlbumView
     }
 
     public void setAlbumOrTrackAmountText(String text) {
-        if(this.headerItem != null) {
+        if (this.headerItem != null) {
             this.headerItem.setAlbumOrTrackAmountText(text);
         }
     }
@@ -88,12 +88,12 @@ public class AlbumView
     public void appendTracks(AlbumModel album) {    	
     	int loopMax = album.tracks.size();
     	
-    	for(int i = 0; i < loopMax; i++) {
+    	for (int i = 0; i < loopMax; i++) {
     		TrackModel track = (TrackModel) album.tracks.elementAt(i);
         	append(Integer.toString(i+1) + ". " + track.name + " " + track.getFormattedDuration());
         }
         
-        if(showMoreByArtistButton) {
+        if (showMoreByArtistButton) {
             append(this.moreByArtist);
         }
     }
@@ -119,7 +119,7 @@ public class AlbumView
     }
 
     public void commandAction(Command c, Item item) {
-        if(moreByArtistCommand.equals(c)) {
+        if (moreByArtistCommand.equals(c)) {
             L.i("Performer details", Integer.toString(albumModel.getPerformerId()));
             
             /**

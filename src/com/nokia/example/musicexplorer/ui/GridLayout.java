@@ -69,7 +69,7 @@ public class GridLayout
      */
     public void addItems(Vector productModels) {
         int loopMax = productModels.size();
-        for(int i = 0; i < loopMax; i++) {
+        for (int i = 0; i < loopMax; i++) {
             addItem((GenericProductModel) productModels.elementAt(i));
         }
     }
@@ -234,7 +234,7 @@ public class GridLayout
         int size = gridItems.size();
         
         // Check if index is in range.
-        if(index < size) {
+        if (index < size) {
             item = (GridItem) gridItems.elementAt(index);
         }
 
