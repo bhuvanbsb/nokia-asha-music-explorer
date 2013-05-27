@@ -64,6 +64,7 @@ public class SimilarArtistsView
         protected Object exec(Object response) {
             if(response instanceof JSONObject) {
                 try {
+                    
                     // Parse JSON to ArtistModels and append as ListItems
                     JSONObject paging = ((JSONObject) response).getJSONObject("paging");
                     queryPager.setPaging(paging);

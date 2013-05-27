@@ -25,6 +25,8 @@ public class ArtistInfoView
 
     private ArtistModel artistModel;
     private ListItem headerItem;
+    private ArtistView artistView;
+    private int artistId = 0;
 
     public ArtistInfoView(ViewManager viewManager, ArtistModel artistModel) {
         super(viewManager, null, false);
@@ -36,10 +38,11 @@ public class ArtistInfoView
         appendItems();
     }
 
-    public ArtistInfoView(ViewManager viewManager, int performerId) {
+    public ArtistInfoView(ViewManager viewManager, int artistId, ArtistView artistView) {
         super(viewManager, null, false);
-
-        getArtistByPerformerId(performerId);
+        this.artistView = artistView;
+        this.artistId = artistId;
+        getArtistDetailsById();
     }
 
     private void initializeHeaderItem() {
@@ -61,13 +64,13 @@ public class ArtistInfoView
         this.headerItem.setAlbumOrTrackAmountText(text);
     }
     
-    protected void getArtistByPerformerId(int performerId) {
+    protected void getArtistDetailsById() {
         /*
          * Artist model is initialized in PlaceArtistTask.
          * After the model is initialized the rest of the view is constructed.
          */
         ApiCache.getArtistDetailsById(
-                performerId,
+                artistId,
                 new PlaceArtistTask());
     }
     
@@ -80,9 +83,10 @@ public class ArtistInfoView
          * @return 
          */
         protected Object exec(Object response) {
-            L.i("Got response", "");
-
-            if(response != null && response instanceof JSONObject) {
+            if(artistView != null && 
+                    response != null && 
+                    response instanceof JSONObject) {
+                
                 try {
                     // Response is first of items array {items:[{..}]}
                     JSONArray items = ((JSONObject) response).getJSONArray("items");
@@ -90,6 +94,12 @@ public class ArtistInfoView
                     if(items.length() > 0) {
                         JSONObject artist = (JSONObject) items.get(0); // Get the first one. API should return only one result.
                         artistModel = new ArtistModel(artist);
+                        
+                        /*
+                         * Store the artist model to the ArtistView that was
+                         * passed to the constructor.
+                         */
+                        artistView.setArtistModel(artistModel);
                         
                         /* 
                          * After the artist model is initialized, we can 

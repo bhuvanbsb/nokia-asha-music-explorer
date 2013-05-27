@@ -45,7 +45,7 @@ public class ArtistView
         this(viewManager);
         this.artistModel = artistModel;
         this.artistInfoView = new ArtistInfoView(viewManager, artistModel);
-        
+        displayCategoryBar();
         showArtistInfoView();
     }
     
@@ -56,7 +56,13 @@ public class ArtistView
      */
     public ArtistView(ViewManager viewManager, int artistId) {
         this(viewManager);
-        this.artistInfoView = new ArtistInfoView(viewManager, artistId);
+        this.artistInfoView = new ArtistInfoView(viewManager, artistId, this);
+        displayCategoryBar();
+        showArtistInfoView();
+    }
+    
+    public void setArtistModel(ArtistModel artistModel) {
+        this.artistModel = artistModel;
     }
     
     /**
@@ -66,7 +72,6 @@ public class ArtistView
     private ArtistView(ViewManager viewManager) {
         super(null);
         this.viewManager = viewManager;
-        displayCategoryBar();
     }
     
     /**
