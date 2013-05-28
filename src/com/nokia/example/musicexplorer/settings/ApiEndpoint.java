@@ -130,8 +130,7 @@ public class ApiEndpoint {
                     "?domain=music"
                     + "&q="
                     + StringUtils.urlEncode(searchQuery.toLowerCase())
-                    + "&category=artist"
-                    + "&category=album",
+                    + "&category=artist",
                     pagingQueryString);
 
         } catch (IOException e) {

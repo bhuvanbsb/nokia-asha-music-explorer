@@ -39,14 +39,14 @@ import com.nokia.example.musicexplorer.data.model.TrackModel;
  * Search view. The search textfield waits an amount of time before making an
  * API call.
  */
-public class SearchProductsView
+public class SearchView
         extends Form
         implements
         CommandListener,
         ItemStateListener,
         ItemCommandListener {
 
-    public static final String title = "Search music";
+    public static final String title = "Search artists";
     private final ViewManager viewManager;
     private final Command backCommand;
     private static final int MAX_QUERY_LENGTH_CHARS = 100;
@@ -68,7 +68,7 @@ public class SearchProductsView
      * @param viewTitle Title shown in the title bar of this view
      * @param viewManager View manager which will handle view switching
      */
-    public SearchProductsView(ViewManager viewManager) {
+    public SearchView(ViewManager viewManager) {
         super(title);
         this.viewManager = viewManager;
         this.backCommand = new Command("Back", Command.BACK, 1);

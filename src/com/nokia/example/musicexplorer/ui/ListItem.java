@@ -20,6 +20,8 @@ import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
+import com.nokia.mid.ui.DirectGraphics;
+import com.nokia.mid.ui.DirectUtils;
 
 /**
  * Displays ArtistModel info: thumbnail, artist name, genre, etc...
@@ -29,6 +31,7 @@ public class ListItem
 
     public String thumbnailSize;
     protected ViewManager viewManager;
+    
     private static final int POINTER_JITTER = 10;
     private static final String THUMBNAIL_SIZE = ThumbnailSizes.SIZE_50X50;
     private static final int LIST_ITEM_SIDE = 50;
@@ -36,6 +39,11 @@ public class ListItem
     private static final int LIST_ITEM_HEIGHT = LIST_ITEM_SIDE;
     private static final int TEXT_OFFSET_X = LIST_ITEM_SIDE + 5;
     private static final int TEXT_OFFSET_Y = 16;
+    private static final int TITLE_COLOR_HEX_RGB = 0x2AA7CC;
+    private static final int TEXT_COLOR_HEX_RGB = 0x4C4C4C;
+    private static final int PLACEHOLDER_RECT_COLOR_HEX_RGB = 0xC8C8C8;
+    private static final int HIGHLIGHT_COLOR_HEX_ARGB = 0x88FFFFFF;
+
     private String text;
     private int width;
     private int height;
@@ -45,8 +53,9 @@ public class ListItem
     private boolean pointerActive;
     private boolean pointerEnabled = true;
     private GenericProductModel model;
-    private String albumOrTrackAmountText = ""; // TODO: test only, clear to ""
-
+    private String albumOrTrackAmountText = "";
+    
+    
     public ListItem(ViewManager viewManager,
             GenericProductModel model) {
         this();
@@ -75,7 +84,7 @@ public class ListItem
                 && !(Math.abs(x - lastX) < ListItem.POINTER_JITTER
                 && Math.abs(y - lastY) < ListItem.POINTER_JITTER)) {
 
-            this.pointerActive = false;
+            pointerActive = false;
         }
     }
 
@@ -86,6 +95,8 @@ public class ListItem
         if (pointerEnabled && pointerActive) {
             pointerReleaseAction();
         }
+        pointerActive = false;
+        repaint(); // Called to de-highlight
     }
 
     /**
@@ -133,6 +144,8 @@ public class ListItem
      */
     protected void paint(
             Graphics graphics, int x, int y, int width, int height) {
+
+        graphics.setColor(TEXT_COLOR_HEX_RGB);
         
         // Paints the first two rows of text.
         if (this.model instanceof ArtistModel) {
@@ -147,7 +160,7 @@ public class ListItem
         if (thumbnail != null) {
             graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
-            graphics.setColor(235, 235, 235);
+            graphics.setColor(PLACEHOLDER_RECT_COLOR_HEX_RGB);
             graphics.fillRoundRect(
                     x, 
                     y, 
@@ -157,6 +170,27 @@ public class ListItem
                     5);
             getThumbnail();
         }
+
+        if(pointerActive) {
+            paintHighlight(graphics, x, y);
+        }
+    }
+    
+    protected void paintHighlight(Graphics graphics, int x, int y) {
+        int originalColor = graphics.getColor(); // Save color
+        
+        DirectGraphics directGraphics = 
+                DirectUtils.getDirectGraphics(graphics);
+
+        directGraphics.setARGBColor(HIGHLIGHT_COLOR_HEX_ARGB);
+
+        graphics.fillRect(
+                x, 
+                y, 
+                ListItem.LIST_ITEM_SIDE, 
+                ListItem.LIST_ITEM_SIDE);        
+        
+        graphics.setColor(originalColor); // Restore original color
     }
 
        
@@ -190,6 +224,8 @@ public class ListItem
                 Font.FACE_SYSTEM, 
                 Font.STYLE_BOLD, 
                 Font.SIZE_SMALL));
+        
+        graphics.setColor(TITLE_COLOR_HEX_RGB);
         graphics.drawString(
                 this.model.name, 
                 x + ListItem.TEXT_OFFSET_X, 
@@ -202,14 +238,15 @@ public class ListItem
                 Font.FACE_SYSTEM, 
                 Font.STYLE_PLAIN, 
                 Font.SIZE_SMALL));
+        
+        graphics.setColor(TEXT_COLOR_HEX_RGB);
         graphics.drawString(
                 this.model.getGenres(), 
                 x + ListItem.TEXT_OFFSET_X, 
                 y + ListItem.TEXT_OFFSET_Y, 
                 Graphics.TOP | Graphics.LEFT);
     }
-    
-    
+
     protected void paintAlbumDetails(Graphics graphics, int x, int y) {
         // Paint album's name.
         graphics.setFont(
@@ -218,6 +255,7 @@ public class ListItem
                 Font.STYLE_BOLD, 
                 Font.SIZE_SMALL));
         
+        graphics.setColor(TITLE_COLOR_HEX_RGB);
         graphics.drawString(
                 this.model.name, 
                 x + ListItem.TEXT_OFFSET_X, 
@@ -231,6 +269,7 @@ public class ListItem
                 Font.STYLE_PLAIN, 
                 Font.SIZE_SMALL));
         
+        graphics.setColor(TEXT_COLOR_HEX_RGB);
         graphics.drawString(
                 ((AlbumModel) this.model).getPerformerNames(), 
                 x + ListItem.TEXT_OFFSET_X, 

@@ -51,7 +51,7 @@ public class MainList
 
         append(NewReleasesView.title, null);
         append(PopularReleasesView.title, null);
-        append(SearchProductsView.title, null);
+        append(SearchView.title, null);
         append(GenresListView.title, null);
 
     }
@@ -80,7 +80,7 @@ public class MainList
                     viewManager.showView(new PopularReleasesView(viewManager));
                     break;
                 case 3:
-                    viewManager.showView(new SearchProductsView(viewManager));
+                    viewManager.showView(new SearchView(viewManager));
                     break;
                 case 4:
                     viewManager.showView(new GenresListView(viewManager));

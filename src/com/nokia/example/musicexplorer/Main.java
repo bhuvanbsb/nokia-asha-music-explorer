@@ -34,7 +34,7 @@ public final class Main
     
     public void startApp() {
         PlatformUtils.getInstance().setProgram(this, 4);
-
+        
         // Try to create caches.
         if (ApiCache.init()) {
             viewStack = new Stack();

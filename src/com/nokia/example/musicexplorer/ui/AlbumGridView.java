@@ -38,7 +38,7 @@ public abstract class AlbumGridView
         ItemStateListener,
         ItemCommandListener {
 
-    public static final int ITEMS_PER_PAGE = 27;
+    public static final int ITEMS_PER_PAGE = 18;
     protected QueryPager queryPager;
     protected Vector viewModel;
     protected final ViewManager viewManager;

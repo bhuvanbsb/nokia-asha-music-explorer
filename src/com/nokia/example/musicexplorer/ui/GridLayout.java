@@ -11,7 +11,6 @@ import java.util.Enumeration;
 import java.util.Vector;
 import javax.microedition.lcdui.CustomItem;
 import javax.microedition.lcdui.Graphics;
-import org.tantalum.util.L;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 
@@ -123,6 +122,7 @@ public class GridLayout
             // Save the coordinates to be used in pointerReleased().
             lastX = x;
             lastY = y;
+            selectedItem.setHighlight(true);
         }
     }
 
@@ -136,11 +136,13 @@ public class GridLayout
         if (selectedItem != null && selectedItem == getItemAt(x, y)
                 && Math.abs(x - lastX) < JITTER_THRESHOLD
                 && Math.abs(y - lastY) < JITTER_THRESHOLD) {
+            selectedItem.setHighlight(false);
             viewManager.showView(
                     new AlbumView(
                         viewManager, 
                         (AlbumModel) selectedItem.model, 
                         showMoreByArtistButton));
+
         }
     }
 
@@ -159,7 +161,9 @@ public class GridLayout
                 && (Math.abs(x - lastX) > JITTER_THRESHOLD
                 || Math.abs(y - lastY) > JITTER_THRESHOLD)) {
             // Too much jitter. Loose the selected item.
+            selectedItem.setHighlight(false);
             selectedItem = null;
+            repaint(); // Must be repainted to hide highlight on item.
         }
     }
 

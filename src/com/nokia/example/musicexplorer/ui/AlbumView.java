@@ -14,8 +14,10 @@ import javax.microedition.lcdui.Form;
 
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.TrackModel;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
+import javax.microedition.lcdui.Spacer;
 import javax.microedition.lcdui.StringItem;
 import org.tantalum.util.L;
 
@@ -63,7 +65,7 @@ public class AlbumView
 
         // Set to false if launched from Artist view or artist is "Various artists".
         if (this.showMoreByArtistButton) {
-            this.moreByArtist = new StringItem(null, "More by artist...", Item.BUTTON);
+            this.moreByArtist = new StringItem(null, "More by artist", Item.BUTTON);
             this.moreByArtistCommand = new Command("More by artist", Command.ITEM, 1);
             this.moreByArtist.setDefaultCommand(this.moreByArtistCommand);
             this.moreByArtist.setItemCommandListener(this);
@@ -87,10 +89,24 @@ public class AlbumView
      */
     public void appendTracks(AlbumModel album) {    	
     	int loopMax = album.tracks.size();
-    	
-    	for (int i = 0; i < loopMax; i++) {
+        Font font = Font.getFont(
+                Font.FACE_SYSTEM, 
+                Font.STYLE_PLAIN, 
+                Font.SIZE_SMALL);   
+
+        for (int i = 0; i < loopMax; i++) {
     		TrackModel track = (TrackModel) album.tracks.elementAt(i);
-        	append(Integer.toString(i+1) + ". " + track.name + " " + track.getFormattedDuration());
+                StringItem stringItem = new StringItem(
+                        null,
+                        Integer.toString(i+1) + 
+                        ". " + 
+                        track.name + 
+                        " " + 
+                        track.getFormattedDuration());
+                stringItem.setFont(font);
+
+                append(new Spacer(getWidth(), 2));
+                append(stringItem);
         }
         
         if (showMoreByArtistButton) {

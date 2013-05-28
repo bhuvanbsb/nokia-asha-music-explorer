@@ -62,7 +62,7 @@ public class LoadMoreButton {
      * do with the command.
      */
     private void initializeButton() {
-        this.loadMoreButton = new StringItem(null, "Load more...", Item.BUTTON);
+        this.loadMoreButton = new StringItem(null, "Load more", Item.BUTTON);
         this.loadMoreButton.setDefaultCommand(loadMoreCommand);
         this.loadMoreButton.setItemCommandListener((ItemCommandListener) formView);
     }

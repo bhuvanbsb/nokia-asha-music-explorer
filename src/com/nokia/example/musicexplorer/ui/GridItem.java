@@ -17,11 +17,15 @@ import org.tantalum.jme.JMEImageUtils;
 import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
+import com.nokia.mid.ui.DirectGraphics;
+import com.nokia.mid.ui.DirectUtils;
+import org.tantalum.util.L;
 
 /**
- * A grid item displaying an image.
+ * Displays an image using a CustomItem.
  */
-public class GridItem extends CustomItem {
+public class GridItem 
+        extends CustomItem {
 
     public GridItem gridItem;
     protected String imageUrl;
@@ -72,9 +76,6 @@ public class GridItem extends CustomItem {
         this.parentGrid = parentGrid;
     }
 
-    public void sizeChanged(int w, int h) {
-    }
-
     public GridItem(GridItem GridItem, final int width, final int height) {
         this();
 
@@ -93,6 +94,9 @@ public class GridItem extends CustomItem {
         return gridItem;
     }
 
+    public void sizeChanged(int w, int h) {
+    }
+    
     /**
      * If the thumbnail URL is not set, get it from the model's hashtable.
      *
@@ -119,6 +123,7 @@ public class GridItem extends CustomItem {
     }
 
     public void setHighlight(boolean highlight) {
+        L.i("Set highlight", highlight ? "true" : "false");
         this.highlight = highlight;
     }
 
@@ -185,14 +190,41 @@ public class GridItem extends CustomItem {
             int width,
             int height) {
 
+        
         // Check if thumbnail is already fetched. If not, get it from the web.
         if (thumbnail != null) {
             graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
+            // Draw placeholder
+            
             getImage();
+        }
+        
+        if(highlight) {
+            paintHighlight(graphics, x, y, width, height);
         }
     }
 
+    protected void paintHighlight(
+            Graphics graphics, int x, int y, int width, int height) {
+        
+        int originalColor = graphics.getColor(); // Save color
+        
+        DirectGraphics directGraphics = 
+                DirectUtils.getDirectGraphics(graphics);
+
+        int highlightColorARGB = 0x88FFFFFF;
+        directGraphics.setARGBColor(highlightColorARGB);
+
+        graphics.fillRect(
+                x, 
+                y, 
+                width, 
+                height);        
+        
+        graphics.setColor(originalColor); // Restore original color
+    }
+    
     protected int getMinContentHeight() {
         return height;
     }
