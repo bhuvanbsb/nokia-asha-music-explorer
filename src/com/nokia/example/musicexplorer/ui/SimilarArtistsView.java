@@ -26,7 +26,7 @@ public class SimilarArtistsView
     private int artistId = 0;
     
     public SimilarArtistsView(ViewManager viewManager, int artistId) {
-        super(viewManager, "Artists you might like...");
+        super(viewManager, "Similar artists");
         
         this.artistId = artistId;
         

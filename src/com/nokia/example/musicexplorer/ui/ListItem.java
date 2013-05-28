@@ -279,10 +279,21 @@ public class ListItem
      */
     private void pointerReleaseAction() {
         if (this.model instanceof ArtistModel) {
-            ArtistView artistView = new ArtistView(viewManager, (ArtistModel) this.model);
+            ArtistView artistView = new ArtistView(
+                    viewManager, 
+                    (ArtistModel) this.model);
+        
+            /**
+             * Artist view is added to view manager by using addtoStack().
+             */
             viewManager.addToStack(artistView);
 
-            //viewManager.showView(artistView);
+        } else if (this.model instanceof AlbumModel) {
+            AlbumView albumView = new AlbumView(
+                    viewManager, 
+                    (AlbumModel) this.model, 
+                    true);
+            viewManager.showView(albumView);
         }
     }
     

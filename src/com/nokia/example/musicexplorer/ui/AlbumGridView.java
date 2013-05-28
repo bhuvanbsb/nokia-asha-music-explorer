@@ -38,7 +38,7 @@ public abstract class AlbumGridView
         ItemStateListener,
         ItemCommandListener {
 
-    public static final int ITEMS_PER_PAGE = 9;
+    public static final int ITEMS_PER_PAGE = 27;
     protected QueryPager queryPager;
     protected Vector viewModel;
     protected final ViewManager viewManager;
@@ -46,7 +46,6 @@ public abstract class AlbumGridView
 
     private static final int SCREEN_WIDTH_IN_PORTRAIT = 240;
     private final Command backCommand;
-    private int loadMoreButtonIndex = -1;
     private LoadMoreButton loadMoreButton;
         
     public AlbumGridView(ViewManager viewManager, String title, boolean showMoreByArtistButton) {
@@ -113,16 +112,6 @@ public abstract class AlbumGridView
     }
 
     /**
-     * Deletes the current load more button.
-     */
-    private void deleteLoadMoreButton() {
-        if (loadMoreButtonIndex >= 0) {
-            delete(loadMoreButtonIndex);
-            loadMoreButtonIndex = -1;
-        }
-    }
-
-    /**
      * Parses a JSONObject for use in grid view.
      *
      * @param model
@@ -133,19 +122,17 @@ public abstract class AlbumGridView
             this.queryPager.setPaging(model.getJSONObject("paging"));
             notifyTotalUpdated();
             
-            deleteLoadMoreButton();
+            loadMoreButton.remove();
 
             if (queryPager.hasMorePages()) {
-                loadMoreButtonIndex = this.append(loadMoreButton.getButton());
+                loadMoreButton.append();
             }
         } catch (JSONException e) {
             L.e("Error while parsing items to JSON.", "", e);
         }
     }
 
-    protected void notifyTotalUpdated() {
-        // Overridden in ArtistView
-    }
+
     
     /**
      * Callback task for parsing the JSON response for the view.
@@ -168,13 +155,17 @@ public abstract class AlbumGridView
      * Load the first set of data.
      */
     protected void loadDataset() {
-        L.i("Load dataset not implemented", "");
     }
 
     /**
      * Load the next set of data.
      */
     protected void loadNextDataset() {
-        L.i("Load next data set not implemented", "");
+    }
+    
+    /**
+     * Notify when total amount in QueryPager is updated.
+     */   
+    protected void notifyTotalUpdated() {
     }
 }

@@ -51,7 +51,7 @@ public class SearchProductsView
     private final Command backCommand;
     private static final int MAX_QUERY_LENGTH_CHARS = 100;
     private static final int QUERY_THROTTLE_MILLISECONDS = 1500;
-    private static final int MIN_SEARCH_QUERY_LENGTH = 1;
+    private static final int SEARCH_QUERY_MIN_LENGTH = 1;
     private static final int ITEMS_PER_PAGE = 20;
     private Vector viewModel;
     private QueryPager queryPager;
@@ -120,7 +120,7 @@ public class SearchProductsView
     private void handleSearchField(TextField searchField) {
         searchQuery = searchField.getString();
 
-        if (searchQuery.length() >= MIN_SEARCH_QUERY_LENGTH) {
+        if (searchQuery.length() > SEARCH_QUERY_MIN_LENGTH) {
             throttleSearch();
         }
     }
@@ -209,46 +209,48 @@ public class SearchProductsView
          */
         int loopMax = results.length();
 
-        for (int i = 0; i < loopMax; i++) {
-            String category = "";
-            JSONObject obj;
-            GenericProductModel model = null;
+        if(loopMax > 0) { 
+            for (int i = 0; i < loopMax; i++) {
+                String category = "";
+                JSONObject obj;
+                GenericProductModel model = null;
 
-            try {
+                try {
+                    obj = (JSONObject) results.get(i);
+                    category = obj.getJSONObject("category").getString("id");
 
-                obj = (JSONObject) results.get(i);
-                category = obj.getJSONObject("category").getString("id");
+                    switch (getCategoryEnum(category.toLowerCase())) {
+                        case CategoryModel.SINGLE:
+                            model = new AlbumModel(obj);
+                            break;
+                        case CategoryModel.ALBUM:
+                            model = new AlbumModel(obj);
+                            break;
+                        case CategoryModel.ARTIST:
+                            model = new ArtistModel(obj);
+                            break;
+                        case CategoryModel.TRACK:
+                            model = new TrackModel(obj);
+                            break;
+                        default:
+                            L.i("Category type not detected.", "");
+                            break;
+                    }
 
-                switch (getCategoryEnum(category.toLowerCase())) {
-                    case CategoryModel.SINGLE:
-                        L.i("Got single.", obj.toString());
-                        model = new AlbumModel(obj);
-                        break;
-                    case CategoryModel.ALBUM:
-                        L.i("Got album.", obj.toString());
-                        model = new AlbumModel(obj);
-                        break;
-                    case CategoryModel.ARTIST:
-                        L.i("Got artist.", obj.toString());
-                        model = new ArtistModel(obj);
-                        break;
-                    case CategoryModel.TRACK:
-                        L.i("Got track.", obj.toString());
-                        model = new TrackModel(obj);
-                        break;
-                    default:
-                        L.i("Category type not detected.", "");
-                        break;
+                    if (model != null) {
+                        // viewModel.addElement(new ListItem(viewManager, model));
+                        append(new ListItem(viewManager, model));
+                    }
+
+                } catch (JSONException e) {
+                    L.e("Failed to convert item of index " + Integer.toString(i), "", e);
                 }
-
-                if (model != null) {
-                    viewModel.addElement(new ListItem(viewManager, model));
-                }
-
-            } catch (JSONException e) {
-                L.e("Failed to convert item of index " + Integer.toString(i), "", e);
             }
+        } else {
+            append("No results.");
         }
+        
+        
     }
 
     private class SearchResultHandlerTask extends Task {
@@ -282,19 +284,9 @@ public class SearchProductsView
      * Clears the view.
      */
     private void clearSearchResults() {
-        deleteLoadMoreButton();
+        loadMoreButton.remove();
         deleteAll();
         append(this.searchField);
-    }
-
-    /**
-     * Deletes the current load more button.
-     */
-    private void deleteLoadMoreButton() {
-        if (loadMoreButtonIndex >= 0) {
-            delete(loadMoreButtonIndex);
-            loadMoreButtonIndex = -1;
-        }
     }
 
     /**
@@ -304,8 +296,8 @@ public class SearchProductsView
     private void appendToView() {
         if (viewModel != null) {
             // Avoid leaving the button between the paged results.
-            deleteLoadMoreButton();
-
+            loadMoreButton.remove();
+            
             int loopMax = viewModel.size();
             for (int i = 0; i < loopMax; i++) {
                 append((ListItem) viewModel.elementAt(i));
@@ -313,7 +305,7 @@ public class SearchProductsView
 
             // Append load more button if there is paging available.
             if (queryPager.hasMorePages()) {
-                loadMoreButtonIndex = append(loadMoreButton.getButton());
+                loadMoreButton.append();
             }
         }
     }
