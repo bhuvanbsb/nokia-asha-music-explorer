@@ -15,10 +15,20 @@ import com.nokia.example.musicexplorer.data.ApiCache;
 public class NewReleasesView
         extends AlbumGridView {
 
-    public static final String title = "See what's new";
+    public static final String VIEW_TITLE = "See what's new";
+    public static final String PATH_TO_ICON = "/new_releases_icon.png";
 
+    /**
+     * Factory method for instantiating.
+     * @param viewManager
+     * @return 
+     */
+    public static NewReleasesView getViewInstance(ViewManager viewManager) {
+        return new NewReleasesView(viewManager);
+    }
+    
     public NewReleasesView(ViewManager viewManager) {
-        super(viewManager, title, true);
+        super(viewManager, VIEW_TITLE, true);
 
         appendGrid();
         loadDataset();

@@ -46,7 +46,8 @@ public class SearchView
         ItemStateListener,
         ItemCommandListener {
 
-    public static final String title = "Search artists";
+    public static final String VIEW_TITLE = "Search artists";
+    public static final String PATH_TO_ICON = "/search_icon.png";
     private final ViewManager viewManager;
     private final Command backCommand;
     private static final int MAX_QUERY_LENGTH_CHARS = 100;
@@ -59,7 +60,6 @@ public class SearchView
     private String searchQuery;
     private Timer throttle;
     private LoadMoreButton loadMoreButton;
-    private int loadMoreButtonIndex = -1;
 
     /**
      * Constructor which sets the view title, adds a back command to it and adds
@@ -69,7 +69,7 @@ public class SearchView
      * @param viewManager View manager which will handle view switching
      */
     public SearchView(ViewManager viewManager) {
-        super(title);
+        super(VIEW_TITLE);
         this.viewManager = viewManager;
         this.backCommand = new Command("Back", Command.BACK, 1);
         this.searchField = new TextField(null, null, MAX_QUERY_LENGTH_CHARS, TextField.ANY);

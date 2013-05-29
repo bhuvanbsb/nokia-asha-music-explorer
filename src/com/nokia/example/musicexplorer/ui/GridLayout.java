@@ -145,10 +145,6 @@ public class GridLayout
 
         }
     }
-
-    public void disableShowMoreByArtistButtonInAlbumViews() {
-        this.showMoreByArtistButton = false;
-    }
     
     /**
      * Clears the {@link #selectedItem} when pointer is dragged outside the grid
@@ -167,6 +163,10 @@ public class GridLayout
         }
     }
 
+    public void disableShowMoreByArtistButtonInAlbumViews() {
+        this.showMoreByArtistButton = false;
+    }    
+    
     /**
      * @see javax.microedition.lcdui.CustomItem#getMinContentHeight()
      */

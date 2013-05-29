@@ -15,10 +15,11 @@ import com.nokia.example.musicexplorer.data.ApiCache;
 public class PopularReleasesView
         extends AlbumGridView {
 
-    public static final String title = "Find popular";
+    public static final String VIEW_TITLE = "Popular albums";
+    public static final String PATH_TO_ICON = "/popular_icon.png";
 
     public PopularReleasesView(ViewManager viewManager) {
-        super(viewManager, title, true);
+        super(viewManager, VIEW_TITLE, true);
 
         appendGrid();
         loadDataset();

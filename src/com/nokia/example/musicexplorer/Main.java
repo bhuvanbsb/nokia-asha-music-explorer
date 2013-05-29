@@ -15,7 +15,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
-import com.nokia.example.musicexplorer.ui.MainList;
+import com.nokia.example.musicexplorer.ui.HomeView;
 import com.nokia.example.musicexplorer.ui.ViewManager;
 import com.nokia.example.musicexplorer.utils.CategoryBarUtils.CategoryBarHolder;
 
@@ -38,7 +38,7 @@ public final class Main
         // Try to create caches.
         if (ApiCache.init()) {
             viewStack = new Stack();
-            Displayable mainView = new MainList(this);
+            Displayable mainView = new HomeView(this);
             showView(mainView);
         } else {
             L.i("Could not start the application.", "");

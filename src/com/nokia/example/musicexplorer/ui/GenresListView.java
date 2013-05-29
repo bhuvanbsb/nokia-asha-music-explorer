@@ -29,7 +29,8 @@ public class GenresListView
         extends List
         implements CommandListener {
 
-    public static final String title = "Browse genres";
+    public static final String VIEW_TITLE = "Browse genres";
+    public static final String PATH_TO_ICON = "/genres_icon.png";
 
     private final ViewManager viewManager;
     private final Command backCommand;
@@ -44,7 +45,7 @@ public class GenresListView
      * to another
      */
     public GenresListView(ViewManager viewManager) {
-        super(title, List.IMPLICIT);
+        super(VIEW_TITLE, List.IMPLICIT);
         this.viewManager = viewManager;
 
         this.backCommand = new Command("Back", Command.BACK, 1);
