@@ -11,14 +11,9 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.ItemCommandListener;
-import javax.microedition.lcdui.List;
 
 /**
- * A list of items which can be selected to access a sub view. Implements a
- * CommandListener interface for handling list selection events as well as
- * hardware back button presses.
+ * A list of items which can be selected to access a sub view.
  */
 public class HomeView
         extends Form
@@ -33,14 +28,6 @@ public class HomeView
     private MenuItem searchItem;
     private MenuItem genresItem;
     
-    /**
-     * Constructor, where the list is marked as an implicit list (ie. only
-     * single item can be selected at a time), populated, and a back command is
-     * added to it.
-     *
-     * @param viewManager View manager which will handle switching from one view
-     * to another
-     */
     public HomeView(ViewManager viewManager) {
         super("Music Explorer");
         this.viewManager = viewManager;
@@ -51,26 +38,7 @@ public class HomeView
 
         populateList();
     }
-    
-    /**
-     * Triggered by MenuItems.
-     * @param item 
-     */
-    public void launchAction(MenuItem item) {
-        if (item == newReleasesItem) {
-            viewManager.showView(new NewReleasesView(viewManager));
-        } else if (item == popularReleasesItem) {
-            viewManager.showView(new PopularReleasesView(viewManager));
-        } else if (item == searchItem) {
-            viewManager.showView(new SearchView(viewManager));
-        } else if (item == genresItem) {
-            viewManager.showView(new GenresListView(viewManager));
-        } 
-    }
-
-    /**
-     * An utility function which will add some dummy items to the list
-     */
+   
     private void populateList() {
         newReleasesItem = new MenuItem(
                 NewReleasesView.PATH_TO_ICON, 
@@ -97,7 +65,23 @@ public class HomeView
         append(searchItem);
         append(genresItem);
     }
-
+ 
+    /**
+     * Triggered by MenuItems.
+     * @param item 
+     */
+    public void triggerAction(MenuItem item) {
+        if (item == newReleasesItem) {
+            viewManager.showView(new NewReleasesView(viewManager));
+        } else if (item == popularReleasesItem) {
+            viewManager.showView(new PopularReleasesView(viewManager));
+        } else if (item == searchItem) {
+            viewManager.showView(new SearchView(viewManager));
+        } else if (item == genresItem) {
+            viewManager.showView(new GenresListView(viewManager));
+        } 
+    }
+    
     /**
      * Handle hardware back button.
      * @param command

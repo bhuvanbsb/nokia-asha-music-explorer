@@ -123,7 +123,7 @@ public class MenuItem
 
     public void pointerReleased(int x, int y) {
         if (pointerActive) {
-            homeView.launchAction(this);
+            homeView.triggerAction(this);
         }
         pointerActive = false;
         repaint(); // Called to de-highlight
