@@ -61,8 +61,11 @@ public class HomeView
                 this);
 
         append(newReleasesItem);
+        append(new LineSeparator());
         append(popularReleasesItem);
+        append(new LineSeparator());
         append(searchItem);
+        append(new LineSeparator());
         append(genresItem);
     }
  

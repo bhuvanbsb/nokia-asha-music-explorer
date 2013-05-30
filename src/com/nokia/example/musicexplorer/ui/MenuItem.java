@@ -29,6 +29,8 @@ public class MenuItem
     private int lastX;
     private int lastY;
     private static final int POINTER_JITTER = 15;
+    private static final int HEIGHT = 60; // Includes custom item's paddings
+    private static final int WIDTH = 240; // Includes custom item's paddings
     
     public MenuItem(
             String pathToImage, 
@@ -46,7 +48,7 @@ public class MenuItem
             L.e("Resource was not found", pathToImage, e);
         }
 
-        setPreferredSize(240, 60);
+        setPreferredSize(WIDTH, HEIGHT);
     }
     
     protected int getMinContentWidth() {
@@ -89,7 +91,7 @@ public class MenuItem
         graphics.drawImage(icon, 5, 5, Graphics.TOP | Graphics.LEFT);
 
         if (pointerActive) {
-            paintHighlight(graphics, 0, 0, 240, 60);
+            paintHighlight(graphics, 0, 0, WIDTH, HEIGHT);
         }
         
         graphics.setColor(70,70,70);
@@ -103,8 +105,7 @@ public class MenuItem
                 title, 
                 60, 
                 13, 
-                Graphics.TOP | Graphics.LEFT);           
-
+                Graphics.TOP | Graphics.LEFT);      
     }
     
     public void pointerPressed(int x, int y) {
