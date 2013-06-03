@@ -55,6 +55,7 @@ public class ListItem
     private boolean pointerEnabled = true;
     private GenericProductModel model;
     private String albumOrTrackAmountText = "";
+    private Task getThumbnailTask;
     
     
     public ListItem(ViewManager viewManager,
@@ -334,11 +335,18 @@ public class ListItem
     }
     
     private void getThumbnail() {
-        if (this.thumbnail == null) {
+        // Checks if task is already triggered
+        if (this.thumbnail == null && this.getThumbnailTask == null) {
             try {
-                ApiCache.getImage(this.model.getThumbnailUrl(ListItem.THUMBNAIL_SIZE), new PlaceImageTask(this));
+                this.getThumbnailTask = ApiCache.getImage(
+                        this.model.getThumbnailUrl(ListItem.THUMBNAIL_SIZE), 
+                        new PlaceImageTask(this));
+                
             } catch (Exception e) {
-                L.e("No thumbnail available or not loaded yet for item", this.toString(), e);
+                L.e(
+                        "No thumbnail available or not loaded yet for item", 
+                        this.toString(), 
+                        e);
             }
         }
     }

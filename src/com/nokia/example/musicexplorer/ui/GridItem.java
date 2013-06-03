@@ -38,6 +38,7 @@ public class GridItem
     protected ViewManager viewManager;
     protected GenericProductModel model;
     protected GridLayout parentGrid;
+    private Task getImageTask;
 
     public GridItem() {
         super(null);
@@ -169,7 +170,7 @@ public class GridItem
 
                 // Place the image to the GridItem.
                 thumbnail = (Image) image;
-
+                
                 // Notify the grid layout to paint the thumbnail.
                 parentGrid.gridItemStateChanged();
             }
@@ -178,7 +179,11 @@ public class GridItem
     }
 
     protected void getImage() {
-        ApiCache.getImage(this.getImageUrl(), new PlaceImageTask());
+        if(this.getImageTask == null) {
+            this.getImageTask = ApiCache.getImage(
+                    this.getImageUrl(), 
+                    new PlaceImageTask());
+        }
     }
 
     /**

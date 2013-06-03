@@ -55,9 +55,10 @@ public class GridLayout
         gridItem.setSize(columnWidth, columnWidth);
         gridItems.addElement(gridItem);
 
-        int amountOfRows = (int) Math.ceil((double) gridItems.size()
-                / this.columnCount);
-        int newHeight = amountOfRows * this.rowHeight + CUSTOM_ITEM_MARGIN_SIZE * 2;
+        int amountOfRows = (int) Math.ceil(
+                (double) gridItems.size() / this.columnCount);
+        int newHeight = 
+                amountOfRows * this.rowHeight + CUSTOM_ITEM_MARGIN_SIZE * 2;
 
         this.setPreferredSize(this.width, newHeight);
         repaint();
