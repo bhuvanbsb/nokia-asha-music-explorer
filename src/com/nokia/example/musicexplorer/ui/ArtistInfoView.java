@@ -12,9 +12,7 @@ import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
-import org.tantalum.CancellationException;
 import org.tantalum.Task;
-import org.tantalum.TimeoutException;
 import org.tantalum.util.L;
 
 /**

@@ -19,6 +19,7 @@ import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
+import com.nokia.example.musicexplorer.settings.Placeholders;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
@@ -160,14 +161,10 @@ public class ListItem
         if (thumbnail != null) {
             graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
-            graphics.setColor(PLACEHOLDER_RECT_COLOR_HEX_RGB);
-            graphics.fillRoundRect(
-                    x, 
-                    y, 
-                    ListItem.LIST_ITEM_SIDE, 
-                    ListItem.LIST_ITEM_SIDE, 
-                    5, 
-                    5);
+            // Paint a placeholder image if thumbnail is not yet loaded
+            Placeholders.paint(graphics, model, x, y, Graphics.TOP | Graphics.LEFT);
+            
+            // Begin loading thumbnail image
             getThumbnail();
         }
 

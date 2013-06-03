@@ -16,6 +16,7 @@ import org.tantalum.jme.JMEImageUtils;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
+import com.nokia.example.musicexplorer.settings.Placeholders;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
 import com.nokia.mid.ui.DirectGraphics;
 import com.nokia.mid.ui.DirectUtils;
@@ -158,7 +159,7 @@ public class GridItem
 
         public Object exec(Object image) {
             if (image instanceof Image) {
-                // Place
+                // Scale image to fit to the grid. Scales down only.
                 image = JMEImageUtils.scaleImage(
                         (Image) image,
                         width,
@@ -195,8 +196,8 @@ public class GridItem
         if (thumbnail != null) {
             graphics.drawImage(thumbnail, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
-            // Draw placeholder
-            
+            // Paint to the center of the item.
+            Placeholders.paint(graphics, model, x, y, width, height);
             getImage();
         }
         

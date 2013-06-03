@@ -60,6 +60,7 @@ public class GridLayout
         int newHeight = amountOfRows * this.rowHeight + CUSTOM_ITEM_MARGIN_SIZE * 2;
 
         this.setPreferredSize(this.width, newHeight);
+        repaint();
     }
     
     /**
