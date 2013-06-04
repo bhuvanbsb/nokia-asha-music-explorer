@@ -53,7 +53,11 @@ public class ApiCache {
             ImageCacheView imageCacheView = platformUtils.getImageTypeHandler();
 
             try {
-                imageCache = StaticWebCache.getWebCache('2', PlatformUtils.PHONE_DATABASE_CACHE, imageCacheView, new HttpTaskFactory());
+                imageCache = StaticWebCache.getWebCache(
+                        '2', 
+                        PlatformUtils.PHONE_DATABASE_CACHE, 
+                        imageCacheView, 
+                        new HttpTaskFactory());
                 success = true;
             } catch (FlashDatabaseException e) {
                 L.e("Could not initialize the Image cache.", "", e);
