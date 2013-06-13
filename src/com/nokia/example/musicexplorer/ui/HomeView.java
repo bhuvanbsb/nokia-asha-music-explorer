@@ -75,9 +75,9 @@ public class HomeView
      */
     public void triggerAction(MenuItem item) {
         if (item == newReleasesItem) {
-            viewManager.showView(new NewReleasesView(viewManager));
+            viewManager.showView((InitializableView) new NewReleasesView(viewManager));
         } else if (item == popularReleasesItem) {
-            viewManager.showView(new PopularReleasesView(viewManager));
+            viewManager.showView((InitializableView) new PopularReleasesView(viewManager));
         } else if (item == searchItem) {
             viewManager.showView(new SearchView(viewManager));
         } else if (item == genresItem) {

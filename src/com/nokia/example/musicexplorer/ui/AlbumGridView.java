@@ -7,6 +7,7 @@
  */
 package com.nokia.example.musicexplorer.ui;
 
+import com.nokia.example.musicexplorer.data.ApiCache;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
@@ -26,6 +27,8 @@ import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.QueryPager;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 
 /**
  * A form based abstract view for displaying album cover thumbnails in different
@@ -34,9 +37,9 @@ import com.nokia.example.musicexplorer.data.model.AlbumModel;
 public abstract class AlbumGridView
         extends Form
         implements
-        CommandListener,
-        ItemStateListener,
-        ItemCommandListener {
+            CommandListener,
+            ItemStateListener,
+            ItemCommandListener {
 
     public static final int ITEMS_PER_PAGE = 18;
     protected QueryPager queryPager;
@@ -47,12 +50,14 @@ public abstract class AlbumGridView
     private static final int SCREEN_WIDTH_IN_PORTRAIT = 240;
     private final Command backCommand;
     private LoadMoreButton loadMoreButton;
+    private final boolean showMoreByArtistButton;
         
     public AlbumGridView(ViewManager viewManager, String title, boolean showMoreByArtistButton) {
         super(title);
 
         this.viewManager = viewManager;
         this.backCommand = new Command("Back", Command.BACK, 1);
+        this.showMoreByArtistButton = showMoreByArtistButton;
         this.loadMoreButton = new LoadMoreButton(this);
 
         // Initialize the query pager.
@@ -64,7 +69,7 @@ public abstract class AlbumGridView
 
         if (!showMoreByArtistButton) {
             this.grid.disableShowMoreByArtistButtonInAlbumViews();
-        }
+        }        
         
         addCommand(backCommand);
         setCommandListener(this);

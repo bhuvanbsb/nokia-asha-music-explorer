@@ -7,6 +7,7 @@
  */
 package com.nokia.example.musicexplorer.ui;
 
+import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Displayable;
 
 /**
@@ -31,6 +32,18 @@ public interface ViewManager {
      */
     public void showView(Displayable view);
     
+    /**
+     * Convenience method for displaying views that need initialization.
+     * @param view 
+     */
+    public void showView(InitializableView view);
+    
+    /**
+     * Shows an alert telling network is not available.
+     * @param alert
+     */
+    public void showNetworkAlert();
+
     /**
      * For displaying subviews e.g. in a view that has category bar.
      * @param view 

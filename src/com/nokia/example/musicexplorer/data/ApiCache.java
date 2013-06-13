@@ -17,6 +17,12 @@ import org.tantalum.storage.ImageCacheView;
 import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.settings.ApiEndpoint;
+import com.nokia.example.musicexplorer.ui.ViewManager;
+import java.io.IOException;
+import javax.microedition.io.Connector;
+import javax.microedition.io.HttpConnection;
+import org.tantalum.jme.JMENetUtils;
+import org.tantalum.util.StringUtils;
 
 /**
  * Responsible for creating caches. The caches are used for accessing the REST
@@ -27,21 +33,25 @@ public class ApiCache {
     public static StaticWebCache apiCache;
     public static StaticWebCache imageCache;
 
+    private static ViewManager viewManager;
+    
     /**
      * Initializes caches that are instances of Tantalum's StaticWebCache.
      *
      * @return boolean
      */
-    public static synchronized boolean init() {
+    public static synchronized boolean init(ViewManager viewManager) {
         boolean success = false;
-
+        ApiCache.viewManager = viewManager;
+        
         if (apiCache == null) {
             try {
                 apiCache = StaticWebCache.getWebCache(
                         '1',
                         PlatformUtils.PHONE_DATABASE_CACHE,
                         (CacheView) new JSONResponseHandler(),
-                        new HttpTaskFactory());
+                        new HttpTaskFactory(), 
+                        null);
                 success = true;
             } catch (FlashDatabaseException e) {
                 L.e("Could not initialize the API cache.", "", e);
@@ -50,14 +60,15 @@ public class ApiCache {
 
         if (imageCache == null) {
             PlatformUtils platformUtils = PlatformUtils.getInstance();
-            ImageCacheView imageCacheView = platformUtils.getImageTypeHandler();
+            ImageCacheView imageCacheView = platformUtils.getImageCacheView();
 
             try {
                 imageCache = StaticWebCache.getWebCache(
                         '2', 
                         PlatformUtils.PHONE_DATABASE_CACHE, 
                         imageCacheView, 
-                        new HttpTaskFactory());
+                        new HttpTaskFactory(), 
+                        null);
                 success = true;
             } catch (FlashDatabaseException e) {
                 L.e("Could not initialize the Image cache.", "", e);
@@ -74,6 +85,10 @@ public class ApiCache {
      * @return
      */
     public static Task getNewReleases(Task callback, String pagingQueryString) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+                
         return apiCache.getAsync(
                 ApiEndpoint.getNewReleasesResourceUrl(pagingQueryString),
                 Task.NORMAL_PRIORITY,
@@ -88,6 +103,10 @@ public class ApiCache {
      * @return
      */
     public static Task getGenres(Task callback) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+        
         return apiCache.getAsync(
                 ApiEndpoint.getGenresResourceUrl(),
                 Task.NORMAL_PRIORITY,
@@ -107,6 +126,10 @@ public class ApiCache {
             Task callback,
             String pagingQueryString) {
 
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+        
         return apiCache.getAsync(
                 ApiEndpoint.getReleasesForArtist(artistId, pagingQueryString),
                 Task.NORMAL_PRIORITY,
@@ -123,6 +146,9 @@ public class ApiCache {
      * @return
      */
     public static Task getAlbumDetails(int id, Task callback) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
         return apiCache.getAsync(
                 ApiEndpoint.getProductDetailsResourceUrl(id),
                 Task.NORMAL_PRIORITY,
@@ -138,6 +164,10 @@ public class ApiCache {
      * @return
      */
     public static Task getImage(String imageUri, Task callback) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+        
         if (imageUri == null || imageUri.length() == 0) {
             L.i("Invalid image URI.", "");
             return null;
@@ -157,6 +187,10 @@ public class ApiCache {
      * @return
      */
     public static Task getPopularReleases(Task callback, String pagingQueryString) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }        
+        
         return apiCache.getAsync(
                 ApiEndpoint.getChartsResourceUrl(pagingQueryString),
                 Task.NORMAL_PRIORITY,
@@ -173,6 +207,10 @@ public class ApiCache {
      * @return
      */
     public static Task search(String searchQuery, Task callback, String pagingQueryString) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+        
         if (searchQuery == null || searchQuery.length() == 0) {
             L.i("Search query cannot be null or empty.", "");
             return null;
@@ -186,6 +224,10 @@ public class ApiCache {
     }
 
     public static Task getArtistDetailsById(int productId, Task callback) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+        
         return apiCache.getAsync(
                 ApiEndpoint.getProductDetailsById(productId),
                 Task.NORMAL_PRIORITY,
@@ -194,6 +236,10 @@ public class ApiCache {
     }
 
     public static Task getSimilarArtistsById(int artistId, Task callback, String pagingQueryString) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+        
         return apiCache.getAsync(
                 ApiEndpoint.getSimilarArtistsById(artistId, pagingQueryString), 
                 Task.NORMAL_PRIORITY,
@@ -202,10 +248,41 @@ public class ApiCache {
     }
     
     public static Task getArtistsInGenre(String genreId, Task callback, String pagingQueryString) {
+        if(!hasNetworkConnection()) {
+            return null;
+        }
+        
         return apiCache.getAsync(
                 ApiEndpoint.getArtistsInGenre(genreId, pagingQueryString), 
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
     }
+    
+    public static boolean hasNetworkConnection() {
+        boolean hasNetwork = true;
+        
+        // Make test request
+        HttpConnection hcon;
+        
+        try {
+            hcon = (HttpConnection) Connector.open(StringUtils.urlEncode("http://api.ent.nokia.com/1.x/"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        int networkState = JMENetUtils.getCurrentDataNetwork();
+        
+        L.i("Current data net", Integer.toString(networkState));
+        
+        if (networkState != JMENetUtils.PACKET_DATA_UNKNOWN) {
+            hasNetwork = true;
+        } else {
+            viewManager.showNetworkAlert();
+            L.i("Network connection not available", "");
+        }
+        
+        return hasNetwork;
+    }
+    
 }

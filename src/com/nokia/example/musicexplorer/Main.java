@@ -18,6 +18,9 @@ import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.ui.HomeView;
 import com.nokia.example.musicexplorer.ui.ViewManager;
 import com.nokia.example.musicexplorer.utils.CategoryBarUtils.CategoryBarHolder;
+import com.nokia.example.musicexplorer.ui.InitializableView;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 
 import org.tantalum.PlatformUtils;
 import org.tantalum.util.L;
@@ -31,12 +34,13 @@ public final class Main
 
     private Stack viewStack;
     private Displayable subview;
+    private Alert networkAlert;
     
     public void startApp() {
         PlatformUtils.getInstance().setProgram(this, 4);
         
         // Try to create caches.
-        if (ApiCache.init()) {
+        if (ApiCache.init(this)) {
             viewStack = new Stack();
             Displayable mainView = new HomeView(this);
             showView(mainView);
@@ -49,6 +53,34 @@ public final class Main
     }
 
     /**
+     * Shows a view on the display and initialize it.
+     * @param view 
+     */
+    public void showView(InitializableView view) {
+        showView((Displayable) view);
+        view.initialize();
+    }
+    
+    /**
+     * For displaying an alert. This does not add to back stack.
+     * @param alert 
+     */
+    public void showNetworkAlert() {
+        if(networkAlert == null) {
+            networkAlert = new Alert(
+                    "Error", 
+                    "Network connection is not available. " + 
+                    "No content is loaded or shown.",
+                    null,
+                    AlertType.ERROR);
+            networkAlert.setTimeout(Alert.FOREVER);
+            networkAlert.setType(AlertType.INFO);                  
+        }
+  
+        Display.getDisplay(this).setCurrent(networkAlert);
+    }
+    
+    /**
      * Shows a view on the display.
      * @param view 
      */
@@ -56,8 +88,8 @@ public final class Main
         hideCategoryBarIfExists(false);
         subview = null; // Clear subview if it exists.
         viewStack.push(view);
-        setCurrentView(view);
-    }
+        setCurrentView(view);        
+    }    
     
     /**
      * Checks if the item on top of stack implements a category bar and hides

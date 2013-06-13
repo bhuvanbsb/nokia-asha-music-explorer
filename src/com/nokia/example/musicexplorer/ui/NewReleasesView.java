@@ -8,16 +8,22 @@
 package com.nokia.example.musicexplorer.ui;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
+import org.tantalum.util.L;
 
 /**
  * Displays new releases using the New Releases Resource.
  */
 public class NewReleasesView
-        extends AlbumGridView {
+        extends AlbumGridView
+        implements InitializableView {
 
     public static final String VIEW_TITLE = "See what's new";
     public static final String PATH_TO_ICON = "/new_releases_icon.png";
 
+    private boolean initialized = false;
+    
     /**
      * Factory method for instantiating.
      * @param viewManager
@@ -30,10 +36,26 @@ public class NewReleasesView
     public NewReleasesView(ViewManager viewManager) {
         super(viewManager, VIEW_TITLE, true);
 
-        appendGrid();
-        loadDataset();
     }
 
+    public void initialize() {
+        if(!initialized) {
+
+            /*
+            if (!ApiCache.hasNetworkConnection()) {
+                viewManager.showNetworkAlert();
+            }
+            */
+            
+            appendGrid();
+            loadDataset();
+            
+            initialized = true;
+        } else {
+            L.i("AlbumGridView already initialized", "");
+        }
+    }    
+    
     protected void loadDataset() {
         ApiCache.getNewReleases(
                 new AlbumGridView.PlaceResultsTask(),
