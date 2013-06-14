@@ -16,13 +16,10 @@ import org.tantalum.util.L;
  * Displays new releases using the New Releases Resource.
  */
 public class NewReleasesView
-        extends AlbumGridView
-        implements InitializableView {
+        extends AlbumGridView {
 
     public static final String VIEW_TITLE = "See what's new";
     public static final String PATH_TO_ICON = "/new_releases_icon.png";
-
-    private boolean initialized = false;
     
     /**
      * Factory method for instantiating.
@@ -37,24 +34,6 @@ public class NewReleasesView
         super(viewManager, VIEW_TITLE, true);
 
     }
-
-    public void initialize() {
-        if(!initialized) {
-
-            /*
-            if (!ApiCache.hasNetworkConnection()) {
-                viewManager.showNetworkAlert();
-            }
-            */
-            
-            appendGrid();
-            loadDataset();
-            
-            initialized = true;
-        } else {
-            L.i("AlbumGridView already initialized", "");
-        }
-    }    
     
     protected void loadDataset() {
         ApiCache.getNewReleases(

@@ -37,7 +37,7 @@ public class ApiEndpoint {
      *
      * @return
      */
-    private static String getBaseUrl() {
+    public static String getBaseUrl() {
         return ENDPOINT_URL + VERSION + '/';
     }
 

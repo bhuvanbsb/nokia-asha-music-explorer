@@ -259,27 +259,28 @@ public class ApiCache {
                 callback);
     }
     
+    /**
+     * Determines the state of network connectivity by making a test request.
+     * @return 
+     */
     public static boolean hasNetworkConnection() {
-        boolean hasNetwork = true;
+        boolean hasNetwork = false;
         
         // Make test request
-        HttpConnection hcon;
+        HttpConnection httpConnection;
+        String testRequestUrl = ApiEndpoint.getBaseUrl();
         
         try {
-            hcon = (HttpConnection) Connector.open(StringUtils.urlEncode("http://api.ent.nokia.com/1.x/"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        int networkState = JMENetUtils.getCurrentDataNetwork();
-        
-        L.i("Current data net", Integer.toString(networkState));
-        
-        if (networkState != JMENetUtils.PACKET_DATA_UNKNOWN) {
+            L.i("Testing network connection", "URL: " + testRequestUrl);
+            httpConnection = 
+                    (HttpConnection) Connector.open(testRequestUrl);
+            L.i("Response message", httpConnection.getResponseMessage());
+            L.i("Network connection established", httpConnection.toString());
             hasNetwork = true;
-        } else {
+            httpConnection.close();
+        } catch (IOException e) {
+            L.i("Network connection failed", e.toString());
             viewManager.showNetworkAlert();
-            L.i("Network connection not available", "");
         }
         
         return hasNetwork;

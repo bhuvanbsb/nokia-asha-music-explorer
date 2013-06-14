@@ -39,7 +39,8 @@ public abstract class AlbumGridView
         implements
             CommandListener,
             ItemStateListener,
-            ItemCommandListener {
+            ItemCommandListener, 
+            InitializableView {
 
     public static final int ITEMS_PER_PAGE = 18;
     protected QueryPager queryPager;
@@ -51,7 +52,9 @@ public abstract class AlbumGridView
     private final Command backCommand;
     private LoadMoreButton loadMoreButton;
     private final boolean showMoreByArtistButton;
-        
+
+    private boolean initialized;
+    
     public AlbumGridView(ViewManager viewManager, String title, boolean showMoreByArtistButton) {
         super(title);
 
@@ -76,6 +79,17 @@ public abstract class AlbumGridView
         setItemStateListener(this);
     }
 
+    public void initialize() {
+        if(!initialized) {
+            appendGrid();
+            loadDataset();
+            
+            initialized = true;
+        } else {
+            L.i("Already initialized", this.toString());
+        }
+    }
+    
     public void itemStateChanged(Item item) {
     }
 

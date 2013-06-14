@@ -79,9 +79,9 @@ public class HomeView
         } else if (item == popularReleasesItem) {
             viewManager.showView((InitializableView) new PopularReleasesView(viewManager));
         } else if (item == searchItem) {
-            viewManager.showView(new SearchView(viewManager));
+            viewManager.showView((InitializableView) new SearchView(viewManager));
         } else if (item == genresItem) {
-            viewManager.showView(new GenresListView(viewManager));
+            viewManager.showView((InitializableView) new GenresListView(viewManager));
         } 
     }
     

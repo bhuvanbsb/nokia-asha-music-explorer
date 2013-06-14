@@ -8,6 +8,7 @@
 package com.nokia.example.musicexplorer.ui;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
+import org.tantalum.util.L;
 
 /**
  * Displays popular releases using the Charts Resource.
@@ -20,9 +21,6 @@ public class PopularReleasesView
 
     public PopularReleasesView(ViewManager viewManager) {
         super(viewManager, VIEW_TITLE, true);
-
-        appendGrid();
-        loadDataset();
     }
 
     protected void loadDataset() {

@@ -44,7 +44,8 @@ public class SearchView
         implements
         CommandListener,
         ItemStateListener,
-        ItemCommandListener {
+        ItemCommandListener,
+        InitializableView {
 
     public static final String VIEW_TITLE = "Search artists";
     public static final String PATH_TO_ICON = "/search_icon.png";
@@ -60,7 +61,8 @@ public class SearchView
     private String searchQuery;
     private Timer throttle;
     private LoadMoreButton loadMoreButton;
-
+    private boolean initialized;
+    
     /**
      * Constructor which sets the view title, adds a back command to it and adds
      * the dummy text content to it.
@@ -86,6 +88,10 @@ public class SearchView
         setItemStateListener(this);
     }
 
+    public void initialize() {
+        ApiCache.hasNetworkConnection();
+    }
+    
     public void commandAction(Command command, Displayable displayable) {
         if (backCommand.equals(command)) {
             // Hardware back button was pressed

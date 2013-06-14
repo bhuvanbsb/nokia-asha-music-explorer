@@ -27,7 +27,7 @@ import java.util.Vector;
  */
 public class GenresListView
         extends List
-        implements CommandListener {
+        implements CommandListener, InitializableView {
 
     public static final String VIEW_TITLE = "Browse genres";
     public static final String PATH_TO_ICON = "/genres_icon.png";
@@ -35,6 +35,7 @@ public class GenresListView
     private final ViewManager viewManager;
     private final Command backCommand;
     private Vector viewModel = new Vector();
+    private boolean initialized;
     
     /**
      * Constructor, where the list is marked as an implicit list (ie. only
@@ -52,7 +53,17 @@ public class GenresListView
         addCommand(backCommand);
         setCommandListener(this);
 
-        ApiCache.getGenres(new PlaceResultsTask());
+    }
+    
+    public void initialize() {
+        if(!initialized) {
+
+            ApiCache.getGenres(new PlaceResultsTask());
+            
+            initialized = true;
+        } else {
+            L.i("Already initialized", this.toString());
+        }
     }
 
     public void append(GenreModel genreModel) {
