@@ -89,7 +89,7 @@ public class SearchView
     }
 
     public void initialize() {
-        ApiCache.hasNetworkConnection();
+        //ApiCache.hasNetworkConnection();
     }
     
     public void commandAction(Command command, Displayable displayable) {

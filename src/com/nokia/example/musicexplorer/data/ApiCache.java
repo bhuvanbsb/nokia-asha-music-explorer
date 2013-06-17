@@ -18,11 +18,6 @@ import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.settings.ApiEndpoint;
 import com.nokia.example.musicexplorer.ui.ViewManager;
-import java.io.IOException;
-import javax.microedition.io.Connector;
-import javax.microedition.io.HttpConnection;
-import org.tantalum.jme.JMENetUtils;
-import org.tantalum.util.StringUtils;
 
 /**
  * Responsible for creating caches. The caches are used for accessing the REST
@@ -85,15 +80,15 @@ public class ApiCache {
      * @return
      */
     public static Task getNewReleases(Task callback, String pagingQueryString) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-                
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getNewReleasesResourceUrl(pagingQueryString),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
 
     /**
@@ -103,15 +98,15 @@ public class ApiCache {
      * @return
      */
     public static Task getGenres(Task callback) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getGenresResourceUrl(),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
 
     /**
@@ -125,16 +120,15 @@ public class ApiCache {
             int artistId,
             Task callback,
             String pagingQueryString) {
-
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getReleasesForArtist(artistId, pagingQueryString),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
 
     /**
@@ -146,14 +140,15 @@ public class ApiCache {
      * @return
      */
     public static Task getAlbumDetails(int id, Task callback) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getProductDetailsResourceUrl(id),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
 
     /**
@@ -164,20 +159,20 @@ public class ApiCache {
      * @return
      */
     public static Task getImage(String imageUri, Task callback) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        
         if (imageUri == null || imageUri.length() == 0) {
             L.i("Invalid image URI.", "");
             return null;
         }
-
-        return imageCache.getAsync(
+        
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                imageCache,
                 imageUri,
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_ANYWHERE,
                 callback);
+        
+        return apiRequestTask;
     }
 
     /**
@@ -187,15 +182,15 @@ public class ApiCache {
      * @return
      */
     public static Task getPopularReleases(Task callback, String pagingQueryString) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }        
-        
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getChartsResourceUrl(pagingQueryString),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
 
     /**
@@ -207,83 +202,55 @@ public class ApiCache {
      * @return
      */
     public static Task search(String searchQuery, Task callback, String pagingQueryString) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        
         if (searchQuery == null || searchQuery.length() == 0) {
             L.i("Search query cannot be null or empty.", "");
             return null;
         }
 
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,        
                 ApiEndpoint.getSearchUrl(searchQuery, pagingQueryString),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+
+        return apiRequestTask;
     }
 
     public static Task getArtistDetailsById(int productId, Task callback) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getProductDetailsById(productId),
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
 
     public static Task getSimilarArtistsById(int artistId, Task callback, String pagingQueryString) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getSimilarArtistsById(artistId, pagingQueryString), 
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
     
     public static Task getArtistsInGenre(String genreId, Task callback, String pagingQueryString) {
-        if(!hasNetworkConnection()) {
-            return null;
-        }
-        
-        return apiCache.getAsync(
+        ApiRequestTask apiRequestTask = new ApiRequestTask(
+                viewManager,
+                apiCache,
                 ApiEndpoint.getArtistsInGenre(genreId, pagingQueryString), 
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
+        
+        return apiRequestTask;
     }
-    
-    /**
-     * Determines the state of network connectivity by making a test request.
-     * @return 
-     */
-    public static boolean hasNetworkConnection() {
-        boolean hasNetwork = false;
-        
-        // Make test request
-        HttpConnection httpConnection;
-        String testRequestUrl = ApiEndpoint.getBaseUrl();
-        
-        try {
-            L.i("Testing network connection", "URL: " + testRequestUrl);
-            httpConnection = 
-                    (HttpConnection) Connector.open(testRequestUrl);
-            L.i("Response message", httpConnection.getResponseMessage());
-            L.i("Network connection established", httpConnection.toString());
-            hasNetwork = true;
-            httpConnection.close();
-        } catch (IOException e) {
-            L.i("Network connection failed", e.toString());
-            viewManager.showNetworkAlert();
-        }
-        
-        return hasNetwork;
-    }
-    
 }
