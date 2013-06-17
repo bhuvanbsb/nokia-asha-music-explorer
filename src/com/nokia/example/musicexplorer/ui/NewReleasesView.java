@@ -8,9 +8,6 @@
 package com.nokia.example.musicexplorer.ui;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-import org.tantalum.util.L;
 
 /**
  * Displays new releases using the New Releases Resource.

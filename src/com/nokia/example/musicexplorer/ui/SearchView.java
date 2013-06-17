@@ -61,7 +61,6 @@ public class SearchView
     private String searchQuery;
     private Timer throttle;
     private LoadMoreButton loadMoreButton;
-    private boolean initialized;
     
     /**
      * Constructor which sets the view title, adds a back command to it and adds
@@ -89,7 +88,6 @@ public class SearchView
     }
 
     public void initialize() {
-        //ApiCache.hasNetworkConnection();
     }
     
     public void commandAction(Command command, Displayable displayable) {
@@ -217,13 +215,12 @@ public class SearchView
 
         if(loopMax > 0) { 
             for (int i = 0; i < loopMax; i++) {
-                String category = "";
                 JSONObject obj;
                 GenericProductModel model = null;
 
                 try {
                     obj = (JSONObject) results.get(i);
-                    category = obj.getJSONObject("category").getString("id");
+                    String category = obj.getJSONObject("category").getString("id");
 
                     switch (getCategoryEnum(category.toLowerCase())) {
                         case CategoryModel.SINGLE:
@@ -244,7 +241,6 @@ public class SearchView
                     }
 
                     if (model != null) {
-                        // viewModel.addElement(new ListItem(viewManager, model));
                         append(new ListItem(viewManager, model));
                     }
 

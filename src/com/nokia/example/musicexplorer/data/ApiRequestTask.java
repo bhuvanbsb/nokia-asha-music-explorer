@@ -1,6 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (c) 2013 Nokia Corporation. All rights reserved. Nokia and Nokia
+ * Connecting People are registered trademarks of Nokia Corporation. Oracle and
+ * Java are trademarks or registered trademarks of Oracle and/or its affiliates.
+ * Other product and company names mentioned herein may be trademarks or trade
+ * names of their respective owners. See LICENSE.TXT for license information.
  */
 package com.nokia.example.musicexplorer.data;
 
@@ -14,10 +17,8 @@ import org.tantalum.net.StaticWebCache;
 import org.tantalum.util.L;
 
 /**
- * Determines the state of network connectivity by making a test request.
- * @return 
+ * Tests network connectivity before making an actual API call.
  */
-
 public class ApiRequestTask
         extends Task {
 
@@ -28,6 +29,15 @@ public class ApiRequestTask
     private final int cacheMode;
     private final ViewManager viewManager;
     
+    /**
+     * Constructor. Forks the tasks after parameters are set.
+     * @param viewManager
+     * @param cache
+     * @param url
+     * @param taskPriority
+     * @param cacheMode
+     * @param callback 
+     */
     public ApiRequestTask(
             ViewManager viewManager,
             StaticWebCache cache, 
@@ -56,10 +66,14 @@ public class ApiRequestTask
         return o;
     }
 
+    /**
+     * Makes a test request to determine whether a network connection can be
+     * established. Displays a network alert when the network is not available.
+     * @return 
+     */
     private boolean hasNetworkConnection() {
         boolean hasNetwork = false;
 
-        // Make test request
         HttpConnection httpConnection;
         String testRequestUrl = ApiEndpoint.getBaseUrl();
 
