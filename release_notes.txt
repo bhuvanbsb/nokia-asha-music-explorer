@@ -75,8 +75,7 @@ KNOWN ISSUES
 
 - The user can navigate to new Artist views from the Similar artists view.
   These opened Artist views grow the back stack and the device may run out of 
-  memory at some point. This does not crash the application but may freeze or
-  slow down the UI.
+  memory at some point.
   
 -------------------------------------------------------------------------------
 
