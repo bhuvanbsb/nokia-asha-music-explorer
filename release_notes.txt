@@ -89,7 +89,9 @@ File menu and selecting the application's project folder.
 Before opening the project, make sure the Nokia Asha SDK 1.0 or newer is
 installed and added to NetBeans. Building is done by selecting 'Build main
 project'. Also make sure the JAR files inside the lib folder are included
-into the project (Properties -> Libraries & Resources -> Add Jar/ZIP),
+into the project (Properties -> Libraries & Resources -> Add Jar/ZIP). To see 
+debug log texts, the debug version of Tantalum must be included in the
+build by selecting it from the lib folder as described.
 
 You can install the application on a phone by transferring the JAR file
 with Nokia Suite, over bluetooth or by placing the JAR & JAD files to 
