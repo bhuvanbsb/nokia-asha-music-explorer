@@ -74,7 +74,7 @@ KNOWN ISSUES
 - The artist view might appear empty if the artist does not have any albums.
 
 - The user can navigate to new Artist views from the Similar artists view.
-  These opened Artist views grow the back stack and the device may run out of 
+  These opened Artist views grow the view history and the device may run out of 
   memory at some point.
   
 -------------------------------------------------------------------------------
