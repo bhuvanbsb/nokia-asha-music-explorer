@@ -25,9 +25,8 @@ import com.nokia.example.musicexplorer.ui.ViewManager;
  */
 public class ApiCache {
 
-    public static StaticWebCache apiCache;
-    public static StaticWebCache imageCache;
-
+    private static StaticWebCache apiCache;
+    private static StaticWebCache imageCache;
     private static ViewManager viewManager;
     
     /**

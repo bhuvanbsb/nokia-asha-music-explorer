@@ -68,11 +68,11 @@ public final class Main
     public void showNetworkAlert() {
         if(networkAlert == null) {
             networkAlert = new Alert(
-                    "Error", 
-                    "Network connection is not available. " + 
-                    "No content is loaded or shown.",
+                    "No network connection", 
+                    "Make sure your network connection is " + 
+                    "enabled and try again.",
                     null,
-                    AlertType.ERROR);
+                    AlertType.INFO);
             networkAlert.setTimeout(Alert.FOREVER);
             networkAlert.setType(AlertType.INFO);                  
         }
