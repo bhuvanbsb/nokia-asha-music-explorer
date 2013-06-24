@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.data;
 
 import org.json.me.JSONException;
@@ -16,18 +17,9 @@ import org.tantalum.util.L;
  */
 public class QueryPager {
 
-    /**
-     * Start index of a query. First query starts from 0.
-     */
-    private int currentIndex = 0;
-    /**
-     * Total amount of items.
-     */
-    private int total = 0;
-    /**
-     * Amount of items per query.
-     */
-    private int itemsPerPage = 10;
+    private int currentIndex = 0; // Start index of a query. First query starts from 0
+    private int total = 0; // Total amount of items
+    private int itemsPerPage = 10; // Amount of items per query
 
     /**
      * Constructor with default settings.

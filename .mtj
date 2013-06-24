@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mtjMetadata jad="MusicExplorer.jad" version="1.2.2.201304261514">
+<mtjMetadata jad="NokiaAshaMusicExplorer.jad" version="1.2.2.201306191826">
    <device group="Nokia Asha SDK 1.0" name="Nokia_Asha_SDK_1_0"/>
    <signing projectSpecific="false" signProject="false">
       <alias/>
    </signing>
    <configurations>
-      <configuration active="true" name="Nokia Asha SDK 1.0">
+      <configuration active="true" name="Nokia_Asha_SDK_1_0">
          <device group="Nokia Asha SDK 1.0" name="Nokia_Asha_SDK_1_0"/>
          <symbolSet name="Nokia_Asha_SDK_1_0">
             <symbol name="screen.isColor" value="true"/>
@@ -19,7 +19,6 @@
             <symbol name="CLDC" value="1.1"/>
             <symbol name="screen.canvas.height" value="248"/>
             <symbol name="JSR179" value="1.0"/>
-            <symbol name="WMA" value="1.1"/>
             <symbol name="screen.width" value="240"/>
             <symbol name="AMMS" value="1.1"/>
             <symbol name="JSR238" value="1.6"/>

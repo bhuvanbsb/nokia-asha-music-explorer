@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 public interface InitializableView {

@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.data.model;
 
 import java.util.Vector;
@@ -27,10 +28,9 @@ public class AlbumModel extends GenericProductModel {
     public Vector tracks;
     public boolean byVariousArtists = false;
     private Vector performers = new Vector();
-    
 
     /**
-     * Initializes an AlbumModel based on a JSONObject.
+     * Constructs an AlbumModel based on the given JSONObject.
      *
      * @param album
      * @throws JSONException
@@ -46,6 +46,7 @@ public class AlbumModel extends GenericProductModel {
         
         this.tracks = new Vector();
     }
+
     /**
      * In case of multiple performers gets the first one if applicable.
      * 
@@ -61,13 +62,14 @@ public class AlbumModel extends GenericProductModel {
         
         return performerId;
     }
-    
+
     public String getPerformerNames() {
         String names = "";
         int loopMax = this.performers.size();
         
         for (int i = 0; i < loopMax; i++) {
             names += ((PerformerModel) performers.elementAt(i)).name;
+            
             if (i < loopMax - 1) {
                 names += ", "; // Add a separator if more than one performer
             }
@@ -76,49 +78,20 @@ public class AlbumModel extends GenericProductModel {
         return names;
     }
 
-    public class GetTracksTask extends Task {
-
-        private AlbumView albumView;
-
-        public GetTracksTask(AlbumView albumView) {
-            super(Task.NORMAL_PRIORITY);
-            this.albumView = albumView;
-        }
-
-        public Object exec(Object response) {
-            try {
-                JSONObject obj = (JSONObject) response;
-                JSONArray performers = obj.getJSONObject("creators").getJSONArray("performers");
-                JSONArray tracks = obj.getJSONArray("tracks"); 
-                
-                setTracks(tracks);
-                setPerformers(performers);
-                
-                albumView.setAlbumOrTrackAmountText(Integer.toString(tracks.length()) + " tracks");
-            
-                appendTracksToView(albumView);
-            } catch (JSONException exception) {
-                L.e("Unable to parse Track in GetTracksTask", "", exception);
-                return null;
-            }
-
-            return response;
-        }
-    }
-
     /**
      * Fetches tracks asynchronously from the REST API.
      */
     public void getTracks(AlbumView view) {
         ApiCache.getAlbumDetails(this.id, new GetTracksTask(view));
     }
-    
+
     public void setPerformers(JSONArray performers) {
         // Prevent from adding multiple times
         if (this.performers.size() == 0) {
             int loopMax = performers.length();
+            
             for (int i = 0; i < loopMax; i++) {
-                try {            
+                try {
                     PerformerModel performer = new PerformerModel((JSONObject) performers.get(i));
                     this.performers.addElement(performer);
                 } catch(JSONException e) {
@@ -141,15 +114,16 @@ public class AlbumModel extends GenericProductModel {
         if (tracksAsJSONArray == null || tracksAsJSONArray.length() == 0) {
             throw new JSONException("Tracks array must contain one or more tracks.");
         }
-
+        
         if (this.tracks == null) {
             this.tracks = new Vector();
         } else {
             this.tracks.removeAllElements();
         }
-
+        
         JSONObject track;
         int loopMax = tracksAsJSONArray.length();
+        
         for (int i = 0; i < loopMax; i++) {
             track = tracksAsJSONArray.getJSONObject(i);
             this.tracks.addElement(new TrackModel(track));
@@ -158,10 +132,43 @@ public class AlbumModel extends GenericProductModel {
 
     /**
      * For debugging purposes.
-     *
-     * @return String A description of the object.
+     * @see java.lang.Object#toString()
      */
     public String toString() {
         return "AlbumModel: name=" + name + ", id=" + id;
+    }
+
+    /**
+     * Implements asynchronous task of retrieving the tracks via the API, parse
+     * the JSON in response and populating the UI. 
+     */
+    public class GetTracksTask extends Task {
+
+        private AlbumView albumView;
+
+        public GetTracksTask(AlbumView albumView) {
+            super(Task.NORMAL_PRIORITY);
+            this.albumView = albumView;
+        }
+
+        public Object exec(Object response) {
+            try {
+                JSONObject obj = (JSONObject) response;
+                JSONArray performers = obj.getJSONObject("creators").getJSONArray("performers");
+                JSONArray tracks = obj.getJSONArray("tracks"); 
+                
+                setTracks(tracks);
+                setPerformers(performers);
+                
+                albumView.setAlbumOrTrackAmountText(Integer.toString(tracks.length()) + " tracks");
+                
+                appendTracksToView(albumView);
+            } catch (JSONException exception) {
+                L.e("Unable to parse Track in GetTracksTask", "", exception);
+                return null;
+            }
+            
+            return response;
+        }
     }
 }

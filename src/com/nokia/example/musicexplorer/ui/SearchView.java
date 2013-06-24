@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import java.util.Timer;
@@ -42,26 +43,27 @@ import com.nokia.example.musicexplorer.data.model.TrackModel;
 public class SearchView
         extends Form
         implements
-        CommandListener,
-        ItemStateListener,
-        ItemCommandListener,
-        InitializableView {
+            CommandListener,
+            ItemStateListener,
+            ItemCommandListener,
+            InitializableView {
 
     public static final String VIEW_TITLE = "Search artists";
     public static final String PATH_TO_ICON = "/search_icon.png";
-    private final ViewManager viewManager;
-    private final Command backCommand;
     private static final int MAX_QUERY_LENGTH_CHARS = 100;
     private static final int QUERY_THROTTLE_MILLISECONDS = 1500;
     private static final int SEARCH_QUERY_MIN_LENGTH = 1;
     private static final int ITEMS_PER_PAGE = 20;
+
+    private final ViewManager viewManager;
+    private final Command backCommand;
     private Vector viewModel;
     private QueryPager queryPager;
     private TextField searchField;
     private String searchQuery;
     private Timer throttle;
     private LoadMoreButton loadMoreButton;
-    
+
     /**
      * Constructor which sets the view title, adds a back command to it and adds
      * the dummy text content to it.
@@ -74,22 +76,29 @@ public class SearchView
         this.viewManager = viewManager;
         this.backCommand = new Command("Back", Command.BACK, 1);
         this.searchField = new TextField(null, null, MAX_QUERY_LENGTH_CHARS, TextField.ANY);
-
+        
         // Initialize the query pager.
         this.queryPager = new QueryPager();
         this.queryPager.setItemsPerPage(ITEMS_PER_PAGE);
         this.loadMoreButton = new LoadMoreButton(this);
-
+        
         append(this.searchField);
-
+        
         addCommand(backCommand);
         setCommandListener(this);
         setItemStateListener(this);
     }
 
+    /**
+     * @see com.nokia.example.musicexplorer.ui.InitializableView#initialize()
+     */
     public void initialize() {
     }
-    
+
+    /**
+     * @see javax.microedition.lcdui.CommandListener#commandAction(
+     * javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+     */
     public void commandAction(Command command, Displayable displayable) {
         if (backCommand.equals(command)) {
             // Hardware back button was pressed
@@ -97,6 +106,10 @@ public class SearchView
         }
     }
 
+    /**
+     * @see javax.microedition.lcdui.ItemCommandListener#commandAction(
+     * javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
+     */
     public void commandAction(Command c, Item item) {
         if (c == loadMoreButton.getCommand()) {
             // Load more triggered
@@ -123,7 +136,7 @@ public class SearchView
      */
     private void handleSearchField(TextField searchField) {
         searchQuery = searchField.getString();
-
+        
         if (searchQuery.length() > SEARCH_QUERY_MIN_LENGTH) {
             throttleSearch();
         }
@@ -137,7 +150,7 @@ public class SearchView
             // Cancel previous timer task.
             throttle.cancel();
         }
-
+        
         throttle = new Timer();
         throttle.schedule(new TimerTask() {
             public void run() {
@@ -157,18 +170,18 @@ public class SearchView
      */
     private void performSearch(boolean clearResults, boolean nextPage) {
         String pagingQueryString;
-
+        
         if (nextPage) {
             pagingQueryString = queryPager.getQueryStringForNextPage();
         } else {
             queryPager.reset();
             pagingQueryString = queryPager.getCurrentQueryString();
         }
-
+        
         if (clearResults) {
             clearSearchResults();
         }
-
+        
         ApiCache.search(
                 this.searchQuery,
                 new SearchResultHandlerTask(),
@@ -177,7 +190,7 @@ public class SearchView
 
     private int getCategoryEnum(String category) {
         category = category.toLowerCase();
-
+        
         if (category.indexOf("track") > -1) {
             return CategoryModel.TRACK;
         } else if (category.indexOf("artist") > -1) {
@@ -187,7 +200,7 @@ public class SearchView
         } else if (category.indexOf("single") > -1) {
             return CategoryModel.SINGLE;
         }
-
+        
         return 0;
     }
 
@@ -202,8 +215,8 @@ public class SearchView
         } else {
             viewModel = new Vector();
         }
-
-        /**
+        
+        /*
          * Response parsing
          *
          * Get "items" JSONArray and iterate over the JSONObjects. 1. Check
@@ -212,16 +225,16 @@ public class SearchView
          * vector.
          */
         int loopMax = results.length();
-
+        
         if(loopMax > 0) { 
             for (int i = 0; i < loopMax; i++) {
                 JSONObject obj;
                 GenericProductModel model = null;
-
+                
                 try {
                     obj = (JSONObject) results.get(i);
                     String category = obj.getJSONObject("category").getString("id");
-
+                    
                     switch (getCategoryEnum(category.toLowerCase())) {
                         case CategoryModel.SINGLE:
                             model = new AlbumModel(obj);
@@ -239,46 +252,16 @@ public class SearchView
                             L.i("Category type not detected.", "");
                             break;
                     }
-
+                    
                     if (model != null) {
                         append(new ListItem(viewManager, model));
                     }
-
                 } catch (JSONException e) {
                     L.e("Failed to convert item of index " + Integer.toString(i), "", e);
                 }
             }
         } else {
             append("No results.");
-        }
-        
-        
-    }
-
-    private class SearchResultHandlerTask extends Task {
-
-        public SearchResultHandlerTask() {
-            super(Task.NORMAL_PRIORITY);
-        }
-
-        public Object exec(Object response) {
-            if (response instanceof JSONObject) {
-                JSONArray resultsArray;
-                JSONObject paging;
-
-                try {
-                    resultsArray = ((JSONObject) response).getJSONArray("items");
-                    paging = ((JSONObject) response).getJSONObject("paging");
-
-                    // Set query pager and pass results to parser.
-                    queryPager.setPaging(paging);
-                    parseResultsToViewModel(resultsArray);
-                    appendToView();
-                } catch (JSONException ex) {
-                    L.e("Could not parse JSON", "", ex);
-                }
-            }
-            return response;
         }
     }
 
@@ -301,14 +284,43 @@ public class SearchView
             loadMoreButton.remove();
             
             int loopMax = viewModel.size();
+            
             for (int i = 0; i < loopMax; i++) {
                 append((ListItem) viewModel.elementAt(i));
             }
-
+            
             // Append load more button if there is paging available.
             if (queryPager.hasMorePages()) {
                 loadMoreButton.append();
             }
+        }
+    }
+
+    private class SearchResultHandlerTask extends Task {
+
+        public SearchResultHandlerTask() {
+            super(Task.NORMAL_PRIORITY);
+        }
+
+        public Object exec(Object response) {
+            if (response instanceof JSONObject) {
+                JSONArray resultsArray;
+                JSONObject paging;
+                
+                try {
+                    resultsArray = ((JSONObject) response).getJSONArray("items");
+                    paging = ((JSONObject) response).getJSONObject("paging");
+                    
+                    // Set query pager and pass results to parser.
+                    queryPager.setPaging(paging);
+                    parseResultsToViewModel(resultsArray);
+                    appendToView();
+                } catch (JSONException ex) {
+                    L.e("Could not parse JSON", "", ex);
+                }
+            }
+            
+            return response;
         }
     }
 }

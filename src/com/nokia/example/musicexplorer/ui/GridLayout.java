@@ -5,12 +5,14 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.microedition.lcdui.CustomItem;
 import javax.microedition.lcdui.Graphics;
+
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 
@@ -18,12 +20,12 @@ import com.nokia.example.musicexplorer.data.model.AlbumModel;
  * GridLayout is a CustomItem component for displaying a grid of GridItems in a
  * Form.
  */
-public class GridLayout
-        extends CustomItem {
+public class GridLayout extends CustomItem {
 
     public static final int CUSTOM_ITEM_MARGIN_SIZE = 5;
     public static final int DEFAULT_COLUMN_COUNT = 3;
     public static final int JITTER_THRESHOLD = 10;
+
     protected Vector gridItems;
     protected GridItem selectedItem;
     protected int width = 0;
@@ -36,11 +38,15 @@ public class GridLayout
     protected ViewManager viewManager;
     protected boolean showMoreByArtistButton = true;
 
+    /**
+     * Constructor.
+     * @param width
+     * @param viewManager
+     */
     public GridLayout(final int width, ViewManager viewManager) {
         super(null);
         this.viewManager = viewManager;
         this.gridItems = new Vector();
-
         setWidth(width);
     }
 
@@ -51,19 +57,18 @@ public class GridLayout
      */
     public void addItem(GenericProductModel productModel) {
         GridItem gridItem = new GridItem(viewManager, productModel, this);
-
         gridItem.setSize(columnWidth, columnWidth);
         gridItems.addElement(gridItem);
-
+        
         int amountOfRows = (int) Math.ceil(
                 (double) gridItems.size() / this.columnCount);
         int newHeight = 
                 amountOfRows * this.rowHeight + CUSTOM_ITEM_MARGIN_SIZE * 2;
-
+        
         this.setPreferredSize(this.width, newHeight);
         repaint();
     }
-    
+
     /**
      * Adds a vector of ProductModels to the grid at once.
      * @param productModels 
@@ -74,7 +79,7 @@ public class GridLayout
             addItem((GenericProductModel) productModels.elementAt(i));
         }
     }
-    
+
     /**
      * For convenience. Calculates the size and repaints the layout only once.
      *
@@ -119,7 +124,7 @@ public class GridLayout
      */
     public void pointerPressed(int x, int y) {
         selectedItem = getItemAt(x, y);
-
+        
         if (selectedItem != null) {
             // Save the coordinates to be used in pointerReleased().
             lastX = x;
@@ -144,10 +149,9 @@ public class GridLayout
                         viewManager, 
                         (AlbumModel) selectedItem.model, 
                         showMoreByArtistButton));
-
         }
     }
-    
+
     /**
      * Clears the {@link #selectedItem} when pointer is dragged outside the grid
      * item.
@@ -168,7 +172,7 @@ public class GridLayout
     public void disableShowMoreByArtistButtonInAlbumViews() {
         this.showMoreByArtistButton = false;
     }    
-    
+
     /**
      * @see javax.microedition.lcdui.CustomItem#getMinContentHeight()
      */
@@ -204,15 +208,15 @@ public class GridLayout
         Enumeration e = gridItems.elements();
         int row = 0;
         int col = 0;
-
+        
         // Loop the grid items
         while (e.hasMoreElements()) {
             GridItem item = (GridItem) e.nextElement();
-
+            
             // Paint the current item
             item.paintXY(graphics, col * columnWidth, row * rowHeight);
             col++;
-
+            
             // Advance to the next row if all columns have been painted
             if (col == columnCount) {
                 row++;
@@ -229,21 +233,20 @@ public class GridLayout
      * @return The item instance in the given position or null if not found.
      */
     protected GridItem getItemAt(int x, int y) {
-
         // Calculate item index based on coordinates.
         final int col = x / columnWidth;
         final int row = y / rowHeight;
         final int index = (columnCount * row) + col;
-
+        
         GridItem item = null;
-
+        
         int size = gridItems.size();
         
         // Check if index is in range.
         if (index < size) {
             item = (GridItem) gridItems.elementAt(index);
         }
-
+        
         return item;
     }
 
@@ -254,16 +257,16 @@ public class GridLayout
     protected void onWidthOrColumnCountChanged() {
         columnWidth = (width - CUSTOM_ITEM_MARGIN_SIZE * 2) / columnCount;
         rowHeight = columnWidth; // Only square items
-
+        
         Enumeration e = gridItems.elements();
-
+        
         while (e.hasMoreElements()) {
             ((GridItem) e.nextElement()).setSize(columnWidth, rowHeight);
         }
-
+        
         final int rowCount = (int) Math.ceil((double) gridItems.size() / columnCount);
         setPreferredSize(width, rowCount * rowHeight + CUSTOM_ITEM_MARGIN_SIZE * 2);
-
+        
         repaint();
     }
 

@@ -5,31 +5,42 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import com.nokia.example.musicexplorer.data.ApiCache;
-import org.tantalum.util.L;
 
 /**
  * Displays popular releases using the Charts Resource.
  */
-public class PopularReleasesView
-        extends AlbumGridView {
+public class PopularReleasesView extends AlbumGridView {
 
     public static final String VIEW_TITLE = "Popular albums";
     public static final String PATH_TO_ICON = "/popular_icon.png";
 
+    /**
+     * Constructor.
+     * @param viewManager
+     */
     public PopularReleasesView(ViewManager viewManager) {
         super(viewManager, VIEW_TITLE, true);
     }
 
+    /**
+     * @see com.nokia.example.musicexplorer.ui.AlbumGridView#loadDataset()
+     */
     protected void loadDataset() {
-        ApiCache.getPopularReleases(new AlbumGridView.PlaceResultsTask(), super.queryPager.getCurrentQueryString());
+        ApiCache.getPopularReleases(
+                new AlbumGridView.PlaceResultsTask(),
+                super.queryPager.getCurrentQueryString());
     }
 
+    /**
+     * @see com.nokia.example.musicexplorer.ui.AlbumGridView#loadNextDataset()
+     */
     protected void loadNextDataset() {
         String queryString = super.queryPager.getQueryStringForNextPage();
-
+        
         ApiCache.getPopularReleases(
                 new AlbumGridView.PlaceResultsTask(),
                 queryString);

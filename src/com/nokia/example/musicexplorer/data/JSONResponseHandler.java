@@ -5,9 +5,11 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.data;
 
 import java.io.UnsupportedEncodingException;
+
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
 import org.tantalum.storage.CacheView;
@@ -27,7 +29,7 @@ public class JSONResponseHandler implements CacheView {
             //#debug			
             L.e("Unable to instantiate a UTF-8 string from bytes.", "", e);
         }
-
+        
         JSONObject response = null;
         try {
             response = new JSONObject(jsonString);
@@ -35,7 +37,7 @@ public class JSONResponseHandler implements CacheView {
             //#debug			
             L.e("Unable to instantiate a JSONObject from response.", "", e);
         }
-
+        
         return response;
     }
 }

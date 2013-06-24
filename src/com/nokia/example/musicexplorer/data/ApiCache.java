@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.data;
 
 import org.tantalum.PlatformUtils;
@@ -28,7 +29,7 @@ public class ApiCache {
     private static StaticWebCache apiCache;
     private static StaticWebCache imageCache;
     private static ViewManager viewManager;
-    
+
     /**
      * Initializes caches that are instances of Tantalum's StaticWebCache.
      *
@@ -51,11 +52,11 @@ public class ApiCache {
                 L.e("Could not initialize the API cache.", "", e);
             }
         }
-
+        
         if (imageCache == null) {
             PlatformUtils platformUtils = PlatformUtils.getInstance();
             ImageCacheView imageCacheView = platformUtils.getImageCacheView();
-
+            
             try {
                 imageCache = StaticWebCache.getWebCache(
                         '2', 
@@ -68,7 +69,7 @@ public class ApiCache {
                 L.e("Could not initialize the Image cache.", "", e);
             }
         }
-
+        
         return success;
     }
 
@@ -205,7 +206,7 @@ public class ApiCache {
             L.i("Search query cannot be null or empty.", "");
             return null;
         }
-
+        
         ApiRequestTask apiRequestTask = new ApiRequestTask(
                 viewManager,
                 apiCache,        
@@ -213,7 +214,7 @@ public class ApiCache {
                 Task.NORMAL_PRIORITY,
                 StaticWebCache.GET_WEB,
                 callback);
-
+        
         return apiRequestTask;
     }
 
@@ -240,7 +241,7 @@ public class ApiCache {
         
         return apiRequestTask;
     }
-    
+
     public static Task getArtistsInGenre(String genreId, Task callback, String pagingQueryString) {
         ApiRequestTask apiRequestTask = new ApiRequestTask(
                 viewManager,

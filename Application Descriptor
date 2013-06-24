@@ -1,4 +1,4 @@
-MIDlet-Version: 0.1
+MIDlet-Version: 1.0
 MIDlet-Vendor: Nokia
 MIDlet-Jar-URL: MusicExplorer.jar
 MicroEdition-Configuration: CLDC-1.1

@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import javax.microedition.lcdui.Command;
@@ -26,11 +27,16 @@ import com.nokia.example.musicexplorer.data.QueryPager;
 public abstract class ListItemView 
         extends Form
         implements ItemCommandListener {
-    
+
     protected QueryPager queryPager;
     protected LoadMoreButton loadMoreButton;
     protected ViewManager viewManager;
-    
+
+    /**
+     * Constructor.
+     * @param viewManager
+     * @param title
+     */
     public ListItemView(ViewManager viewManager, String title) {
         super(title);
         this.viewManager = viewManager;
@@ -42,16 +48,19 @@ public abstract class ListItemView
     protected abstract void loadDataset();
     protected abstract void loadNextDataset();
     protected abstract void parseAndAppendToView(JSONObject response) throws JSONException;
-    
+
+    /**
+     * @see javax.microedition.lcdui.ItemCommandListener#commandAction(
+     * javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
+     */
     public void commandAction(Command c, Item item) {
         if (c == loadMoreButton.getCommand()) {
             loadNextDataset();
         }
     }
-    
-    public class PlaceResultsTask 
-            extends Task {
-        
+
+    public class PlaceResultsTask extends Task {
+
         public PlaceResultsTask() {
         }
 
@@ -76,6 +85,7 @@ public abstract class ListItemView
                     L.e("Could not parse response.", "", e);
                 }
             }
+            
             return response;
         }
     }

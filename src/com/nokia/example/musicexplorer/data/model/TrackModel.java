@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.data.model;
 
 import org.json.me.JSONObject;
@@ -15,39 +16,43 @@ import org.tantalum.util.L;
 /**
  * Represents a Track product.
  */
-public class TrackModel 
-		extends GenericProductModel {
+public class TrackModel extends GenericProductModel {
 
     public int duration = 0; // In seconds
     public int sequence = 0;
 
+    /**
+     * Constructor.
+     * @param track
+     */
     public TrackModel(JSONObject track) {
         super(track);
-
+        
         try {
-                this.duration = track.getInt("duration");
-                this.sequence = track.getInt("sequence");
+            this.duration = track.getInt("duration");
+            this.sequence = track.getInt("sequence");
         } catch (JSONException e) {
-                L.e("Could not parse Track from JSON", "", e);
+            L.e("Could not parse Track from JSON", "", e);
         }
     }
 
     public String getFormattedDuration() {
         if (duration <= 0) {
-                return "";
+            return "";
         }
-
+        
         int seconds = duration;
         int minutes = seconds / 60;
         
         seconds = seconds - (minutes * 60);
-
+        
         String leadingZero = "";
+        
         // Add leading zero
         if (seconds < 10) {
             leadingZero = "0";
         }
-
+        
         return 
             "(" + 
             Integer.toString(minutes) + 
@@ -59,9 +64,9 @@ public class TrackModel
 
     /**
      * For debugging purposes.
-     * @return String A description of the object.
+     * @see java.lang.Object#toString()
      */
     public String toString() {
-            return "TrackModel: name=" + name + ", id=" + id;
+        return "TrackModel: name=" + name + ", id=" + id;
     }
 }

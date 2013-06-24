@@ -5,9 +5,11 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.settings;
 
 import java.io.IOException;
+
 import org.tantalum.util.L;
 import org.tantalum.util.StringUtils;
 
@@ -24,44 +26,12 @@ public class ApiEndpoint {
     private static final String APP_CODE = "NYKC67ShPhQwqaydGIW4yg";
 
     /**
-     * Appended to the end of each API query.
-     *
-     * @return HTTP query string
-     */
-    private static String getApiCredentials() {
-        return "&app_id=" + APP_ID + "&app_code=" + APP_CODE;
-    }
-
-    /**
      * Forms the base URL for calls.
      *
      * @return
      */
     public static String getBaseUrl() {
         return ENDPOINT_URL + VERSION + '/';
-    }
-
-    private static String getCountrycode() {
-        return COUNTRYCODE + '/';
-    }
-
-    /**
-     * Forms an API call.
-     *
-     * @param query The query.
-     * @param pagingQueryString Paging parameters from a QueryPager instance.
-     * @return
-     */
-    private static String formUrl(String query, String pagingQueryString) {
-        String url =
-                getBaseUrl() + getCountrycode() + query + getApiCredentials();
-
-        // Checks if paging parameters exist.
-        if (pagingQueryString != null) {
-            url += pagingQueryString;
-        }
-
-        return url;
     }
 
     /**
@@ -113,7 +83,6 @@ public class ApiEndpoint {
     public static String getChartsResourceUrl(String pagingQueryString) {
         String category = "album/";
         String query = "products/charts/" + category + "/?domain=music";
-
         return formUrl(query, pagingQueryString);
     }
 
@@ -132,14 +101,11 @@ public class ApiEndpoint {
                     + StringUtils.urlEncode(searchQuery.toLowerCase())
                     + "&category=artist",
                     pagingQueryString);
-
         } catch (IOException e) {
-            L.e(
-                    "Couldn't URL encode the given search query.",
-                    searchQuery != null ? searchQuery : "",
-                    e);
+            L.e("Couldn't URL encode the given search query.",
+                searchQuery != null ? searchQuery : "", e);
         }
-
+        
         return null;
     }
 
@@ -152,7 +118,7 @@ public class ApiEndpoint {
     public static String getReleasesForArtist(
             int artistId,
             String pagingQueryString) {
-
+    	
         // Gets only albums by an artist of artistId.
         return formUrl(
                 "creators/"
@@ -183,5 +149,36 @@ public class ApiEndpoint {
                 "&genre=" + genreId +
                 "&category=artist",
                 pagingQueryString);
+    }
+
+    /**
+     * Appended to the end of each API query.
+     *
+     * @return HTTP query string
+     */
+    private static String getApiCredentials() {
+        return "&app_id=" + APP_ID + "&app_code=" + APP_CODE;
+    }
+
+    private static String getCountrycode() {
+        return COUNTRYCODE + '/';
+    }
+
+    /**
+     * Forms an API call.
+     *
+     * @param query The query.
+     * @param pagingQueryString Paging parameters from a QueryPager instance.
+     * @return
+     */
+    private static String formUrl(String query, String pagingQueryString) {
+        String url = getBaseUrl() + getCountrycode() + query + getApiCredentials();
+        
+        // Checks if paging parameters exist.
+        if (pagingQueryString != null) {
+            url += pagingQueryString;
+        }
+        
+        return url;
     }
 }

@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import javax.microedition.lcdui.CustomItem;
@@ -15,24 +16,21 @@ import javax.microedition.lcdui.Image;
 import org.tantalum.Task;
 import org.tantalum.util.L;
 
+import com.nokia.mid.ui.DirectGraphics;
+import com.nokia.mid.ui.DirectUtils;
+
 import com.nokia.example.musicexplorer.data.ApiCache;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
 import com.nokia.example.musicexplorer.settings.Placeholders;
 import com.nokia.example.musicexplorer.settings.ThumbnailSizes;
-import com.nokia.mid.ui.DirectGraphics;
-import com.nokia.mid.ui.DirectUtils;
 
 /**
- * Displays ArtistModel info: thumbnail, artist name, genre, etc...
+ * Displays ArtistModel info: thumbnail, artist name, genre, etc.
  */
-public class ListItem
-        extends CustomItem {
+public class ListItem extends CustomItem {
 
-    public String thumbnailSize;
-    protected ViewManager viewManager;
-    
     private static final int POINTER_JITTER = 10;
     private static final String THUMBNAIL_SIZE = ThumbnailSizes.SIZE_50X50;
     private static final int LIST_ITEM_SIDE = 50;
@@ -42,9 +40,10 @@ public class ListItem
     private static final int TEXT_OFFSET_Y = 16;
     private static final int TITLE_COLOR_HEX_RGB = 0x2AA7CC;
     private static final int TEXT_COLOR_HEX_RGB = 0x4C4C4C;
-    private static final int PLACEHOLDER_RECT_COLOR_HEX_RGB = 0xC8C8C8;
     private static final int HIGHLIGHT_COLOR_HEX_ARGB = 0x88FFFFFF;
 
+    public String thumbnailSize;
+    protected ViewManager viewManager;
     private String text;
     private int width;
     private int height;
@@ -56,15 +55,27 @@ public class ListItem
     private GenericProductModel model;
     private String albumOrTrackAmountText = "";
     private Task getThumbnailTask;
-    
-    
+
+    /**
+     * Constructor.
+     * @param viewManager
+     * @param model
+     */
     public ListItem(ViewManager viewManager,
             GenericProductModel model) {
+        
         this();
         this.viewManager = viewManager;
         this.model = model;
         this.height = ListItem.LIST_ITEM_HEIGHT;
         this.width = ListItem.LIST_ITEM_WIDTH;
+    }
+
+    /**
+     * Private default constructor.
+     */
+    private ListItem() {
+        super(null);
     }
 
     public void sizeChanged(int w, int h) {
@@ -85,7 +96,7 @@ public class ListItem
         if (pointerEnabled
                 && !(Math.abs(x - lastX) < ListItem.POINTER_JITTER
                 && Math.abs(y - lastY) < ListItem.POINTER_JITTER)) {
-
+            
             pointerActive = false;
         }
     }
@@ -97,8 +108,29 @@ public class ListItem
         if (pointerEnabled && pointerActive) {
             pointerReleaseAction();
         }
+        
         pointerActive = false;
         repaint(); // Called to de-highlight
+    }
+
+    public String toString() {
+        return "ListItem: " + this.text;
+    }
+
+    protected int getMinContentHeight() {
+        return height;
+    }
+
+    protected int getMinContentWidth() {
+        return width;
+    }
+
+    protected int getPrefContentHeight(int arg0) {
+        return height;
+    }
+
+    protected int getPrefContentWidth(int arg0) {
+        return width;
     }
 
     /**
@@ -123,30 +155,19 @@ public class ListItem
         paint(graphics, x, y, width, height);
     }
 
-    public class PlaceImageTask extends Task {
+    public void disablePointer() {
+        this.pointerEnabled = false;
+    }
 
-        private ListItem item;
-
-        public PlaceImageTask(ListItem item) {
-            super(Task.NORMAL_PRIORITY);
-            this.item = item;
-        }
-
-        public Object exec(Object thumbnail) {
-            if (thumbnail instanceof Image) {
-                this.item.setThumbnail((Image) thumbnail);
-                this.item.repaint();
-            }
-            return thumbnail;
-        }
+    public void setAlbumOrTrackAmountText(String text) {
+        this.albumOrTrackAmountText = text;
+        repaint();
     }
 
     /**
      * For convenience.
      */
-    protected void paint(
-            Graphics graphics, int x, int y, int width, int height) {
-
+    protected void paint(Graphics graphics, int x, int y, int width, int height) {
         graphics.setColor(TEXT_COLOR_HEX_RGB);
         
         // Paints the first two rows of text.
@@ -168,25 +189,24 @@ public class ListItem
             // Begin loading thumbnail image
             getThumbnail();
         }
-
+        
         if(pointerActive) {
             paintHighlight(graphics, x, y);
         }
     }
-    
+
     protected void paintHighlight(Graphics graphics, int x, int y) {
         int originalColor = graphics.getColor(); // Save color
         
         DirectGraphics directGraphics = 
                 DirectUtils.getDirectGraphics(graphics);
-
         directGraphics.setARGBColor(HIGHLIGHT_COLOR_HEX_ARGB);
-
+        
         graphics.fillRect(
                 x, 
                 y, 
                 ListItem.LIST_ITEM_SIDE, 
-                ListItem.LIST_ITEM_SIDE);        
+                ListItem.LIST_ITEM_SIDE);
         
         graphics.setColor(originalColor); // Restore original color
     }
@@ -211,10 +231,10 @@ public class ListItem
                     this.albumOrTrackAmountText, 
                     x + ListItem.TEXT_OFFSET_X, 
                     y + ListItem.TEXT_OFFSET_Y * 2, 
-                    Graphics.TOP | Graphics.LEFT);   
+                    Graphics.TOP | Graphics.LEFT);
         }
     }
-    
+
     protected void paintArtistDetails(Graphics graphics, int x, int y) {
         // Paint artist's name.
         graphics.setFont(
@@ -274,42 +294,6 @@ public class ListItem
                 y + ListItem.TEXT_OFFSET_Y, 
                 Graphics.TOP | Graphics.LEFT);
     }
-    
-    protected int getMinContentHeight() {
-        return height;
-    }
-
-    protected int getMinContentWidth() {
-        return width;
-    }
-
-    protected int getPrefContentHeight(int arg0) {
-        return height;
-    }
-
-    protected int getPrefContentWidth(int arg0) {
-        return width;
-    }
-
-    public String toString() {
-        return "ListItem: " + this.text;
-    }
-
-    public void disablePointer() {
-        this.pointerEnabled = false;
-    }
-    
-    public void setAlbumOrTrackAmountText(String text) {
-        this.albumOrTrackAmountText = text;
-        repaint();
-    }
-    
-    /**
-     * Private default constructor.
-     */
-    private ListItem() {
-        super(null);
-    }
 
     /**
      * Currently opens only an artist view.
@@ -319,13 +303,11 @@ public class ListItem
             ArtistView artistView = new ArtistView(
                     viewManager, 
                     (ArtistModel) this.model);
-        
-            /**
-             * Artist view is added to view manager by using addtoStack().
-             */
+            
+            // Artist view is added to view manager by using addtoStack().
             viewManager.addToStack(artistView);
-
-        } else if (this.model instanceof AlbumModel) {
+        }
+        else if (this.model instanceof AlbumModel) {
             AlbumView albumView = new AlbumView(
                     viewManager, 
                     (AlbumModel) this.model, 
@@ -333,7 +315,7 @@ public class ListItem
             viewManager.showView(albumView);
         }
     }
-    
+
     private void getThumbnail() {
         // Checks if task is already triggered
         if (this.thumbnail == null && this.getThumbnailTask == null) {
@@ -341,14 +323,29 @@ public class ListItem
                 this.getThumbnailTask = ApiCache.getImage(
                         this.model.getThumbnailUrl(ListItem.THUMBNAIL_SIZE), 
                         new PlaceImageTask(this));
-                
             } catch (Exception e) {
-                L.e(
-                        "No thumbnail available or not loaded yet for item", 
-                        this.toString(), 
-                        e);
+                L.e("No thumbnail available or not loaded yet for item", 
+                    this.toString(), e);
             }
         }
     }
-    
+
+    public class PlaceImageTask extends Task {
+
+        private ListItem item;
+
+        public PlaceImageTask(ListItem item) {
+            super(Task.NORMAL_PRIORITY);
+            this.item = item;
+        }
+
+        public Object exec(Object thumbnail) {
+            if (thumbnail instanceof Image) {
+                this.item.setThumbnail((Image) thumbnail);
+                this.item.repaint();
+            }
+            
+            return thumbnail;
+        }
+    }
 }

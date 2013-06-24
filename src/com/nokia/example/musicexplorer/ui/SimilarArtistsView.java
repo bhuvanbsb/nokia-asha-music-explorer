@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import javax.microedition.lcdui.ItemCommandListener;
@@ -24,7 +25,12 @@ public class SimilarArtistsView
         implements ItemCommandListener {
 
     private int artistId = 0;
-    
+
+    /**
+     * Constructor.
+     * @param viewManager
+     * @param artistId
+     */
     public SimilarArtistsView(ViewManager viewManager, int artistId) {
         super(viewManager, "Similar artists");
         
@@ -32,26 +38,33 @@ public class SimilarArtistsView
         
         loadDataset();
     }
-    
+
+    /**
+     * @see com.nokia.example.musicexplorer.ui.ListItemView#loadDataset()
+     */
     protected void loadDataset() {
         ApiCache.getSimilarArtistsById(artistId, new PlaceResultsTask(), queryPager.getCurrentQueryString());
     }
 
+    /**
+     * @see com.nokia.example.musicexplorer.ui.ListItemView#loadNextDataset()
+     */
     protected void loadNextDataset() {
         ApiCache.getSimilarArtistsById(artistId, new PlaceResultsTask(), queryPager.getQueryStringForNextPage());
     }
-    
+
+    /**
+     * @see com.nokia.example.musicexplorer.ui.ListItemView#parseAndAppendToView(org.json.me.JSONObject)
+     */
     protected void parseAndAppendToView(JSONObject response) throws JSONException {
         JSONArray items = response.getJSONArray("items");
         int loopMax = items.length();
-
+        
         for (int i = 0; i < loopMax; i++) {
             JSONObject artist = (JSONObject) items.get(i);
             ArtistModel artistModel = new ArtistModel(artist);
-            ListItem listItem = 
-                    new ListItem(viewManager, artistModel);
-
+            ListItem listItem = new ListItem(viewManager, artistModel);
             append(listItem);
-        }        
+        }
     }
 }

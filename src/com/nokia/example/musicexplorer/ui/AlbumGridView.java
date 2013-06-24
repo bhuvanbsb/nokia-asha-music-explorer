@@ -5,9 +5,11 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
-import com.nokia.example.musicexplorer.data.ApiCache;
+import java.util.Vector;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
@@ -15,8 +17,6 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.ItemStateListener;
-
-import java.util.Vector;
 
 import org.json.me.JSONObject;
 import org.json.me.JSONArray;
@@ -27,8 +27,6 @@ import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.QueryPager;
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 
 /**
  * A form based abstract view for displaying album cover thumbnails in different
@@ -43,33 +41,36 @@ public abstract class AlbumGridView
             InitializableView {
 
     public static final int ITEMS_PER_PAGE = 18;
+    private static final int SCREEN_WIDTH_IN_PORTRAIT = 240;
+
     protected QueryPager queryPager;
     protected Vector viewModel;
     protected final ViewManager viewManager;
     protected GridLayout grid;
-
-    private static final int SCREEN_WIDTH_IN_PORTRAIT = 240;
     private final Command backCommand;
     private LoadMoreButton loadMoreButton;
-    private final boolean showMoreByArtistButton;
-
     private boolean initialized;
-    
+
+    /**
+     * Constructor.
+     * @param viewManager
+     * @param title
+     * @param showMoreByArtistButton
+     */
     public AlbumGridView(ViewManager viewManager, String title, boolean showMoreByArtistButton) {
         super(title);
-
+        
         this.viewManager = viewManager;
         this.backCommand = new Command("Back", Command.BACK, 1);
-        this.showMoreByArtistButton = showMoreByArtistButton;
         this.loadMoreButton = new LoadMoreButton(this);
-
+        
         // Initialize the query pager.
         this.queryPager = new QueryPager();
         this.queryPager.setItemsPerPage(ITEMS_PER_PAGE);
-
+        
         // Initialize the grid layout.
         this.grid = new GridLayout(SCREEN_WIDTH_IN_PORTRAIT, this.viewManager);
-
+        
         if (!showMoreByArtistButton) {
             this.grid.disableShowMoreByArtistButtonInAlbumViews();
         }        
@@ -79,23 +80,36 @@ public abstract class AlbumGridView
         setItemStateListener(this);
     }
 
+    /**
+     * @see com.nokia.example.musicexplorer.ui.InitializableView#initialize()
+     */
     public void initialize() {
-        if(!initialized) {
+        if (!initialized) {
             appendGrid();
             loadDataset();
-            
             initialized = true;
         } else {
             L.i("Already initialized", this.toString());
         }
     }
-    
+
+    /**
+     * @see javax.microedition.lcdui.ItemStateListener#itemStateChanged(
+     * javax.microedition.lcdui.Item)
+     */
     public void itemStateChanged(Item item) {
     }
 
+    /**
+     * @see javax.microedition.lcdui.Displayable#sizeChanged(int, int)
+     */
     public void sizeChanged(int w, int h) {
     }
 
+    /**
+     * @see javax.microedition.lcdui.ItemCommandListener#commandAction(
+     * javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
+     */
     public void commandAction(Command c, Item item) {
         if (c == loadMoreButton.getCommand()) {
             // Load more triggered
@@ -103,6 +117,10 @@ public abstract class AlbumGridView
         }
     }
 
+    /**
+     * @see javax.microedition.lcdui.CommandListener#commandAction(
+     * javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+     */
     public void commandAction(Command command, Displayable displayable) {
         if (backCommand.equals(command)) {
             // Hardware back button was pressed
@@ -123,7 +141,7 @@ public abstract class AlbumGridView
     protected void addItemsToGrid(JSONArray items) throws JSONException {
         int loopMax = items.length();
         JSONObject tmp;
-
+        
         for (int i = 0; i < loopMax; i++) {
             tmp = (JSONObject) items.get(i);
             this.grid.addItem(new AlbumModel(tmp));
@@ -142,31 +160,12 @@ public abstract class AlbumGridView
             notifyTotalUpdated();
             
             loadMoreButton.remove();
-
+            
             if (queryPager.hasMorePages()) {
                 loadMoreButton.append();
             }
         } catch (JSONException e) {
             L.e("Error while parsing items to JSON.", "", e);
-        }
-    }
-
-
-    
-    /**
-     * Callback task for parsing the JSON response for the view.
-     */
-    protected class PlaceResultsTask extends Task {
-
-        public PlaceResultsTask() {
-            super(Task.NORMAL_PRIORITY);
-        }
-
-        public Object exec(Object response) {
-            if (response instanceof JSONObject) {
-                parseJSONForView((JSONObject) response);
-            }
-            return response;
         }
     }
 
@@ -186,5 +185,23 @@ public abstract class AlbumGridView
      * Notify when total amount in QueryPager is updated.
      */   
     protected void notifyTotalUpdated() {
+    }
+
+    /**
+     * Callback task for parsing the JSON response for the view.
+     */
+    protected class PlaceResultsTask extends Task {
+
+        public PlaceResultsTask() {
+            super(Task.NORMAL_PRIORITY);
+        }
+
+        public Object exec(Object response) {
+            if (response instanceof JSONObject) {
+                parseJSONForView((JSONObject) response);
+            }
+            
+            return response;
+        }
     }
 }

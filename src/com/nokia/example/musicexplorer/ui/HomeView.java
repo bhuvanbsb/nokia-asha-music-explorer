@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import javax.microedition.lcdui.Command;
@@ -22,23 +23,57 @@ public class HomeView
     // Class members
     private final ViewManager viewManager;
     private final Command backCommand;
-    
     private MenuItem newReleasesItem;
     private MenuItem popularReleasesItem;
     private MenuItem searchItem;
     private MenuItem genresItem;
-    
+
+    /**
+     * Constructor.
+     * @param viewManager
+     */
     public HomeView(ViewManager viewManager) {
         super("Music Explorer");
         this.viewManager = viewManager;
-
+        
         this.backCommand = new Command("Back", Command.BACK, 1);
         addCommand(backCommand);
         setCommandListener(this);
-
+        
         populateList();
     }
-   
+
+    /**
+     * Handle hardware back button.
+     * @param command
+     * @param displayable 
+     *
+     * @see javax.microedition.lcdui.CommandListener#commandAction(
+     * javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+     */
+    public void commandAction(Command command, Displayable displayable) {
+        if (backCommand.equals(command)) {
+            // Hardware back button was pressed
+            viewManager.goBack();
+        }
+    }
+
+    /**
+     * Triggered by MenuItems.
+     * @param item 
+     */
+    public void triggerAction(MenuItem item) {
+        if (item == newReleasesItem) {
+            viewManager.showView((InitializableView) new NewReleasesView(viewManager));
+        } else if (item == popularReleasesItem) {
+            viewManager.showView((InitializableView) new PopularReleasesView(viewManager));
+        } else if (item == searchItem) {
+            viewManager.showView((InitializableView) new SearchView(viewManager));
+        } else if (item == genresItem) {
+            viewManager.showView((InitializableView) new GenresListView(viewManager));
+        } 
+    }
+
     private void populateList() {
         newReleasesItem = new MenuItem(
                 NewReleasesView.PATH_TO_ICON, 
@@ -59,7 +94,7 @@ public class HomeView
                 GenresListView.PATH_TO_ICON, 
                 GenresListView.VIEW_TITLE,
                 this);
-
+        
         append(newReleasesItem);
         append(new LineSeparator());
         append(popularReleasesItem);
@@ -67,33 +102,5 @@ public class HomeView
         append(searchItem);
         append(new LineSeparator());
         append(genresItem);
-    }
- 
-    /**
-     * Triggered by MenuItems.
-     * @param item 
-     */
-    public void triggerAction(MenuItem item) {
-        if (item == newReleasesItem) {
-            viewManager.showView((InitializableView) new NewReleasesView(viewManager));
-        } else if (item == popularReleasesItem) {
-            viewManager.showView((InitializableView) new PopularReleasesView(viewManager));
-        } else if (item == searchItem) {
-            viewManager.showView((InitializableView) new SearchView(viewManager));
-        } else if (item == genresItem) {
-            viewManager.showView((InitializableView) new GenresListView(viewManager));
-        } 
-    }
-    
-    /**
-     * Handle hardware back button.
-     * @param command
-     * @param displayable 
-     */
-    public void commandAction(Command command, Displayable displayable) {
-        if (backCommand.equals(command)) {
-            // Hardware back button was pressed
-            viewManager.goBack();
-        }
     }
 }

@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.data.model;
 
 import org.json.me.JSONObject;
@@ -16,7 +17,11 @@ import org.tantalum.util.L;
 public class PerformerModel {
     public String name = "";
     public int id = 0;
-    
+
+    /**
+     * Constructor.
+     * @param performer
+     */
     public PerformerModel(JSONObject performer) {
         try {
             name = performer.getString("name");
@@ -25,7 +30,11 @@ public class PerformerModel {
             L.e("Could not parse performer details", "", e);
         }
     }
-    
+
+    /**
+     * For debugging purposes.
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         return "PerformerModel " + 
                 "name=" + 

@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import javax.microedition.lcdui.CustomItem;
@@ -13,14 +14,16 @@ import javax.microedition.lcdui.Graphics;
 /**
  * Separator item for lists.
  */
-public class LineSeparator
-        extends CustomItem {
+public class LineSeparator extends CustomItem {
 
+    /**
+     * Constructor.
+     */
     public LineSeparator() {
         super(null);
         setPreferredSize(240, 12);
     }
-    
+
     protected int getMinContentWidth() {
         return 0;
     }
@@ -37,12 +40,10 @@ public class LineSeparator
         return 0;
     }
 
-    protected void paint(Graphics graphics, int w, int h) {    
+    protected void paint(Graphics graphics, int w, int h) {
         graphics.setColor(219, 219, 219);
         graphics.drawLine(0, 0,  239, 0);
-
         graphics.setColor(255, 255, 255);
         graphics.drawLine(0, 1,  239, 1);
     }
-    
 }

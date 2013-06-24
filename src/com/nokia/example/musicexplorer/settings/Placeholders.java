@@ -5,26 +5,31 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.settings;
+
+import java.io.IOException;
+import java.util.Hashtable;
+
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+
+import org.tantalum.util.L;
 
 import com.nokia.example.musicexplorer.data.model.AlbumModel;
 import com.nokia.example.musicexplorer.data.model.ArtistModel;
 import com.nokia.example.musicexplorer.data.model.GenericProductModel;
-import java.io.IOException;
-import java.util.Hashtable;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-import org.tantalum.util.L;
 
 /**
  * Placeholder images for artists and albums that do not have a thumbnail.
  */
 public class Placeholders {
+
     public static final String ARTIST_PLACEHOLDER = "/artist_icon.png";
     public static final String ALBUM_PLACEHOLDER = "/album_icon.png";
-    
+
     private static Hashtable images;
-    
+
     /**
      * Loads images to a hashtable for further use.
      * @param pathToImage One of the static strings associated with this class.
@@ -33,11 +38,11 @@ public class Placeholders {
     public static Image load(String pathToImage) {
         Image image = null;
         
-        if(images == null) {
+        if (images == null) {
             images = new Hashtable();
         }
         
-        if(images.containsKey(pathToImage)) {
+        if (images.containsKey(pathToImage)) {
             image = (Image) images.get(pathToImage);
         } else {
             try {
@@ -50,7 +55,7 @@ public class Placeholders {
         
         return image;
     }
-    
+
     /**
      * Paints a placeholder image using a centered anchor. The center point is 
      * calculated from x, y, width and height.
@@ -83,7 +88,7 @@ public class Placeholders {
                     x, 
                     y, 
                     anchor);
-
+            
         } else if (model instanceof AlbumModel) {
             graphics.drawImage(
                     load(Placeholders.ALBUM_PLACEHOLDER), 

@@ -6,6 +6,7 @@
 * or trade names of their respective owners. 
 * See LICENSE.TXT for license information.
 */
+
 package com.nokia.example.musicexplorer.utils;
 
 import com.nokia.mid.ui.CategoryBar;
@@ -19,7 +20,7 @@ public class CategoryBarUtils {
         final ElementListener listener) {
         bar.setElementListener(listener == null ? null
             : new com.nokia.mid.ui.ElementListener() {
-
+            
             public void notifyElementSelected(CategoryBar bar, int selectedIndex) {
                 listener.notifyElementSelected(bar, selectedIndex);
             }
@@ -30,10 +31,9 @@ public class CategoryBarUtils {
      * ElementListener interface for devices which don't support com.nokia.mid.ui.ElementListener.
      */
     public interface ElementListener {
-        public void notifyElementSelected(CategoryBar categoryBar,
-            int selectedIndex);
+        public void notifyElementSelected(CategoryBar categoryBar, int selectedIndex);
     }
-    
+
     /**
      * For those views that implement category bar. This allows view manager to 
      * show and hide the category bar when e.g. going back from a view with

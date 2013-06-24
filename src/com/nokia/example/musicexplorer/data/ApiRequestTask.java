@@ -5,16 +5,20 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.data;
 
-import com.nokia.example.musicexplorer.settings.ApiEndpoint;
-import com.nokia.example.musicexplorer.ui.ViewManager;
 import java.io.IOException;
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
+
 import org.tantalum.Task;
 import org.tantalum.net.StaticWebCache;
 import org.tantalum.util.L;
+
+import com.nokia.example.musicexplorer.settings.ApiEndpoint;
+import com.nokia.example.musicexplorer.ui.ViewManager;
 
 /**
  * Tests network connectivity before making an actual API call.
@@ -28,7 +32,7 @@ public class ApiRequestTask
     private final int taskPriority;
     private final int cacheMode;
     private final ViewManager viewManager;
-    
+
     /**
      * Constructor. Forks the tasks after parameters are set.
      * @param viewManager
@@ -62,7 +66,7 @@ public class ApiRequestTask
                     cacheMode,
                     callback);
         }
-
+        
         return o;
     }
 
@@ -73,27 +77,26 @@ public class ApiRequestTask
      */
     private boolean hasNetworkConnection() {
         boolean hasNetwork = false;
-
+        
         HttpConnection httpConnection;
         String testRequestUrl = ApiEndpoint.getBaseUrl();
-
+        
         try {
             L.i("Testing network connection", "URL: " + testRequestUrl);
-
+            
             httpConnection = 
                     (HttpConnection) Connector.open(testRequestUrl);
-
+            
             L.i("Response message", httpConnection.getResponseMessage());
             L.i("Network connection established", httpConnection.toString());
-
+            
             hasNetwork = true;
             httpConnection.close();
         } catch (IOException e) {
             L.i("Network connection failed", e.toString());
             viewManager.showNetworkAlert();
         }
-
+        
         return hasNetwork;
-    }    
-
+    }
 }

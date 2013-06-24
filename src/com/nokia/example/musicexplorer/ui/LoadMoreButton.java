@@ -5,6 +5,7 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
 import javax.microedition.lcdui.Command;
@@ -23,11 +24,15 @@ public class LoadMoreButton {
     private Form formView;
     private int loadMoreButtonIndex = -1;
 
+    /**
+     * Constructor.
+     * @param formView
+     */
     public LoadMoreButton(Form formView) {
         // Initialize a load more button.
         this.formView = formView;
         this.loadMoreCommand = new Command("Load more", Command.ITEM, 1);
-
+        
         initializeButton();
     }
 
@@ -38,7 +43,7 @@ public class LoadMoreButton {
     public Command getCommand() {
         return loadMoreCommand;
     }
-    
+
     /**
      * Appends the button to the form view.
      */
@@ -55,11 +60,11 @@ public class LoadMoreButton {
             loadMoreButtonIndex = -1;
         }
     }
-    
+
     /**
-     * Initializes a StringItem with button settings. Sets the form as
-     * the items command listener. It is up to the form to decide what to 
-     * do with the command.
+     * Initializes a StringItem with button settings. Sets the form as the
+     * items' command listener. It is up to the form to decide what to do with
+     * the command.
      */
     private void initializeButton() {
         this.loadMoreButton = new StringItem(null, "Load more", Item.BUTTON);

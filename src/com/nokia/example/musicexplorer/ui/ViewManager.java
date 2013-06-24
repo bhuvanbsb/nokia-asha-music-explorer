@@ -5,9 +5,9 @@
  * Other product and company names mentioned herein may be trademarks or trade
  * names of their respective owners. See LICENSE.TXT for license information.
  */
+
 package com.nokia.example.musicexplorer.ui;
 
-import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Displayable;
 
 /**
@@ -31,31 +31,35 @@ public interface ViewManager {
      * @param view The new view to be shown
      */
     public void showView(Displayable view);
-    
+
     /**
      * Convenience method for displaying views that need initialization.
+     * 
      * @param view 
      */
     public void showView(InitializableView view);
-    
+
     /**
      * Shows an alert telling network is not available.
+     * 
      * @param alert
      */
     public void showNetworkAlert();
 
     /**
      * For displaying subviews e.g. in a view that has category bar.
+     * 
      * @param view 
      */
     public void showSubview(Displayable view);
-    
+
     /**
      * Add to stack but don't display. For views that implement a category bar.
+     * 
      * @param view 
      */
     public void addToStack(Displayable view);
-    
+
     /**
      * Show the view which was shown before the currently shown view. Discard
      * the current view.
