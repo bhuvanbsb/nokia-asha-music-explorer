@@ -23,16 +23,15 @@ The application is hosted in Nokia Developer Projects:
 For more information on the implementation, visit the wiki page:
 - https://projects.developer.nokia.com/NokiaAshaMusicExplorer/wiki
 
+1. Prerequisities
 -------------------------------------------------------------------------------
-
-PREREQUISITIES
 
 Java ME basics
 Java ME threads
 
--------------------------------------------------------------------------------
 
-IMPORTANT FILES AND CLASSES
+2. Important files and classes
+-------------------------------------------------------------------------------
 
 src\..\data\ApiCache.java
 src\..\data\JSONResponseHandler.java
@@ -41,9 +40,9 @@ src\..\ui\ViewManager.java
 
 Classes: GridItem, GridLayout, ListItem
 
--------------------------------------------------------------------------------
 
-DESIGN CONSIDERATIONS
+3. Design considerations
+-------------------------------------------------------------------------------
 
 The application has been designed to allow the user to browse Nokia Music using
 a drill down user-interface. The user can view new releases, popular releases,
@@ -63,9 +62,8 @@ worker threads. The behaviour is similar to what can be found in many
 JavaScript web applications. When loading an image, a placeholder image 
 is shown until the image has been successfully loaded.
 
+4. Known issues
 -------------------------------------------------------------------------------
-
-KNOWN ISSUES
 
 - java.lang.NumberFormatException shown sometimes in the log during
   JSON parsing. This issue does not affect the application and does not 
@@ -76,10 +74,10 @@ KNOWN ISSUES
 - The user can navigate to new Artist views from the Similar artists view.
   These opened Artist views grow the view history and the device may run out of 
   memory at some point.
-  
--------------------------------------------------------------------------------
 
-BUILD AND INSTALLATION INSTRUCTIONS
+
+5. Build and installation instructions
+-------------------------------------------------------------------------------
 
 The example has been created with NetBeans 7.3 and Nokia Asha SDK 1.0. The 
 project can be easily opened in NetBeans by selecting 'Open Project' from the
@@ -98,9 +96,9 @@ the phone's memory card using a USB cable and the mass storage functionality.
 
 The example can also be built and run with Eclipse.
 
--------------------------------------------------------------------------------
 
-RUNNING THE EXAMPLE
+6. Running the example
+-------------------------------------------------------------------------------
 
 The application requires a network connection in order to work. Network
 connection is used for accessing the Nokia Music REST API. All views except the
@@ -114,9 +112,8 @@ full word queries only. For example, searching for "Madon" lists only those
 that contain the word "Madon" but not e.g. "Madonna". A search query is made
 automatically after the user has stopped typing.
 
+7. Compatibility
 -------------------------------------------------------------------------------
-
-COMPATIBILITY
 
 Nokia Asha software platform 1.0 and newer.
 
@@ -129,7 +126,8 @@ Developed with:
 Netbeans 7.3
 Nokia Asha SDK 1.0
 
+
+8. Change history
 -------------------------------------------------------------------------------
 
-CHANGE HISTORY
 v1.0 The first version published at developer.nokia.com.
