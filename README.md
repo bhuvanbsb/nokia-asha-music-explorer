@@ -5,40 +5,43 @@ Nokia Asha Music Explorer demonstrates how the Nokia Music REST API can be used.
 The application uses LCDUI components and the Tantalum 5 library.
 
 The Nokia Music REST API is divided into resources. The application consists of 
-several views that each use different API resources. Each resource is responsible of 
-a specific function, e.g., the Search Resource handles search queries. 
+several views that each use different API resources. Each resource is
+responsible of a specific function, e.g., the Search Resource handles search
+queries. 
 
 For full API reference, see the ​Nokia Music REST API Reference: 
-- http://api.ent.nokia.com/restapi.html
+http://api.ent.nokia.com/restapi.html
 
 This example demonstrates:
-- Usage of Nokia Music REST API
-- How to consume JSON data using the Tantalum 5 library
-- Asynchronous image loading
-- Implementing a drill-down UI
 
-The application is hosted in Nokia Developer Projects:
-- https://projects.developer.nokia.com/NokiaAshaMusicExplorer
+* Usage of Nokia Music REST API
+* How to consume JSON data using the Tantalum 5 library
+* Asynchronous image loading
+* Implementing a drill-down UI
+
+The application is hosted in GitHub:
+https://github.com/nokia-developer/nokia-asha-music-explorer
 
 For more information on the implementation, visit the wiki page:
-- https://projects.developer.nokia.com/NokiaAshaMusicExplorer/wiki
+https://github.com/nokia-developer/nokia-asha-music-explorer/wiki
+
 
 1. Prerequisities
 -------------------------------------------------------------------------------
 
-Java ME basics
-Java ME threads
+* Java ME basics
+* Java ME threads
 
 
 2. Important files and classes
 -------------------------------------------------------------------------------
 
-src\..\data\ApiCache.java
-src\..\data\JSONResponseHandler.java
-src\..\settings\ApiEndpoint.java
-src\..\ui\ViewManager.java
+* `src\..\data\ApiCache.java`
+* `src\..\data\JSONResponseHandler.java`
+* `src\..\settings\ApiEndpoint.java`
+* `src\..\ui\ViewManager.java`
 
-Classes: GridItem, GridLayout, ListItem
+Classes: `GridItem`, `GridLayout`, `ListItem`
 
 
 3. Design considerations
@@ -62,16 +65,14 @@ worker threads. The behaviour is similar to what can be found in many
 JavaScript web applications. When loading an image, a placeholder image 
 is shown until the image has been successfully loaded.
 
+
 4. Known issues
 -------------------------------------------------------------------------------
 
-- java.lang.NumberFormatException shown sometimes in the log during
-  JSON parsing. This issue does not affect the application and does not 
-  cause any crashes.
-  
-- The artist view might appear empty if the artist does not have any albums.
-
-- The user can navigate to new Artist views from the Similar artists view.
+* `java.lang.NumberFormatException` shown sometimes in the log during JSON parsing.
+  This issue does not affect the application and does not cause any crashes.
+* The artist view might appear empty if the artist does not have any albums.
+* The user can navigate to new Artist views from the Similar artists view.
   These opened Artist views grow the view history and the device may run out of 
   memory at some point.
 
@@ -112,6 +113,7 @@ full word queries only. For example, searching for "Madon" lists only those
 that contain the word "Madon" but not e.g. "Madonna". A search query is made
 automatically after the user has stopped typing.
 
+
 7. Compatibility
 -------------------------------------------------------------------------------
 
@@ -119,15 +121,15 @@ Nokia Asha software platform 1.0 and newer.
 
 An Internet connection is required.
 
-Tested on:
-Nokia Asha 501 (Java Runtime 3.0.0 for Series 40)
+Tested on Nokia Asha 501 (Java Runtime 3.0.0 for Series 40).
 
 Developed with:
-Netbeans 7.3
-Nokia Asha SDK 1.0
+
+* Netbeans 7.3
+* Nokia Asha SDK 1.0
 
 
 8. Change history
 -------------------------------------------------------------------------------
 
-v1.0 The first version published at developer.nokia.com.
+* 1.0 The first version published at developer.nokia.com.
