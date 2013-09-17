@@ -22,8 +22,8 @@ This example demonstrates:
 The application is hosted in GitHub:
 https://github.com/nokia-developer/nokia-asha-music-explorer
 
-For more information on the implementation, visit the wiki page:
-https://github.com/nokia-developer/nokia-asha-music-explorer/wiki
+For more information on the implementation, visit Java Developer's Library:
+http://developer.nokia.com/Resources/Library/Java/#!code-examples/web-services-musicexplorer.html
 
 
 1. Prerequisities
